@@ -1,3 +1,5 @@
+#include "cmctl.h"
+
 //通过改写Eflags寄存器的第21位，观察其位的变化判断是否支持CPUID
 int chk_cpuid()
 {

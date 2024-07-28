@@ -1,3 +1,5 @@
+%include "../include/base/ldrasm.inc"
+
 [bits 16]
 _start:
 _16_mode:

@@ -1,12 +1,4 @@
-#define MDC_ENDGIC 0xaaffaaffaaffaaff
-#define MDC_RVGIC  0xffaaffaaffaaffaa
-#define REALDRV_PHYADR 0x1000
-#define IMGFILE_PHYADR 0x4000000
-#define IMGKRNL_PHYADR 0x2000000
-#define LDRFILEADR IMGFILE_PHYADR
-#define MLOSDSC_OFF (0x1000)
-#define MRDDSC_ADR (mlosrddsc_t*)(LDRFLEADR + 0x1000)
-
+#include "cmctl.h"
 
 void inithead_entry()
 {
