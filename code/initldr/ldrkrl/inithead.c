@@ -14,8 +14,8 @@ void write_realintsvefile()
     if(fhdsc_start == NULL) {
         error("not file initldrsve.bin");
     }
-    m2mcpy((void*)((u32_t)(fhdsc_start->fhd_intsfsoff) + LDRFILEADR), 
-           (void*)REALDRV_PHYADR, (sint_t)fhdsc_start->fhd_frealsz);
+    m2mcpy((void*)((u32_t)(fhdsc_start->fhd_intsf_s) + LDRFILEADR), 
+           (void*)REALDRV_PHYADR, (sint_t)fhdsc_start->fhd_freal_sz);
     return;
 }
 
@@ -26,17 +26,17 @@ void write_ldrkrlfile()
     if(fhdsc_start == NULL) {
         error("not file initldrkrl.bin");
     }
-    m2mcpy((void*)((u32_t)(fhdsc_start->fhd_intsfsoff) + LDRFILEADR), 
-           (void*)ILDRKRL_PHYADR, (sint_t)fhdsc_start->fhd_frealsz);
+    m2mcpy((void*)((u32_t)(fhdsc_start->fhd_intsf_s) + LDRFILEADR), 
+           (void*)ILDRKRL_PHYADR, (sint_t)fhdsc_start->fhd_freal_sz);
     return;
 }
 
 // 在映像文件中查找对应的文件
 fhdsc_t* find_file(char_t* fname)
 {
-    mlosrddsc_t* mrddadrs = MRDDSC_ADR;
-    if(mrddadrs->mdc_endgic != MDC_ENDGIC || 
-       mrddadrs->mdc_rv     != MDC_RVGIC  ||
+    imgfhdsc_t* mrddadrs = MRDDSC_ADR;
+    if(mrddadrs->mdc_endgic  != MDC_ENDGIC || 
+       mrddadrs->mdc_version != MDC_RVGIC  ||
        mrddadrs->mdc_fhdnr < 2 || 
        mrddadrs->mdc_filnr < 2)
     {
