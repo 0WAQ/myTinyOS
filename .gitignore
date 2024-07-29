@@ -1,2 +1,4 @@
 .vscode/
-HellOS/hdisk/boot/
+HelloOS/hdisk
+HelloOS/hd.*
+HelloOS/*.sh

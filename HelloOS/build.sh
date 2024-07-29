@@ -6,7 +6,7 @@ lodev=$(losetup -f)
 sudo losetup $lodev ./hd.img
 
 # 挂载hd.img到hdisk目录下
-sudo mkdir -o loop ./hd.img ./hdisk
+sudo mount -o loop ./hd.img ./hdisk
 
 #
 #   ...对硬盘内容的修改...
