@@ -14,7 +14,7 @@ void write_realintsvefile()
     if(fhdsc_start == NULL) {
         error("not file initldrsve.bin");
     }
-    m2mcpy((void*)((u32_t)(fhdsc_start->fhd_intsf_s) + LDRFILEADR), 
+    m2mcopy((void*)((u32_t)(fhdsc_start->fhd_intsf_s) + LDRFILEADR), 
            (void*)REALDRV_PHYADR, (sint_t)fhdsc_start->fhd_freal_sz);
     return;
 }
@@ -26,7 +26,9 @@ void write_ldrkrlfile()
     if(fhdsc_start == NULL) {
         error("not file initldrkrl.bin");
     }
-    m2mcpy((void*)((u32_t)(fhdsc_start->fhd_intsf_s) + LDRFILEADR), 
+
+    // 将该文件放到0x200000处, 之后再汇编中跳转到该位置, 就进入了二级引导器(即ldrkrl32.asm)
+    m2mcopy((void*)((u32_t)(fhdsc_start->fhd_intsf_s) + LDRFILEADR), 
            (void*)ILDRKRL_PHYADR, (sint_t)fhdsc_start->fhd_freal_sz);
     return;
 }
@@ -34,7 +36,9 @@ void write_ldrkrlfile()
 // 在映像文件中查找对应的文件
 fhdsc_t* find_file(char_t* fname)
 {
+    // 从内存中取出映像文件的映像文件头描述符
     imgfhdsc_t* mrddadrs = MRDDSC_ADR;
+
     if(mrddadrs->mdc_endgic  != MDC_ENDGIC || 
        mrddadrs->mdc_version != MDC_RVGIC  ||
        mrddadrs->mdc_fhdnr < 2 || 
@@ -42,24 +46,19 @@ fhdsc_t* find_file(char_t* fname)
     {
         error("no mrddsc");
     }
-
-    s64_t rethn = -1;
-    fhdsc_t* fhdsc_start = (fhdsc_t*)((u32_t)(mrddadrs->mdc_fhdbk_s) + LDRFILEADR);
-    for(u64_t i = 0; i < mrddadrs->mdc_fhdnr; i++)
-    {
-        if(strcmpl(fname, fhdsc_start[i].fhd_name) == 0)
-        {
-            rethn = (s64_t)i;
-            goto ok_l;
-        }
+    
+    // 从 映像文件头描述符 中找出 文件头描述符 数组的首地址
+    fhdsc_t* fhdsc_arr = (fhdsc_t*)((u32_t)(mrddadrs->mdc_fhdbk_s) + LDRFILEADR);
+    
+    // 遍历所有文件头描述符
+    for(u64_t i = 0; i < mrddadrs->mdc_fhdnr; i++) {
+        // 通过文件名找到该文件
+        if(strcmpl(fname, fhdsc_arr[i].fhd_name) == 0)
+            return &fhdsc_arr[i];
     }
-    rethn = -1;
 
-ok_l:
-    if(rethn < 0) {
-        error("not find file");
-    }
-    return &fhdsc_start[rethn];
+    error("not find file");
+    return NULL;
 }
 
 

@@ -32,8 +32,12 @@
 #define KINITAGE_PHYADR 0x1000000
 #define KINITRVM_PHYADR 0x800000
 #define KINITRVM_SZ     0x400000
+
+// 是映像文件的物理地址
 #define LDRFILEADR  IMGFILE_PHYADR
 #define MLOSDSC_OFF (0x1000)
+
+// 映像文件头描述符的物理地址, 前0x1000个字节正好是4KB, 是GRUB头
 #define MRDDSC_ADR  (imgfhdsc_t*)(LDRFILEADR + 0x1000)
 
 #define KRNL_VIRTUAL_ADDRESS_START 0xffff8000'00000000
@@ -95,8 +99,8 @@ typedef struct s_imgfhdsc
     u64_t mdc_ldrbk_rsz;    //映像文件中二级引导器的实际大小
     u64_t mdc_ldrbk_sum;    //映像文件中二级引导器的校验和
 
-    u64_t mdc_fhdbk_s;      //映像文件中文件头描述符的开始偏移
-    u64_t mdc_fhdbk_e;      //映像文件中文件头描述符的结束偏移
+    u64_t mdc_fhdbk_s;      //映像文件中文件头描述符数组的开始偏移
+    u64_t mdc_fhdbk_e;      //映像文件中文件头描述符数组的结束偏移
     u64_t mdc_fhdbk_rsz;    //映像文件中文件头描述符的实际大小
     u64_t mdc_fhdbk_sum;    //映像文件中文件头描述符的校验和
 
@@ -106,8 +110,8 @@ typedef struct s_imgfhdsc
     u64_t mdc_filbk_sum;    //映像文件在文件数据的校验和
 
     u64_t mdc_ldrcodenr;    //映像文件中文件头描述符的索引号
-    u64_t mdc_fhdnr;        //映像文件中文件头描述符的数量
-    u64_t mdc_filnr;        //映像文件中文件头的数量
+    u64_t mdc_fhdnr;        //映像文件中文件头描述符数组中元素的数量
+    u64_t mdc_filnr;        //映像文件中文件头的数量??
     u64_t mdc_endgic;       //映像文件结束标志
     u64_t mdc_version;      //映像文件版本
 }imgfhdsc_t;

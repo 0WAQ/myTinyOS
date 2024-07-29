@@ -2,6 +2,8 @@
 ; 用于多引导协议信息结构标头的定义和初始化
 ; 同时支持GRUB和GRUB2两种引导程序的启动
 ;
+; 主要功能: 初始化CPU的寄存器, 加载GDT, 切换到CPU的保护模式
+;
 
 ;;; GRUB1和GRUB2需要的两个头结构
 ;; 符号定义与全局说明
@@ -97,9 +99,9 @@ _32bits_mode:
         xor ebp, ebp
         xor esp, esp
     
-        mov esp, 0x7c00             ;设置堆栈指针, BIOS引导扇区加载到内存的地方
+        mov esp, 0x7c00             ;设置堆栈指针, BIOS引导扇区加载到内存的0x7c00
         call inithead_entry         ;调用外部函数, 去初始化内核
-        jmp 0x200000                ;跳转到地址, 开始执行内核代码
+        jmp 0x200000                ;跳转到地址, 开始执行内核代码(initldrkrl.bin文件)
 
 
 ;; GDT全局段描述符表
