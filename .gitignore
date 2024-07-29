@@ -1,4 +1,5 @@
 .vscode/
-HelloOS/hdisk
+HelloOS/hdisk/boot/grub/
+HelloOS/hdisk/lost+found
 HelloOS/hd.*
 HelloOS/*.sh
