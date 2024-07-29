@@ -385,14 +385,16 @@ typedef struct s_MRSDP
     u8_t rp_resc[3];
 }__attribute__((packed)) mrsdp_t;
 
+
+// 机器信息结构, 由二级引导器收集
 typedef struct s_MACHBSTART
 {
-    u64_t   mb_migc;            //LMOSMBSP  //0
-    u64_t   mb_chksum;          //8
-    u64_t   mb_krlinitstack;    //16
-    u64_t   mb_krlitstacksz;    //24
-    u64_t   mb_imgpadr;
-    u64_t   mb_imgsz;
+    u64_t   mb_migc;
+    u64_t   mb_chksum;
+    u64_t   mb_krlinitstack;    //内核栈地址
+    u64_t   mb_krlitstacksz;    //内核栈大小
+    u64_t   mb_imgpadr;         //操作系统映像
+    u64_t   mb_imgsz;           //操作系统映像大小
     u64_t   mb_krlimgpadr;
     u64_t   mb_krlsz;
     u64_t   mb_krlvec;
@@ -403,15 +405,15 @@ typedef struct s_MACHBSTART
     u64_t   mb_kservadrs;
     u64_t   mb_kservadre;
     u64_t   mb_nextwtpadr;
-    u64_t   mb_bfontpadr;
-    u64_t   mb_bfontsz;
-    u64_t   mb_fvrmphyadr;
-    u64_t   mb_fvrmsz;
-    u64_t   mb_cpumode;
-    u64_t   mb_memsz;
-    u64_t   mb_e820padr;
-    u64_t   mb_e820nr;
-    u64_t   mb_e820sz;
+    u64_t   mb_bfontpadr;       //操作系统字体地址
+    u64_t   mb_bfontsz;         //操作系统字体大小
+    u64_t   mb_fvrmphyadr;      //机器显存地址
+    u64_t   mb_fvrmsz;          //机器显存大小
+    u64_t   mb_cpumode;         //机器CPU工作模式
+    u64_t   mb_memsz;           //机器内存大小
+    u64_t   mb_e820padr;        //机器e820数组地址
+    u64_t   mb_e820nr;          //机器e820数组元素个数
+    u64_t   mb_e820sz;          //机器e820数组大小
     u64_t   mb_e820expadr;
     u64_t   mb_e820exnr;
     u64_t   mb_e820exsz;
@@ -423,13 +425,14 @@ typedef struct s_MACHBSTART
     u64_t   mb_memmapnr;
     u64_t   mb_memmapsz;
     u64_t   mb_memmapchksum;
-    u64_t   mb_pml4padr;
-    u64_t   mb_subpageslen;
-    u64_t   mb_kpmapphymemsz;
+    u64_t   mb_pml4padr;        //机器页表数据地址
+    u64_t   mb_subpageslen;     //机器页表个数
+    u64_t   mb_kpmapphymemsz;   //操作系统映射空间大小
     u64_t   mb_ebdaphyadr;
     mrsdp_t mb_mrsdp;
-    graph_t mb_ghparm;
-}__attribute__((packed)) machbstart_t;
+    graph_t mb_ghparm;          //图形信息
+}__attribute__((packed)) machbstart_t;  //取消struct在编译过程中的优化对齐
+
 
 #define MBSPADR ((machbstart_t*)(0x100000))
 #define VBE_DISPI_IOPORT_INDEX (0x01CE)
@@ -459,6 +462,7 @@ typedef struct s_MACHBSTART
 #define VBE_DISPI_DISABLED (0x00)
 #define VBE_DISPI_ENABLED  (0x01)
 #define VBE_DISPI_LFB_ENABLED (0x40)
+
 
 // 会跳转到ldrkrl32.asm中的realadr_call_entry标号
 void REGCALL realadr_call_entry(u16_t callint, u16_t val1, u16_t val2);
