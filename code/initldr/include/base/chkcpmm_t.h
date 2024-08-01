@@ -4,8 +4,8 @@
  * 
  */
 
-#ifndef _CHKCPMM_H
-#define _CHKCPMM_H
+#ifndef _CHKCPMM_T_H
+#define _CHKCPMM_T_H
 
 #include "realparm.h"
 
