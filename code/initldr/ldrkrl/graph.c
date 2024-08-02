@@ -171,3 +171,11 @@ void set_vbemodeinfo()
     return;
 }
 
+u32_t vfartolineadr(u32_t vfar)
+{
+    u32_t tmps = 0, sec = 0, off = 0;
+    off = vfar & 0xffff;
+    tmps = (vfar >> 16) & 0xffff;
+    sec = tmps << 4;
+    return (sec + off);
+}

@@ -1,29 +1,5 @@
 #include "cmctl.h"
 
-int move_krlimg(machbstart_t* mbsp, u64_t adr, u64_t sz)
-{
-    // 判断当前空间是否合法
-    if(sz < 1 || adr + sz >= 0xffffffff) {
-        return 0;
-    }
-
-    void* to_adr = (void*)((u32_t)(P4K_ALIGN(adr + sz)));
-    sint_t to_sz = (sint_t)mbsp->mb_imgsz;
-
-    if(adrzone_is_ok(mbsp->mb_imgpadr, mbsp->mb_imgsz, adr, sz) != 0) {
-        if(NULL != chk_memsize((e820map_t*)((u32_t)(mbsp->mb_e820padr)), 
-                        (u32_t)mbsp->mb_e820nr, (u64_t)((u32_t)to_adr), (u64_t)to_sz)) 
-        {
-            return -1;
-        }
-
-        m2mcopy((void*)((u32_t)mbsp->mb_imgpadr), to_adr, to_sz);
-        mbsp->mb_imgpadr = (u64_t)((u32_t)to_adr);
-        return 1;
-    }
-    return 2;
-}
-
 /**
  * 
  * 放置内核与字库文件
@@ -159,4 +135,36 @@ void get_file_rpadrandsz(char_t* fname, machbstart_t* mbsp, u32_t* retadr, u32_t
 
     *retadr = (u32_t)padr;
     *retsz = (u32_t)fsz;
+}
+
+int move_krlimg(machbstart_t* mbsp, u64_t adr, u64_t sz)
+{
+    // 判断当前空间是否合法
+    if(sz < 1 || adr + sz >= 0xffffffff) {
+        return 0;
+    }
+
+    void* to_adr = (void*)((u32_t)(P4K_ALIGN(adr + sz)));
+    sint_t to_sz = (sint_t)mbsp->mb_imgsz;
+
+    if(adrzone_is_ok(mbsp->mb_imgpadr, mbsp->mb_imgsz, adr, sz) != 0) {
+        if(NULL != chk_memsize((e820map_t*)((u32_t)(mbsp->mb_e820padr)), 
+                        (u32_t)mbsp->mb_e820nr, (u64_t)((u32_t)to_adr), (u64_t)to_sz)) 
+        {
+            return -1;
+        }
+
+        m2mcopy((void*)((u32_t)mbsp->mb_imgpadr), to_adr, to_sz);
+        mbsp->mb_imgpadr = (u64_t)((u32_t)to_adr);
+        return 1;
+    }
+    return 2;
+}
+
+int strcmpl(const char* a, const char* b)
+{
+    while(*a && *b && (*a == *b)) {
+        a++, b++;
+    }
+    return *b - *a;
 }

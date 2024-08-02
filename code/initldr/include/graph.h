@@ -28,8 +28,12 @@ void get_vbemodeinfo(machbstart_t* mbsp);
 /// @brief 设置VBE模式 
 void set_vbemodeinfo();
 
-
+/// @brief 
+/// @param vfar 
+/// @return 
 u32_t vfartolineadr(u32_t vfar);
+
+
 void init_kinitfvram(machbstart_t* mbsp);
 void bga_write_reg(u16_t index, u16_t data);
 u16_t bag_read_reg(u16_t index);

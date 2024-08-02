@@ -9,6 +9,8 @@
 
 #include "base/ldrtype.h"
 
+int strcmpl(const char* a, const char* b);
+
 /// @brief 判断指定的内存空间是否与 mbsp 中的内存空间有冲突
 /// @param mbsp 机器信息结构
 /// @param adr 指定的内存空间首地址
@@ -20,6 +22,10 @@ int move_krlimg(machbstart_t* mbsp, u64_t adr, u64_t sz);
 void init_krlfile(machbstart_t* mbsp);
 void init_defutfont(machbstart_t* mbsp);
 
+/// @brief 
+/// @param fname 
+/// @param mbsp 
+/// @return 
 fhdsc_t* get_fileinfo(char_t* fname, machbstart_t* mbsp);
 
 /// @brief 
