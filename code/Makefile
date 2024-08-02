@@ -6,7 +6,7 @@ CP = cp
 CD = cd
 DD = dd
 RM = rm
-LKIMG = ./lmoskrlimg -m k
+LKIMG = lmoskrlimg -m k
 VM = qemu-system-x86_64
 DBUGVM = bochs -q
 IMGTOVDI = qemu-img convert -f raw -O vdi
@@ -21,8 +21,8 @@ VMFLAGES = -smp 4 -hda $(VMDKFNAME) -m 256 -enable-kvm
 
 IMGSECTNR = 204800
 PHYDSK = /dev/sdb
-VDIFNAME = hd.vdi
-VMDKFNAME = hd.img
+VDIFNAME = ../HelloOS/hd.vdi
+VMDKFNAME = ../HelloOS/hd.img
 KRNLEXCIMG = Cosmos.bin
 
 LOGOFILE = logo.bmp background.bmp
