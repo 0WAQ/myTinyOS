@@ -5,7 +5,7 @@ code/build/*
 !./code/build/vbox.mkf
 
 lmoskrlimg/
-HelloOS/hdisk/boot/grub/
+HelloOS/hdisk/boot/*
 HelloOS/hdisk/lost+found
 HelloOS/hd.*
 HelloOS/*.sh
