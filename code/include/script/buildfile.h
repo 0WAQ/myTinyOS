@@ -16,9 +16,9 @@
                         BUILD_FSYS_OBJS BUILD_DRIV_OBJS\
                         BUILD_LIBS_OBJS BUILD_TASK_OBJS
 #define LINKR_IPUT_FILE BUILD_LINK_OBJS
-#define LINKR_OPUT_FILE Cosmos.elf
+#define LINKR_OPUT_FILE HelloOS.elf
 #define KERNL_ELFF_FILE LINKR_OPUT_FILE
-#define KERNL_BINF_FILE Cosmos.bin
+#define KERNL_BINF_FILE HelloOS.bin
 
 #endif
                           

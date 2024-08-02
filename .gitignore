@@ -6,8 +6,4 @@ code/build/*
 
 code/*/*.bin
 
-lmoskrlimg/
-HelloOS/hdisk/boot/*
-HelloOS/hdisk/lost+found
-HelloOS/hd.*
-HelloOS/*.sh
+hd.*

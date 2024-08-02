@@ -23,7 +23,7 @@ IMGSECTNR = 204800
 PHYDSK = /dev/sdb
 VDIFNAME = hd.vdi
 VMDKFNAME = hd.img
-KRNLEXCIMG = Cosmos.bin
+KRNLEXCIMG = HelloOS.bin
 
 LOGOFILE = logo.bmp background.bmp
 FONTFILE = font.fnt
@@ -35,7 +35,7 @@ INITLDR_BUILD_PATH =./initldr/build/
 INITLDR_PATH =./initldr/
 CPLILDR_PATH =./release/
 INSTALL_PATH =/boot/
-INSTALLSRCFILE_PATH =./release/Cosmos.eki
+INSTALLSRCFILE_PATH =./release/HelloOS.eki
 SRCFILE = $(BOOTEXCIMG) $(KRNLEXCIMG) $(LDEREXCIMG) $(SHELEXCIMG)
 RSRCFILE = $(BOOTEXCIMG) $(KRNLEXCIMG) $(LDEREXCIMG) $(SHELEXCIMG) #$(VDIFNAME) $(VMDKFNAME)
 
@@ -58,7 +58,7 @@ clean:
 	$(CD) $(BUILD_PATH); $(RM) -f *.o *.bin *.i *.krnl *.s *.map *.lib *.btoj *.vdi *.elf *vmdk *.lds *.mk *.mki krnlobjs.mh
 	$(CD) $(EXKNL_PATH); $(RM) -f *.o *.bin *.i *.krnl *.s *.map *.lib *.btoj *.vdi *.elf *vmdk *.lds *.mk *.mki krnlobjs.mh
 	$(CD) $(CPLILDR_PATH); $(RM) -f *.o *.bin *.i *.krnl *.s *.eki *.map *.lib *.btoj *.elf *.vdi *vmdk *.lds *.mk *.mki krnlobjs.mh
-	@echo 'Cosmos:清理全部已构建文件... ^_^'
+	@echo 'HelloOS:清理全部已构建文件... ^_^'
 
 print:
 	@echo '*********正在开始编译构建系统*************'
@@ -85,8 +85,8 @@ dbugexc:
 	$(CD) $(EXKNL_PATH) && $(DBUGVM)
 
 KIMG:
-	@echo '正在生成Cosmos内核映像文件，请稍后……'
-	$(CD) $(CPLILDR_PATH) && $(LKIMG) -lhf $(INITLDRIMH) -o Cosmos.eki -f $(LKIMG_INFILE)
+	@echo '正在生成HelloOS内核映像文件，请稍后……'
+	$(CD) $(CPLILDR_PATH) && ./$(LKIMG) -lhf $(INITLDRIMH) -o HelloOS.eki -f $(LKIMG_INFILE)
 
 KVMRUN:
 	$(VM) $(VMFLAGES)
@@ -107,6 +107,6 @@ createimg:
 	$(DD) bs=512 if=/dev/zero of=$(DSKIMG) count=$(IMGSECTNR)
 
 install:
-	@echo '下面将开始安装Cosmos内核，请确认……'
+	@echo '下面将开始安装HelloOS内核，请确认……'
 	sudo $(CP) $(CPFLAGES) $(INSTALLSRCFILE_PATH) $(INSTALL_PATH)
-	@echo 'Cosmos内核已经安装完成，请重启计算机……'
+	@echo 'HelloOS内核已经安装完成，请重启计算机……'
