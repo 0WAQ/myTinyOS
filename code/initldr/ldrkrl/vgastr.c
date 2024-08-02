@@ -5,7 +5,7 @@ __attribute__((section(".data"))) cursor_t curs;
 void kprintf(const char_t* fmt, ...)
 {
     char_t buf[512];
-    va_list_t arg = (va_list_t)((char_t)(&fmt) + sizeof(long));
+    va_list_t arg = (va_list_t)((char_t*)(&fmt) + sizeof(long));
 
     vsprintfk(buf, fmt, arg);
     GxH_strwrite(buf, &curs);
@@ -92,7 +92,7 @@ void GxH_strwrite(char_t* str, cursor_t* cursptr)
 
     while(*str)
     {
-        if(*str = 10) {
+        if(*str == 10) {
             tfindx = TRUE;
             str++;
 
@@ -105,6 +105,10 @@ void GxH_strwrite(char_t* str, cursor_t* cursptr)
 
         *p_start = *str++;
         p_start += 2;
+    }
+
+    if(tfindx == TRUE) {
+        current_curs(cursptr, VGACHAR_LR_CFLG);
     }
 }
 
