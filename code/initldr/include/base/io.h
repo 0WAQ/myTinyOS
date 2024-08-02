@@ -27,7 +27,7 @@ KLINE void out_u8(const u16_t port, const u8_t val)
              : "dN"(port), "a"(val));       // 输入操作数: 将val和port赋值给al和dx
 }
 
-KLINE void out_u8(const u16_t port, const u16_t val)
+KLINE void out_u16(const u16_t port, const u16_t val)
 {
     __asm__ __volatile__("outw %1, %0\n"
              :
@@ -89,13 +89,13 @@ KLINE sint_t m2mcopy(void* src, void* dest, sint_t len)
 
     // 若src比dest地址小
     if(s < d) {
-        for(size_t i = len - 1; i >= 0; i--)
+        for(sint_t i = len - 1; i >= 0; i--)
             d[i] = s[i];
         return len;
     }
 
     // 若src比dest地址大
-    for(size_t i = 0; i < len; i++) 
+    for(sint_t i = 0; i < len; i++) 
         d[i] = s[i];
     return len;    
 }
