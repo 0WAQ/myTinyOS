@@ -7,7 +7,7 @@
 #ifndef _FS_H
 #define _FS_H
 
-#include "ldrtype.h"
+#include "base/ldrtype.h"
 
 // int strcmpl(const char* a, const char* b);
 

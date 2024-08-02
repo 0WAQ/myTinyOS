@@ -7,7 +7,7 @@
 #ifndef _CHKCPMM_H
 #define _CHKCPMM_H
 
-#include "ldrtype.h"
+#include "base/ldrtype.h"
 
 /// @brief 内存相关
 /// @param mbsp 机器信息结构

@@ -7,7 +7,7 @@
 #ifndef _GRAPH_H
 #define _GRAPH_H
 
-#include "ldrtype.h"
+#include "base/ldrtype.h"
 
 /// @brief 初始化图形模式
 /// @param mbsp 机器信息结构 

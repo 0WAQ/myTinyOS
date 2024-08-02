@@ -7,7 +7,7 @@
 #ifndef _VGASTR_H
 #define _VGASTR_H
 
-#include "vgastr_t.h"
+#include "base/vgastr_t.h"
 
 void init_curs();
 void set_curs(u32_t x, u32_t y);

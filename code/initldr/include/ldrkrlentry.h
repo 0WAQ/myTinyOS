@@ -7,7 +7,7 @@
 #ifndef _LDRKRLENTRY_H
 #define _LDRKRLENTRY_H
 
-#include "type.h"
+#include "base/type.h"
 
 void ldrkrl_entry();
 void kerror(char_t* kestr);

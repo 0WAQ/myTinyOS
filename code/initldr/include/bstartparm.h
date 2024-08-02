@@ -7,7 +7,7 @@
 #ifndef _BSTARTPARM_H
 #define _BSTARTPARM_H
 
-#include "ldrtype.h"
+#include "base/ldrtype.h"
 
 /// @brief 负责管理 检查CPU模式, 收集内存信息, 设置内核栈, 设置内核字体, 建立内核MMU页表数据
 void init_bstartparm();

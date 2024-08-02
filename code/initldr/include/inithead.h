@@ -7,7 +7,7 @@
 #ifndef _INITHEAD_H
 #define _INITHEAD_H
 
-#include "ldrtype.h"
+#include "base/ldrtype.h"
 
 void inithead_entry();
 void write_shellfile();
