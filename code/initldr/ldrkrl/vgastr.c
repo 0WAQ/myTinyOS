@@ -2,7 +2,7 @@
 
 __attribute__((section(".data"))) cursor_t curs;
 
-void kprintf(const char_t* fmt, ...)
+void kprint(const char_t* fmt, ...)
 {
     char_t buf[512];
     va_list_t arg = (va_list_t)((char_t*)(&fmt) + sizeof(long));
