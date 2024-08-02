@@ -1,7 +1,5 @@
 /**********************************************************
         cpu控制头文件cpuctrl.h
-***********************************************************
-                彭东
 **********************************************************/
 #ifndef _CPUCTRL_H
 #define _CPUCTRL_H
@@ -48,4 +46,5 @@ void hal_memcpy(void* src,void* dst,size_t n);
 void hal_sysdie(char_t* errmsg);
 void system_error(char_t* errmsg);
 uint_t hal_retn_cpuid();
+
 #endif // CPUCTRL_H

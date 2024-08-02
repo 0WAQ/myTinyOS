@@ -1,7 +1,5 @@
 /**********************************************************
         物理内存管理器初始化文件memmgrinit_t.h
-***********************************************************
-                彭东 
 **********************************************************/
 #ifndef _MEMMGRINIT_T_H
 #define _MEMMGRINIT_T_H
@@ -29,4 +27,5 @@ typedef struct s_MEMMGROB
 	void* mo_privp;
 	void* mo_extp;
 }memmgrob_t;
+
 #endif

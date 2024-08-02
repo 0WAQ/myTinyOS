@@ -1,10 +1,9 @@
 /**********************************************************
         物理内存分割合并文件memdivmer.h
-***********************************************************
-                彭东
 **********************************************************/
 #ifndef _MEMDIVMER_H
 #define _MEMDIVMER_H
+
 void mm_update_memmgrob(uint_t realpnr,uint_t flgs);
 void mm_update_memarea(memarea_t* malokp,uint_t pgnr,uint_t flgs);
 memarea_t* onfrmsa_retn_marea(memmgrob_t* mmobjp,msadsc_t* freemsa,uint_t freepgs);
@@ -55,4 +54,5 @@ void test_maxone_marea(memarea_t* mr);
 void test_onedivmer_all(memarea_t* ma);
 void test_maxdiv_all();
 void test_divsion_pages();
+
 #endif

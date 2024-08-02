@@ -1,12 +1,10 @@
 /**********************************************************
         平台相关的宏定义文件platforms3c2440_t.h
-***********************************************************
-                彭东
 **********************************************************/
 #ifndef _PLATFORM_T_H
 #define _PLATFORM_T_H
-#include "bdvideo_t.h"
 
+#include "bdvideo_t.h"
 
 #ifdef CFG_X86_PLATFORM
 #define CPUCORE_MAX 1
@@ -178,10 +176,6 @@ typedef struct s_mlosrddsc
     u64_t mdc_rv;
 }mlosrddsc_t;
 
+#endif // CFG_X86_PLATFORM
 
-
-#endif
-
-
-
-#endif 
+#endif // _PLATFORM_T_H

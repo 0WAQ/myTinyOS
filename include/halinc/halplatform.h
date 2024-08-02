@@ -1,10 +1,9 @@
 /**********************************************************
         平台相关的宏定义文件halplatform.h
-***********************************************************
-                彭东
 **********************************************************/
 #ifndef _PLATFORM_H
 #define _PLATFORM_H
+
 adr_t viradr_to_phyadr(adr_t kviradr);
 adr_t phyadr_to_viradr(adr_t kphyadr);
 void machbstart_t_init(machbstart_t *initp);

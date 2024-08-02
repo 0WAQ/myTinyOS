@@ -1,10 +1,9 @@
 /**********************************************************
 		信号量头文件sem_t.h
-***********************************************************
-				彭东
 **********************************************************/
 #ifndef _SEM_T_H
 #define _SEM_T_H
+
 #define SEM_FLG_MUTEX 0
 #define SEM_FLG_MULTI 1
 #define SEM_MUTEX_ONE_LOCK 1
@@ -43,4 +42,5 @@ typedef struct s_WAIT_L
 	u32_t wl_flags;
 	void* wl_thead;
 }wait_l_t;
+
 #endif

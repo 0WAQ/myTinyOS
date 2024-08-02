@@ -1,12 +1,8 @@
 ﻿/**********************************************************
         hal层中断处理头文件halintupt_t.h
-***********************************************************
-                彭东
 **********************************************************/
 #ifndef _HALINTUPT_T_H
 #define _HALINTUPT_T_H
-
-
 
 #ifdef CFG_X86_PLATFORM
 
@@ -74,7 +70,6 @@ typedef struct s_KITHREAD
     void*       kit_extp;
 }kithread_t;
 
-#endif
 
-
+#endif // CFG_X86_PLATFORM
 #endif // HALINTUPT_T_H

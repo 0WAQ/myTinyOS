@@ -1,10 +1,9 @@
 /**********************************************************
         内核内存空间对象分配释放头文件kmsob.h
-***********************************************************
-                彭东
 **********************************************************/
 #ifndef _KMSOB_H
 #define _KMSOB_H
+
 void msclst_t_init(msclst_t* initp,uint_t pnr);
 void msomdc_t_init(msomdc_t* initp);
 void freobjh_t_init(freobjh_t* initp,uint_t stus,void* stat);
@@ -52,4 +51,5 @@ void chek_all_kobcks();
 void free_one_kobcks(kobcks_t* kkp);
 void free_all_kobcks();
 void test_kmsob();
+
 #endif

@@ -1,7 +1,5 @@
 /**********************************************************
         CPU相关的宏定义文件cpu_t.h
-***********************************************************
-                彭东
 **********************************************************/
 #ifndef _CPU_T_H
 #define _CPU_T_H
@@ -28,7 +26,7 @@ typedef struct s_INTSTKREGS
     reg_t rvsss;
 }intstkregs_t;
 
-#endif
+#endif // CFG_X86_PLATFORM
 
 
 #endif // CPU_T_H

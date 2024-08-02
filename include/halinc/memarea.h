@@ -1,10 +1,9 @@
 /**********************************************************
         物理内存区间文件memarea.h
-***********************************************************
-                彭东 
 **********************************************************/
 #ifndef _MEMAREA_H
 #define _MEMAREA_H
+
 void arclst_t_init(arclst_t* initp);
 mmstus_t mafo_deft_init(struct s_MEMAREA* memarea,void* valp,uint_t val);
 mmstus_t mafo_deft_exit(struct s_MEMAREA* memarea);

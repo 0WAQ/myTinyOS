@@ -1,7 +1,6 @@
 /**********************************************************
         hal层中断处理头文件halintupt.h
-***********************************************************
-                彭东
+
 **********************************************************/
 #ifndef _HALINTUPT_H
 #define _HALINTUPT_H
@@ -16,7 +15,6 @@ bool_t hal_add_ihandle(intfltdsc_t* intdscp,intserdsc_t* serdscp);
 drvstus_t hal_enable_intline(uint_t ifdnr);
 drvstus_t hal_disable_intline(uint_t ifdnr);
 drvstus_t hal_intflt_default(uint_t ift_nr,void* sframe);
-#endif
 
-
+#endif // CFG_X86_PLATFORM
 #endif // HALINTUPT_H

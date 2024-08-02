@@ -1,6 +1,8 @@
 #ifndef BUILDFILE_H
 #define BUILDFILE_H
-#include "config.h"
+
+#include "../config.h"
+
 #ifdef CFG_X86_PLATFORM
 
 #define BUILD_HALY_OBJS init_entry.o hal_start.o
@@ -20,6 +22,6 @@
 #define KERNL_ELFF_FILE LINKR_OPUT_FILE
 #define KERNL_BINF_FILE HelloOS.bin
 
-#endif
+#endif // CFG_X86_PLATFORM
                           
 #endif // BUILDFILE_H

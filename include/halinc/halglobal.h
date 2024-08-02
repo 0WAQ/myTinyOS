@@ -1,16 +1,16 @@
 /****************************************************************
        Cosmos HAL全局数据结构头文件halglobal.h
-*****************************************************************
-                彭东
 ****************************************************************/
 #ifndef _HALGLOBAL_H
 #define _HALGLOBAL_H
+
 #ifdef	HALGOBAL_HEAD
 #undef	EXTERN
 #define EXTERN
-#endif
+#endif // HALGOBAL_HEAD
 
 #ifdef CFG_X86_PLATFORM
+
 void	exc_divide_error();
 void	exc_single_step_exception();
 void	exc_nmi();
@@ -76,6 +76,9 @@ HAL_DEFGLOB_VARIABLE(machbstart_t,kmachbsp);
 HAL_DEFGLOB_VARIABLE(dftgraph_t,kdftgh);
 HAL_DEFGLOB_VARIABLE(memmgrob_t,memmgrob);
 HAL_DEFGLOB_VARIABLE(intfltdsc_t,machintflt)[IDTMAX];
-#endif
+
+#endif // CFG_X86_PLATFORM
+
 void die(u32_t dt);
+
 #endif // HALGLOBAL_H

@@ -1,15 +1,11 @@
 /**********************************************************
         物理内存区间文件memarea_t.h
-***********************************************************
-                彭东
 **********************************************************/
 #ifndef _MEMAREA_T_H
 #define _MEMAREA_T_H
 
 #define MMSTUS_ERR (0)
 #define MMSTUS_OK (1)
-
-
 
 typedef struct s_ARCLST
 {
@@ -28,8 +24,6 @@ typedef struct s_MMAFRETS
 	u16_t mat_gen;
 	u32_t mat_mask;
 }__attribute__((packed)) mmafrets_t;
-
-
 
 struct s_MEMAREA;
 typedef struct s_MAFUNCOBJS
@@ -95,6 +89,7 @@ typedef struct s_MEMDIVMER
 #define MA_PROC_LSZ (0xffffffffffffffff-0x400000000)
 #define MA_PROC_LEND (MA_PROC_LSTART+MA_PROC_LSZ)
 //0x400000000  0x40000000
+
 typedef struct s_MEMAREA
 {
 	list_h_t ma_list;
@@ -133,4 +128,5 @@ typedef struct s_MEMAREA
 	*中的指针，指向你的函数。
 	*/
 }memarea_t;
+
 #endif

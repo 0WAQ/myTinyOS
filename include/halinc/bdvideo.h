@@ -1,7 +1,5 @@
 /**********************************************************
         引导调式屏幕上显示输出文件bdvideo.c
-***********************************************************
-                彭东 
 **********************************************************/
 
 #ifndef _BDVIDEO_H
@@ -56,4 +54,5 @@ sint_t vbe_set_xyoffset(void* ghpdev,uint_t xoff,uint_t yoff);
 sint_t vbe_get_xy(void* ghpdev,uint_t* rx,uint_t* ry);
 sint_t vbe_get_vwh(void* ghpdev,uint_t* rvwt,uint_t* rvhi);
 sint_t vbe_get_xyoffset(void* ghpdev,uint_t* rxoff,uint_t* ryoff);
+
 #endif // BDVIDEO_H

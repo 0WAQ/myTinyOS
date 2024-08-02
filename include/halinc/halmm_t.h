@@ -1,12 +1,11 @@
 /****************************************************************
         HAL内存初始化头文件halmm_t.h
-*****************************************************************
-                彭东
 ****************************************************************/
 #ifndef _HALMM_T_H
 #define _HALMM_T_H
 
 #ifdef CFG_X86_PLATFORM
+
 #define DEV_TYPE_NOT 0xffffffff
 #define ADRSPCE_NOT 0
 #define ADRSPCE_IO 1
@@ -154,7 +153,6 @@ typedef struct s_PHYMEM
     /*alcfrelst数组，形成了128KB到4MB大小队列数组 [0]128KB 
      *[1]256KB [2]512KB [3]1MB [4]2MB [5]4MB*/
 }phymem_t;
-#endif
 
-
+#endif // CFG_X86_PLATFORM
 #endif // HALINIT_H

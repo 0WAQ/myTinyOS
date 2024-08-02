@@ -1,10 +1,9 @@
 /**********************************************************
         基本数据类型文件bastype_t.h
-***********************************************************
-                彭东
 **********************************************************/
 #ifndef _BASTYPE_T_H
 #define _BASTYPE_T_H
+
 typedef unsigned char u8_t;
 typedef unsigned short u16_t;
 typedef unsigned int u32_t;
