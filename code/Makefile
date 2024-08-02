@@ -21,8 +21,8 @@ VMFLAGES = -smp 4 -hda $(VMDKFNAME) -m 256 -enable-kvm
 
 IMGSECTNR = 204800
 PHYDSK = /dev/sdb
-VDIFNAME = ../HelloOS/hd.vdi
-VMDKFNAME = ../HelloOS/hd.img
+VDIFNAME = hd.vdi
+VMDKFNAME = hd.img
 KRNLEXCIMG = Cosmos.bin
 
 LOGOFILE = logo.bmp background.bmp

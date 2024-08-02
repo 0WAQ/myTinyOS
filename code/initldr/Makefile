@@ -20,11 +20,11 @@ build: clean print all
 all:
 	$(MAKE) $(INITLDRMFLGS)
 	$(MAKE) $(INITLDRLINKMFLGS)
-	@echo 'Initldr编译构建完成! ^_^'
+	@echo '恭喜我，Initldr编译构建完成！ ^_^'
 clean:
-	$(CD) $(BUILD_PATH);
-	$(RM) -f *.o *.bin *.i *.krnl *.s *.map *.lib *.btoj *.vdi *vmdk *.eki *.elf
+	$(CD) $(BUILD_PATH); $(RM) -f *.o *.bin *.i *.krnl *.s *.map *.lib *.btoj *.vdi *vmdk *.eki *.elf
 	@echo 'Initldr:清理全部已构建文件... ^_^'
 
 print:
 	@echo '*********正在开始编译构建系统*************'
+
