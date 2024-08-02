@@ -53,7 +53,7 @@ void init_defutfont(machbstart_t* mbsp)
 {
     u32_t dfadr = (u32_t)mbsp->mb_nextwtpadr;
 
-    u32_t sz = r_file_to_padr(mbsp, dfadr, "font.bin");
+    u64_t sz = r_file_to_padr(mbsp, dfadr, "font.bin");
     if(sz == 0) {
         kerror("r_file_to_padr error!\n");
     }

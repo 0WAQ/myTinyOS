@@ -58,6 +58,6 @@ void init_bstartpages(machbstart_t* mbsp);
 
 void ldr_createpage_and_open();
 
-#define CLT_HALT() __asm__ __volatile__("cli; hlt": : :"memory");
+#define CLI_HALT() __asm__ __volatile__("cli; hlt": : :"memory");
 
 #endif
