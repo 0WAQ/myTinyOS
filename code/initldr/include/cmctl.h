@@ -1,13 +1,13 @@
 #ifndef _CMCTL_H
 #define _CMCTL_H
 
-#include "type.h"
-#include "realparm.h"
-#include "imgmgrhead.h"
-#include "io.h"
-#include "vgastr_t.h"
-#include "ldrtype.h"
-#include "chkcpmm_t.h"
+#include "base/type.h"
+#include "base/realparm.h"
+#include "base/imgmgrhead.h"
+#include "base/io.h"
+#include "base/vgastr_t.h"
+#include "base/ldrtype.h"
+#include "base/chkcpmm_t.h"
 
 #include "fs.h"
 #include "vgastr.h"
