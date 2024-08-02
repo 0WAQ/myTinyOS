@@ -1,8 +1,8 @@
 .vscode/
-build/*
-!./build/lmkfbuild
-!./build/pretreatment.mkf
-!./build/vbox.mkf
+code/build/*
+!./code/build/lmkfbuild
+!./code/build/pretreatment.mkf
+!./code/build/vbox.mkf
 
 lmoskrlimg/
 HelloOS/hdisk/boot/grub/
