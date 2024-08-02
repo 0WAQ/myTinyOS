@@ -1,4 +1,5 @@
 .vscode/
+lmoskrlimg/
 HelloOS/hdisk/boot/grub/
 HelloOS/hdisk/lost+found
 HelloOS/hd.*

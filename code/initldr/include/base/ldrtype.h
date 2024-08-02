@@ -25,22 +25,28 @@
 #define REALDRV_PHYADR  0x1000
 #define ILDRKRL_PHYADR  0x200000
 #define IMSGHEL_PHYADR  0x30000
+
+// 内核的 栈顶地址(0x8fff0) 和 栈大小(64kB), 范围从0x8f000 ~ 0x8fff0
 #define IKSTACK_PHYADR  (0x90000 - 0x10)
 #define IKSTACK_SIZE    0x1000
+
 #define IMGFILE_PHYADR  0x4000000
 #define IMGKRNL_PHYADR  0x2000000
-#define KINITAGE_PHYADR 0x1000000
+
+// MMU页表相关
+#define KINITPAGE_PHYADR 0x1000000  // 顶级页目录地址
+
 #define KINITRVM_PHYADR 0x800000
 #define KINITRVM_SZ     0x400000
 
-// 是映像文件的物理地址
+// 映像文件的物理地址
 #define LDRFILEADR  IMGFILE_PHYADR
 #define MLOSDSC_OFF (0x1000)
 
 // 映像文件头描述符的物理地址, 前0x1000个字节正好是4KB, 是GRUB头
 #define MRDDSC_ADR  (imgfhdsc_t*)(LDRFILEADR + 0x1000)
 
-#define KRNL_VIRTUAL_ADDRESS_START 0xffff8000'00000000
+#define KRNL_VIRTUAL_ADDRESS_START 0xffff800000000000
 #define KPML4_P (1 << 0)
 #define KPML4_RW (1 << 1)
 #define KPML4_US (1 << 2)
@@ -66,10 +72,10 @@
 #define KPDE_G (1 << 8)
 #define KPDE_PAT (1 << 12)
 
-#define KPLM4_SHIFT 39
+#define KPML4_SHIFT 39
 #define KPDPTTE_SHIFT 30
 #define KPDP_SHIFT 21
-#define PGENTY_SIZE 512
+#define PGENTY_SIZE 512     // 顶级页的个数
 
 // 文件头描述符
 typedef struct s_fhdsc
@@ -203,7 +209,7 @@ typedef struct s_VBEINFO
     u8_t  oem_data[256];
 }__attribute__((packed)) vbeinfo_t;
 
-typedef struct s_VBEMINFO
+typedef struct s_VBEOMINFO
 {
     u16_t ModeAttributes;
     u8_t  WinAAttributes;
@@ -250,19 +256,20 @@ typedef struct s_VBEMINFO
     u8_t  LinRsvdFieldPosition;
     u32_t MaxPixelClock;
     u8_t  Reserved3[189];
-}__attribute__((packed)) vbeminfo_t;
+}__attribute__((packed)) vbeominfo_t;
 
+// 以下为像素点的数据结构
 typedef struct s_PIXCL
 {
-    u8_t cl_b;
-    u8_t cl_g;
-    u8_t cl_r;
-    u8_t cl_a;
+    u8_t cl_b;  // 蓝
+    u8_t cl_g;  // 绿
+    u8_t cl_r;  // 红
+    u8_t cl_a;  // 透明
 }__attribute__((packed)) pixcl_t;
 
 typedef u32_t pixl_t;
-
 #define BGRA(r, g, b) ((0 | (r << 16) | (g << 8) | b))
+
 #define VBEMODE 1
 #define GPUMODE 2
 #define BGAMODE 3
@@ -291,7 +298,7 @@ typedef struct s_GRAPH
     u32_t gh_next_charsy;
     u32_t gh_line_sz;
     vbeinfo_t gh_vbeinfo;
-    vbeminfo_t gh_vbeminfo;
+    vbeominfo_t gh_vbeminfo;
 }__attribute((packed)) graph_t;
 
 typedef struct s_BMFHEAD
@@ -470,6 +477,7 @@ typedef struct s_MACHBSTART
 
 
 // 会跳转到ldrkrl32.asm中的realadr_call_entry标号
+// 功能: 在C环境中调用BIOS中断, 并根据参数选择执行对应的汇编函数
 void REGCALL realadr_call_entry(u16_t callint, u16_t val1, u16_t val2);
 
 #endif
