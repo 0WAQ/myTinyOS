@@ -172,18 +172,19 @@ typedef struct s_RWHDPACK
     u32_t rwhdpk_lh;
 }__attribute__((packed)) rwhdpack_t;
 
+// 以下宏是s_e820中的内存类型
+#define RAM_USABLE 1    // 可用内存
+#define RAM_RESERV 2    // 保留内存不可使用
+#define RAM_ACPIREC 3   // ACPI表相关   
+#define RAM_ACPINVS 4   // ACPI NVS空间
+#define RAM_AREACON 5   // 包含坏内存
 
-#define RAM_USABLE 1
-#define RAM_RESERV 2
-#define RAM_ACPIREC 3
-#define RAM_ACPINVS 4
-#define RAM_AREACON 5
-
+// 内存布局的结构体, 每一个结构体代表内存的一个段
 typedef struct s_e820
 {
-    u64_t saddr;    // start of memory segment8
-    u64_t lsize;    // size of memory segment8
-    u64_t type;     // type of memory segment4
+    u64_t saddr;    // 内存开始地址
+    u64_t lsize;    // 内存大小
+    u64_t type;     // 内存类型
 }__attribute__((packed)) e820map_t;
 
 typedef struct s_VBEINFO

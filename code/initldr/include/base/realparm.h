@@ -14,8 +14,8 @@
 #define PM16_ESP_OFF (ETYBAK_ADR + 12)
 
 #define RWHDPACK_ADR (ETYBAK_ADR + 32)
-#define E80MAP_NR (ETYBAK_ADR + 64)
-#define E80MAP_ADRADR (ETYBAK_ADR + 68)
+#define E80MAP_NR (ETYBAK_ADR + 64)         // 保存e820map_t结构体数组元素个数的地址
+#define E80MAP_ADRADR (ETYBAK_ADR + 68)     // 保存e820map_t结构体数组的首地址
 #define E80MAP_ADR (0x5000)
 #define VBEINFO_ADR (0x6000)
 #define VBEMINFO_ADR (0x6400)

@@ -7,7 +7,7 @@ void inithead_entry()
     return;
 }
 
-// 将initldrsve.bin文件写到特定的内存中
+// 将initldrsve.bin文件写到0x1000处
 void write_realintsvefile()
 {
     fhdsc_t* fhdsc_start = find_file("initldrsve.bin");

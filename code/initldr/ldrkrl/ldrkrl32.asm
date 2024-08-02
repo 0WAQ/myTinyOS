@@ -43,14 +43,19 @@ _32bits_mode:
 
 
 
-;;;
+;;;功能: 在C环境中, 调用BIOS中断
 realadr_call_entry:
+        ;保存C语言的上下文
         pushad                          ;保存通用寄存器
         push    ds                      ;
         push    es                      ;保存4个段寄存器
         push    fs                      ;
         push    gs                      ;
+        
+        ;切换回实模式调用BIOS中断, 把中断返回的结果存放在内存中
         call save_eip_jmp
+        
+        ;恢复C语言的上下文
         pop     gs                      ;
         pop     fs                      ;恢复4个段寄存器
         pop     es                      ;
@@ -60,12 +65,16 @@ realadr_call_entry:
 
 ;
 save_eip_jmp:
-        pop esi                         ;弹出调用save_eip_jmp时保存的eip到esp中
+
+        ;将在realadr_call_entry中调用save_eip_jmp时保存在栈中的eip弹出
+        pop esi ;保存在esi中, 方便在跳转到[0x0018:0x1000]之后回到realadr_call_entry
         mov [PM32_EIP_OFF], esi         ;将eip保存到特定的内存空间中
         mov [PM32_ESP_OFF], esp         ;将esp保存到特定的内存空间中
-        jmp dword far [cpmty_mode]      ;长跳转, 将cpmty_mode处的第一个4字节装入eip, 把随后的2字节装入cs
+        
+        ;跳转到[0x0018:0x1000]处执行代码, 0x18是段描述符索引
+        jmp dword far [cpmty_mode]      ;在realintsave.asm中, 在inithead.c中被放入0x1000处
 
-;
+;存放
 cpmty_mode:
         dd 0x1000
         dw 0x18
