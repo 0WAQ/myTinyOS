@@ -4,6 +4,8 @@ code/build/*
 !./code/build/pretreatment.mkf
 !./code/build/vbox.mkf
 
+code/*/*.bin
+
 lmoskrlimg/
 HelloOS/hdisk/boot/*
 HelloOS/hdisk/lost+found
