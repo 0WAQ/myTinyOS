@@ -51,21 +51,12 @@ _32bits_mode:
         jmp esi                     ;eip=esi 回到realadr_call_entry函数中
 
 [bits 16]
-
-;函数表
-func_table: 
-    dw _getmmap                 ;获取内存布局视图的函数
-    dw _read                    ;读取硬盘的函数
-    dw _getvbemode              ;获取显卡VBE模式
-    dw _getvbeonemodeinfo       ;获取显卡VBE模式的数据
-    dw _setvbemode              ;设置显卡VBE模式
-
 ;;
 DispStr:
     mov bp, ax
     mov cx, 23
     mov ax, 0x1301
-    mov bx, 000ch
+    mov bx, 0x000c
     mov dh, 10
     mov dl, 25
     mov bl, 15
@@ -245,6 +236,15 @@ disable_nmi:
     
     pop ax
     ret
+
+
+;函数表
+func_table: 
+    dw _getmmap                 ;获取内存布局视图的函数
+    dw _read                    ;读取硬盘的函数
+    dw _getvbemode              ;获取显卡VBE模式
+    dw _getvbeonemodeinfo       ;获取显卡VBE模式的数据
+    dw _setvbemode              ;设置显卡VBE模式
 
 
 ;;
