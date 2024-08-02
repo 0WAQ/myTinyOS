@@ -1,4 +1,4 @@
-#include "cmctl.h"
+#include "../include/cmctl.h"
 
 __attribute__((section(".data"))) cursor_t curs;
 

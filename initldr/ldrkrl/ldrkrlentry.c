@@ -1,4 +1,4 @@
-#include "cmctl.h"
+#include "../include/cmctl.h"
 
 void ldrkrl_entry()
 {

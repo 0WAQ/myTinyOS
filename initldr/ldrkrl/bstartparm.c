@@ -1,4 +1,4 @@
-#include "cmctl.h"
+#include "../include/cmctl.h"
 
 // 初始化machbstart_t结构体, 清0, 并设置标志
 void machbstart_t_init(machbstart_t* initp)

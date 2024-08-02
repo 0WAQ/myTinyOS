@@ -1,4 +1,4 @@
-#include "cmctl.h"
+#include "../include/cmctl.h"
 
 void write_pixcolor(machbstart_t* mbsp, u32_t x, u32_t y, pixl_t pix)
 {
