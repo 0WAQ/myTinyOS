@@ -159,7 +159,7 @@ e820map_t* chk_memsize(e820map_t* e8p, u32_t enr, u64_t sadr, u64_t size)
 
     for(u32_t i = 0; i < enr; i++) {
         if(e8p[i].type == RAM_USABLE) {
-            if(sadr >= e8p[i].saddr && len < e8p[i].saddr + e8p[i].lsize)
+            if((sadr >= e8p[i].saddr) && len < (e8p[i].saddr + e8p[i].lsize))
                 return &e8p[i];
         }
     }
@@ -227,8 +227,8 @@ void init_bstartpages(machbstart_t* mbsp)
     }
 
     // 让顶级页目录中第0项和第(...)指向同一个页目录指针
+    p[((KRNL_VIRTUAL_ADDRESS_START) >> KPML4_SHIFT) & 0x1ff] = (u64_t)((u32_t)pdpte | KPML4_RW | KPML4_P);
     p[0] = (u64_t)((u32_t)pdpte | KPML4_RW | KPML4_P);
-    p[((KRNL_VIRTUAL_ADDRESS_START) >> KPML4_SHIFT) & 0x1ff] = p[0];
 
     // 将页表首地址保存在机器信息结构中
     mbsp->mb_pml4padr = (u64_t)(KINITPAGE_PHYADR);

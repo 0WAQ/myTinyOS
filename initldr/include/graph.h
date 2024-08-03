@@ -36,10 +36,10 @@ u32_t vfartolineadr(u32_t vfar);
 
 void init_kinitfvram(machbstart_t* mbsp);
 void bga_write_reg(u16_t index, u16_t data);
-u16_t bag_read_reg(u16_t index);
+u16_t bga_read_reg(u16_t index);
 u32_t get_bgadevice();
 u32_t chk_bgamaxver();
 void init_bgadevice(machbstart_t* mbsp);
-u32_t utf8_to_unicode(utf8_t* utfp, s32_t* retulib);
+u32_t utf8_to_unicode(utf8_t* utfp, s32_t* retuib);
 
 #endif

@@ -1,13 +1,5 @@
 #include "../include/cmctl.h"
 
-// 初始化machbstart_t结构体, 清0, 并设置标志
-void machbstart_t_init(machbstart_t* initp)
-{
-    memset(initp, 0, sizeof(machbstart_t));
-    initp->mb_migc = MBS_MIGC;
-    return;
-}
-
 void init_bstartparm()
 {
     machbstart_t* mbsp = MBSPADR; // 1MB的内存地址
@@ -20,6 +12,10 @@ void init_bstartparm()
 
     // 获取内存布局
     init_mem(mbsp);
+
+    //if(get_wt_imgfilesz(mbsp) == 0) {
+    //    kerror("imgfilesz 0");
+    //}
 
     // 初始化内核栈
     init_krlinitstack(mbsp);
@@ -42,12 +38,13 @@ void init_bstartparm()
     return;
 }
 
-
-/**
- * 
- * 
- * 
- */
+// 初始化machbstart_t结构体, 清0, 并设置标志
+void machbstart_t_init(machbstart_t* initp)
+{
+    memset(initp, 0, sizeof(machbstart_t));
+    initp->mb_migc = MBS_MIGC;
+    return;
+}
 
 int adrzone_is_ok(u64_t sadr, u64_t slen, u64_t kadr, u64_t klen)
 {
@@ -55,7 +52,7 @@ int adrzone_is_ok(u64_t sadr, u64_t slen, u64_t kadr, u64_t klen)
         return -1;
     }
 
-    if(kadr <= sadr && (kadr + klen >= sadr)) {
+    if(kadr <= sadr && (kadr + klen) >= sadr) {
         return -2;
     }
 

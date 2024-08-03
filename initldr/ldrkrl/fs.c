@@ -10,7 +10,7 @@
 void init_krlfile(machbstart_t* mbsp)
 {
     // 在映像文件中查找相应的文件, 复制到对应的地址, 并返回文件大小
-    u64_t sz = r_file_to_padr(mbsp, IMGKRNL_PHYADR, "kernel.bin");
+    u64_t sz = r_file_to_padr(mbsp, IMGKRNL_PHYADR, "HelloOS.bin");
     if(sz == 0) {
         kerror("r_file_to_padr error!\n");
     }
@@ -29,7 +29,7 @@ void init_defutfont(machbstart_t* mbsp)
 {
     u32_t dfadr = (u32_t)mbsp->mb_nextwtpadr;
 
-    u64_t sz = r_file_to_padr(mbsp, dfadr, "font.bin");
+    u64_t sz = r_file_to_padr(mbsp, dfadr, "font.fnt");
     if(sz == 0) {
         kerror("r_file_to_padr error!\n");
     }
@@ -147,8 +147,9 @@ int move_krlimg(machbstart_t* mbsp, u64_t adr, u64_t sz)
     void* to_adr = (void*)((u32_t)(P4K_ALIGN(adr + sz)));
     sint_t to_sz = (sint_t)mbsp->mb_imgsz;
 
-    if(adrzone_is_ok(mbsp->mb_imgpadr, mbsp->mb_imgsz, adr, sz) != 0) {
-        if(NULL != chk_memsize((e820map_t*)((u32_t)(mbsp->mb_e820padr)), 
+    if(adrzone_is_ok(mbsp->mb_imgpadr, mbsp->mb_imgsz, adr, sz) != 0) 
+    {
+        if(NULL == chk_memsize((e820map_t*)((u32_t)(mbsp->mb_e820padr)), 
                         (u32_t)mbsp->mb_e820nr, (u64_t)((u32_t)to_adr), (u64_t)to_sz)) 
         {
             return -1;

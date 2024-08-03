@@ -4,26 +4,26 @@ MAKEFLAGS = -sR
 all: moutraw tranvdi idectrnul crtidectr moutvmhd stratvm
 
 createvm:
-	VBoxManage.exe createvm --name HelloOS -register
+	VBoxManage.exe createvm --name Cosmos -register
 
 crtidectr:
-	VBoxManage.exe storagectl HelloOS --name "IDE" --add ide --controller PIIX4
+	VBoxManage.exe storagectl Cosmos --name "IDE" --add ide --controller PIIX4
 
 idectrnul:
-	VBoxManage.exe storagectl HelloOS --name "IDE" --remove 
+	VBoxManage.exe storagectl Cosmos --name "IDE" --remove 
 
 moutvmhd:
 	VBoxManage.exe closemedium disk ../exckrnl/hd.vdi
-	VBoxManage.exe storageattach HelloOS --storagectl "IDE" --port 0 --device 0 --type hdd --medium ../exckrnl/hd.vdi
+	VBoxManage.exe storageattach Cosmos --storagectl "IDE" --port 0 --device 0 --type hdd --medium ../exckrnl/hd.vdi
 	
 stratvm:
-	VBoxManage.exe startvm HelloOS
+	VBoxManage.exe startvm Cosmos
 
 tranvdi:
 	VBoxManage.exe convertfromraw ../hd.img --format VDI ../exckrnl/hd.vdi
 
 moutraw:
 	sudo mount -o loop ../hd.img ../hdisk/
-	sudo cp ../release/HelloOS.eki ../hdisk/boot/
+	sudo cp ../release/Cosmos.eki ../hdisk/boot/
 	sudo umount ../hdisk/
 	
