@@ -6,7 +6,7 @@ CP = cp
 CD = cd
 DD = dd
 RM = rm
-LKIMG = lmoskrlimg -m k
+LKIMG = ./lmoskrlimg -m k
 VM = qemu-system-x86_64
 DBUGVM = bochs -q
 IMGTOVDI = qemu-img convert -f raw -O vdi
@@ -86,7 +86,8 @@ dbugexc:
 
 KIMG:
 	@echo '正在生成Cosmos内核映像文件，请稍后……'
-	$(CD) $(CPLILDR_PATH) && ./$(LKIMG) -lhf $(INITLDRIMH) -o Cosmos.eki -f $(LKIMG_INFILE)
+	$(CD) $(CPLILDR_PATH) && $(LKIMG) -lhf $(INITLDRIMH) -o Cosmos.eki -f $(LKIMG_INFILE)
+	@echo '======================================='
 
 KVMRUN:
 	$(VM) $(VMFLAGES)
