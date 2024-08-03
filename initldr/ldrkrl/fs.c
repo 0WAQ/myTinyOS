@@ -10,7 +10,7 @@
 void init_krlfile(machbstart_t* mbsp)
 {
     // 在映像文件中查找相应的文件, 复制到对应的地址, 并返回文件大小
-    u64_t sz = r_file_to_padr(mbsp, IMGKRNL_PHYADR, "HelloOS.bin");
+    u64_t sz = r_file_to_padr(mbsp, IMGKRNL_PHYADR, "Cosmos.bin");
     if(sz == 0) {
         kerror("r_file_to_padr error!\n");
     }
