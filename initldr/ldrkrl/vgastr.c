@@ -112,6 +112,15 @@ void GxH_strwrite(char_t* str, cursor_t* cursptr)
     }
 }
 
+void init_curs()
+{
+    curs.vmem_s = VGASTR_RAM_BASE;
+    curs.vmem_e = VGASTR_RAM_END;
+    curs.cvmem_adr = 0;
+    curs.x = 0;
+    curs.y = 0;
+}
+
 void clear_screen(u16_t srrv)
 {
     curs.x = 0;

@@ -2,6 +2,11 @@
 
 void inithead_entry()
 {
+    // 初始化光标和屏幕
+    init_curs();
+    close_curs();
+    clear_screen(VGADP_DFVL);
+
     write_realintsvefile();
     write_ldrkrlfile();
     return;
@@ -16,7 +21,6 @@ void write_realintsvefile()
     }
     m2mcopy((void*)((u32_t)(fhdsc_start->fhd_intsf_s) + LDRFILEADR), 
            (void*)REALDRV_PHYADR, (sint_t)fhdsc_start->fhd_freal_sz);
-    return;
 }
 
 // 将initldrkrl.bin写到特定的内存中
@@ -30,7 +34,6 @@ void write_ldrkrlfile()
     // 将该文件放到0x200000处, 之后再汇编中跳转到该位置, 就进入了二级引导器(即ldrkrl32.asm)
     m2mcopy((void*)((u32_t)(fhdsc_start->fhd_intsf_s) + LDRFILEADR), 
            (void*)ILDRKRL_PHYADR, (sint_t)fhdsc_start->fhd_freal_sz);
-    return;
 }
 
 // 在映像文件中查找对应的文件

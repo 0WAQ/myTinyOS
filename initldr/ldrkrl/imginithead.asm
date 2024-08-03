@@ -15,16 +15,12 @@ global _start                   ;声明一个全局符号, 可以被链接器和
 extern inithead_entry           ;声明一个外部符号, 需要在其它地方定义
 
 
-
 ;;; 代码段与起始点
 [section .text]                 ;声明代码段为.text段, 通常包含可执行代码
 [bits 32]                       ;声明代码使用32位指令集
 
-
 _start:                         ;_start入口点
         jmp _entry                  ;跳转到_entry
-
-
 
 ;;; GRUB1  
 align 4     ;接下来的数据对齐到4字节边界
