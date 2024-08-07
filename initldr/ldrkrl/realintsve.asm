@@ -25,7 +25,7 @@ real_entry:
         mov ds, bp
         mov es, bp
         mov ss, bp                  ;重新设置实模式下的段寄存器, 都是CS中的值, 为0
-        mov sp, 0x08000             ;设置栈指针寄存器
+        mov sp, 0x8000              ;设置栈指针寄存器
         
         mov bp, func_table          ;函数表
         add bp, ax                  ;根据ax的值选择函数表中的哪一个函数
@@ -182,7 +182,7 @@ _getvbeonemodeinfo:
     push di
     push cx
 
-    mov di, VBEINFO_ADR
+    mov di, VBEMINFO_ADR
     mov ax, 0
     mov es, ax
     mov cx, 0x118

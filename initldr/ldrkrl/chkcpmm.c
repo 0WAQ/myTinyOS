@@ -17,7 +17,7 @@ void init_chkcpu(machbstart_t *mbsp)
     }
 
     // 检查CPU是否支持长模式
-    if (!chk_cpu_longmode())    // FIXME: 无法通过检查
+    if (!chk_cpu_longmode())
     {
         kerror("Your CPU is not support 64bits mode sys is die!");
         CLI_HALT();
@@ -157,9 +157,11 @@ e820map_t* chk_memsize(e820map_t* e8p, u32_t enr, u64_t sadr, u64_t size)
     }
 
     u64_t len = sadr + size;
-    for(u32_t i = 0; i < enr; i++) {
-        if(e8p[i].type == RAM_USABLE) {
-            if((sadr >= e8p[i].saddr) && (len < (e8p[i].saddr + e8p[i].lsize)))
+    for(u32_t i = 0; i < enr; i++) 
+    {
+        if(e8p[i].type == RAM_USABLE) 
+        {
+            if(sadr >= e8p[i].saddr && len < (e8p[i].saddr + e8p[i].lsize))
                 return &e8p[i];
         }
     }

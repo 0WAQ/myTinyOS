@@ -11,7 +11,7 @@ _start:
 _entry:
         cli
         lgdt [GDT_PTR]                  ;加载GDT地址到GDTR寄存器
-        lidt [LDT_PTR]                  ;假造LDT地址到LDTR寄存器
+        lidt [IDT_PTR]                  ;假造LDT地址到LDTR寄存器
         jmp dword 0x8 :_32bits_mode     ;长跳转影子寄存器
 
 
@@ -97,6 +97,6 @@ GDTLEN  dw GDT_END - GDT_START - 1  ;GDT界限
 GDTBASE dd GDT_START
 
 
-LDT_PTR:
+IDT_PTR:
 IDTLEN dw 0x3ff
 IDTBAS dd 0                         ;BIOS中断表的地址和长度
