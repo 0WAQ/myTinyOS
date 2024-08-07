@@ -65,15 +65,15 @@ mbhdrend:
 ;;;入口点与保护模式初始化
 ;;关中断并加载GDT
 _entry:
-        cli                         ;禁止中断
+        cli                             ;关中断
 
-        ;; 设置RTC寄存器   
+        ;设置RTC寄存器
         in al, 0x70
         or al, 0x80
-        out 0x70, al                ;关闭不可屏蔽中断
+        out 0x70, al                    ;关闭不可屏蔽中断
 
-        lgdt [GDT_PTR]              ;加载GDT地址到GDTR寄存器
-        jmp dword 0x8 :_32bits_mode ;长跳转刷新CS影子寄存器
+        lgdt [GDT_PTR]                  ;加载GDT地址到GDTR寄存器
+        jmp dword 0x8 :_32bits_mode     ;长跳转刷新CS描述符告诉缓存器
 
 
 ;; 初始化 段寄存器, 通用寄存器, 栈寄存器, 为了调用inithead_entry这个C函数做准备
@@ -95,7 +95,7 @@ _32bits_mode:
         xor ebp, ebp
         xor esp, esp
     
-        mov esp, 0x7c00             ;设置堆栈指针, BIOS引导扇区加载到内存的0x7c00
+        mov esp, 0x7c00             ;设置栈顶为0x7c00, 主引导程序记载道0x7c00, 那么0x7c00往下设置为栈段
         call inithead_entry         ;调用外部函数, 去初始化内核
         jmp 0x200000                ;跳转到地址, 开始执行内核代码(initldrkrl.bin文件)
 
