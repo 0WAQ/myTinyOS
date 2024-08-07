@@ -94,9 +94,9 @@ void init_mem(machbstart_t* mbsp)
         kerror("no e820map\n");
     }
 
-    //根据结构体检查内存大小
+    //根据结构体检查内存大小 FIXME:
     if(chk_memsize(arr, n, 0x100000, 0x8000000) == NULL) {
-        kerror("Your computer is low on memory, the memory cannot be less than 1MB!\n");
+        kerror("Your computer is low on memory, the memory cannot be less than 128MB!");
     }
 
     //检查成功, 将相关信息传递给机器信息结构
@@ -152,14 +152,14 @@ u64_t get_memsize(e820map_t* e8p, u32_t enr)
 
 e820map_t* chk_memsize(e820map_t* e8p, u32_t enr, u64_t sadr, u64_t size)
 {
-    u64_t len = sadr + size;
     if(enr == 0 || e8p == NULL) {
         return NULL;
     }
 
+    u64_t len = sadr + size;
     for(u32_t i = 0; i < enr; i++) {
         if(e8p[i].type == RAM_USABLE) {
-            if((sadr >= e8p[i].saddr) && len < (e8p[i].saddr + e8p[i].lsize))
+            if((sadr >= e8p[i].saddr) && (len < (e8p[i].saddr + e8p[i].lsize)))
                 return &e8p[i];
         }
     }
