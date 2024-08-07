@@ -17,7 +17,7 @@ void init_chkcpu(machbstart_t *mbsp)
     }
 
     // 检查CPU是否支持长模式
-    if (!chk_cpu_longmode())
+    if (!chk_cpu_longmode())    // FIXME: 无法通过检查
     {
         kerror("Your CPU is not support 64bits mode sys is die!");
         CLI_HALT();
