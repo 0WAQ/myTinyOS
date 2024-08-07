@@ -53,7 +53,7 @@ mbhdr:
         dd _start                   ;.text段的开始指针
         dd 0
         dd 0
-        dd 3, 0                     ;OS的类型(3: 兼容32和64位)
+        dw 3, 0                     ;OS的类型(3: 兼容32和64位)
         dd 12
         dd _entry                   ;
         dd 0
