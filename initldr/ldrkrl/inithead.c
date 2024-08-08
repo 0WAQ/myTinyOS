@@ -48,7 +48,7 @@ fhdsc_t* find_file(char_t* fname)
        mrddadrs->mdc_fhdnr < 2 || 
        mrddadrs->mdc_filnr < 2)
     {
-        error("no mrddsc");
+        error("no mrddsc in find_file()");
     }
     
     // 从 映像文件头描述符 中找出 文件头描述符 数组的首地址
@@ -68,8 +68,8 @@ fhdsc_t* find_file(char_t* fname)
 
 void error(char_t* msg)
 {
-    kprint("init loader die ERROR:%s\n", msg);
-    do { } while(0);
+    kprint("INITLDR DIE ERROR:%s\n", msg);
+    for(;;);
     return;
 }
 
