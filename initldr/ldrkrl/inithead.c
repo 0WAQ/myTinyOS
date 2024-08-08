@@ -19,11 +19,12 @@ void write_realintsvefile()
     if(fhdsc_start == NULL) {
         error("not file initldrsve.bin");
     }
+
     m2mcopy((void*)((u32_t)(fhdsc_start->fhd_intsf_s) + LDRFILEADR), 
            (void*)REALDRV_PHYADR, (sint_t)fhdsc_start->fhd_freal_sz);
 }
 
-// 将initldrkrl.bin写到特定的内存中
+// 将initldrkrl.bin文件写到0x200000处
 void write_ldrkrlfile()
 {
     fhdsc_t* fhdsc_start = find_file("initldrkrl.bin");

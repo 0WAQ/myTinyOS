@@ -73,7 +73,6 @@ KLINE void current_curs(cursor_t* cp, u32_t c_flg)
             }
         }
     }
-    return;
 }
 
 #endif
