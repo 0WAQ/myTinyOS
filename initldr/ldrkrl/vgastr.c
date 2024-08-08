@@ -84,6 +84,12 @@ char* numberk(char_t* str, uint_t n, sint_t base)
     return str;
 }
 
+void set_curs(u32_t x, u32_t y)
+{
+    curs.x = x;
+    curs.y = y;
+}
+
 void GxH_strwrite(char_t* str, cursor_t* cursptr)
 {
     uint_t straddr = cursptr->x + cursptr->y * 80 * 2;
@@ -114,23 +120,30 @@ void GxH_strwrite(char_t* str, cursor_t* cursptr)
 
 void init_curs()
 {
+    // 光标位置的范围
     curs.vmem_s = VGASTR_RAM_BASE;
     curs.vmem_e = VGASTR_RAM_END;
-    curs.cvmem_adr = 0;
+    curs.cvmem_adr = 0; // 偏移地址
+
+    // 光标的坐标
     curs.x = 0;
     curs.y = 0;
 }
 
 void clear_screen(u16_t srrv)
 {
+    // 重新设置光标的位置
     curs.x = 0;
     curs.y = 0;
 
+    // 显存的起始位置
     u16_t* p = (u16_t*)VGASTR_RAM_BASE;
 
+    // 显存总共2001个字符, 全部清空
     for(size_t i = 0; i < 2001; i++)
         p[i] = srrv;
 
+    // 关闭光标
     close_curs();
 }
 
