@@ -52,23 +52,19 @@ void init_defutfont(machbstart_t* mbsp)
 
 u64_t get_wt_imgfilesz(machbstart_t* mbsp)
 {
-    u64_t retsz = LDRFILEADR;
+    u64_t retsz = 0;
     imgfhdsc_t* mrddadrs = MRDDSC_ADR;
 
     if (mrddadrs->mdc_endgic  != MDC_ENDGIC ||
         mrddadrs->mdc_version != MDC_RVGIC ||
         mrddadrs->mdc_fhdnr < 2 ||
-        mrddadrs->mdc_filnr < 2)
+        mrddadrs->mdc_filnr < 2 ||
+        mrddadrs->mdc_filbk_e < 0x4000)
     {
         return 0;
     }
 
-    if(mrddadrs->mdc_filbk_e < 0x4000) {
-        return 0;
-    }
-
     retsz += mrddadrs->mdc_filbk_e;
-    retsz -= LDRFILEADR;
     mbsp->mb_imgpadr = LDRFILEADR;
     mbsp->mb_imgsz = retsz;
     return retsz;
