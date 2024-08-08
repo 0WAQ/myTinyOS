@@ -94,7 +94,7 @@ void init_mem(machbstart_t* mbsp)
         kerror("no e820map\n");
     }
 
-    //根据结构体检查内存大小 FIXME:
+    //根据结构体检查内存大小
     if(chk_memsize(arr, n, 0x100000, 0x8000000) == NULL) {
         kerror("Your computer is low on memory, the memory cannot be less than 128MB!");
     }

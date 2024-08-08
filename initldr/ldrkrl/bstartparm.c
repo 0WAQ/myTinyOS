@@ -13,9 +13,10 @@ void init_bstartparm()
     // 获取内存布局
     init_mem(mbsp);
 
-    //if(get_wt_imgfilesz(mbsp) == 0) {
-    //    kerror("imgfilesz 0");
-    //}
+    // FIXME: ERROR
+    if(get_wt_imgfilesz(mbsp) == 0) {
+        kerror("imgfilesz 0");
+    }
 
     // 初始化内核栈
     init_krlinitstack(mbsp);

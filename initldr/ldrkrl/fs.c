@@ -50,10 +50,34 @@ void init_defutfont(machbstart_t* mbsp)
  * 
  */
 
+u64_t get_wt_imgfilesz(machbstart_t* mbsp)
+{
+    u64_t retsz = LDRFILEADR;
+    imgfhdsc_t* mrddadrs = MRDDSC_ADR;
+
+    if (mrddadrs->mdc_endgic  != MDC_ENDGIC ||
+        mrddadrs->mdc_version != MDC_RVGIC ||
+        mrddadrs->mdc_fhdnr < 2 ||
+        mrddadrs->mdc_filnr < 2)
+    {
+        return 0;
+    }
+
+    if(mrddadrs->mdc_filbk_e < 0x4000) {
+        return 0;
+    }
+
+    retsz += mrddadrs->mdc_filbk_e;
+    retsz -= LDRFILEADR;
+    mbsp->mb_imgpadr = LDRFILEADR;
+    mbsp->mb_imgsz = retsz;
+    return retsz;
+}
+
 fhdsc_t *get_fileinfo(char_t *fname, machbstart_t *mbsp)
 {
     imgfhdsc_t *mrddadrs = (imgfhdsc_t*)((u32_t)(mbsp->mb_imgpadr + MLOSDSC_OFF));
-    if (mrddadrs->mdc_endgic != MDC_ENDGIC ||
+    if (mrddadrs->mdc_endgic  != MDC_ENDGIC ||
         mrddadrs->mdc_version != MDC_RVGIC ||
         mrddadrs->mdc_fhdnr < 2 ||
         mrddadrs->mdc_filnr < 2)
@@ -61,23 +85,14 @@ fhdsc_t *get_fileinfo(char_t *fname, machbstart_t *mbsp)
         kerror("no mrddsc");
     }
 
-    s64_t rethn = -1;
-    fhdsc_t *fhdscstart = (fhdsc_t *)((u32_t)(mrddadrs->mdc_fhdbk_s) + ((u32_t)(mbsp->mb_imgpadr)));
+    fhdsc_t *fhdsc_start = (fhdsc_t *)((u32_t)(mrddadrs->mdc_fhdbk_s) + ((u32_t)(mbsp->mb_imgpadr)));
 
     for (u64_t i = 0; i < mrddadrs->mdc_fhdnr; i++)
-    {
-        if (strcmpl(fname, fhdscstart[i].fhd_name) == 0)
-        {
-            rethn = (s64_t)i;
-            goto ok_l;
-        }
-    }
-    rethn = -1;
-ok_l:
-    if (rethn < 0) {
-        kerror("not find file");
-    }
-    return &fhdscstart[rethn];
+        if (strcmpl(fname, fhdsc_start[i].fhd_name) == 0)
+            return &fhdsc_start[i];
+
+    kerror("not find file in get_fileinfo()");
+    return NULL;
 }
 
 u64_t r_file_to_padr(machbstart_t* mbsp, u32_t f2adr, char_t* fnm)
