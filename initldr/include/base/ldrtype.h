@@ -190,7 +190,7 @@ typedef struct s_e820
 {
     u64_t saddr;    // 内存开始地址
     u64_t lsize;    // 内存大小
-    u64_t type;     // 内存类型
+    u32_t type;     // 内存类型
 }__attribute__((packed)) e820map_t;
 
 typedef struct s_VBEINFO
