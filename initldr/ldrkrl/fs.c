@@ -93,52 +93,58 @@ fhdsc_t *get_fileinfo(char_t *fname, machbstart_t *mbsp)
 
 u64_t r_file_to_padr(machbstart_t* mbsp, u32_t f2adr, char_t* fnm)
 {
+    // 判空
     if(f2adr == NULL || fnm == NULL || mbsp == NULL) {
         return 0;
     }
 
     u32_t fpadr = 0, sz = 0;
+
+    // 获取文件的地址和大小
     get_file_rpadrandsz(fnm, mbsp, &fpadr, &sz);
-    if (fpadr == 0 || sz == 0) {
-        return 0;
-    }
 
+    // 校验
+    if (fpadr == 0 || sz == 0) return 0;
+
+    kerror("123");
+
+    //FIXME: ERROR
+    // 检查内存
     if (NULL == chk_memsize((e820map_t *)((u32_t)mbsp->mb_e820padr), 
-                            (u32_t)(mbsp->mb_e820nr), f2adr, sz))
-    {
+                            (u32_t)(mbsp->mb_e820nr), f2adr, sz) || 
+                            chkadr_is_ok(mbsp, f2adr, sz) != 0){
         return 0;
     }
 
 
-    if (chkadr_is_ok(mbsp, f2adr, sz) != 0) {
-        return 0;
-    }
-
+    // 将文件放到指定内存
     m2mcopy((void *)fpadr, (void *)f2adr, (sint_t)sz);
     return sz;
 }
 
 void get_file_rpadrandsz(char_t* fname, machbstart_t* mbsp, u32_t* retadr, u32_t* retsz)
 {
-    u64_t padr = 0, fsz = 0;
+    // 判空
     if (fname == NULL || mbsp == NULL) {
         *retadr = 0;
         return;
     }
 
+    // 获取文件描述结构体
     fhdsc_t *fhdsc = get_fileinfo(fname, mbsp);
     if (fhdsc == NULL) {
         *retadr = 0;
         return;
     }
 
-    padr = fhdsc->fhd_intsf_s + mbsp->mb_imgpadr;
+    // 结果
+    u64_t padr = (u32_t)(fhdsc->fhd_intsf_s + mbsp->mb_imgpadr);
     if (padr > 0xffffffff) {
         *retadr = 0;
         return;
     }
 
-    fsz = (u32_t)fhdsc->fhd_freal_sz;
+    u64_t fsz = (u32_t)fhdsc->fhd_freal_sz;
     if (fsz > 0xffffffff) {
         *retadr = 0;
         return;

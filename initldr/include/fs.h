@@ -22,20 +22,25 @@ int move_krlimg(machbstart_t* mbsp, u64_t adr, u64_t sz);
 void init_krlfile(machbstart_t* mbsp);
 void init_defutfont(machbstart_t* mbsp);
 
-/// @brief 
-/// @param fname 
-/// @param mbsp 
-/// @return 
+/// @brief 获取文件描述结构体
+/// @param fname 文件名
+/// @param mbsp 机器信息结构
 fhdsc_t* get_fileinfo(char_t* fname, machbstart_t* mbsp);
 
-/// @brief 
-/// @param fname 
-/// @param mbsp 
-/// @param retadr 
-/// @param retsz 
+/// @brief 获取文件真实物理地址和大小
+/// @param fname 文件名
+/// @param mbsp 机器信息结构
+/// @param retadr 文件地址
+/// @param retsz 文件大小
 void get_file_rpadrandsz(char_t* fname, machbstart_t* mbsp, u32_t* retadr, u32_t* retsz);
 
+/// @brief 获取文件大小
+/// @param filenm 文件名
+/// @param mbsp 机器信息结构
 u64_t get_filesz(char_t* filenm, machbstart_t* mbsp);
+
+/// @brief 获取映像文件大小
+/// @param mbsp 机器信息结构
 u64_t get_wt_imgfilesz(machbstart_t* mbsp);
 
 /// @brief 从映像文件中找出对应的文件, 将其放入特定的内存中
