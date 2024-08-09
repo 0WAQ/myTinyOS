@@ -66,7 +66,6 @@ int chkadr_is_ok(machbstart_t *mbsp, u64_t chkadr, u64_t cksz)
     //u64_t len=chkadr+cksz;
     if (adrzone_is_ok((mbsp->mb_krlinitstack - mbsp->mb_krlitstacksz), mbsp->mb_krlitstacksz, chkadr, cksz) != 0)
         return -1;
-    
     if (adrzone_is_ok(mbsp->mb_imgpadr, mbsp->mb_imgsz, chkadr, cksz) != 0)
         return -2;
 

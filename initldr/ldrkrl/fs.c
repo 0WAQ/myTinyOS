@@ -52,7 +52,7 @@ void init_defutfont(machbstart_t* mbsp)
 
 u64_t get_wt_imgfilesz(machbstart_t* mbsp)
 {
-    u64_t retsz = 0;
+    u64_t retsz = LDRFILEADR;
     imgfhdsc_t* mrddadrs = MRDDSC_ADR;
 
     if (mrddadrs->mdc_endgic  != MDC_ENDGIC ||
@@ -65,6 +65,7 @@ u64_t get_wt_imgfilesz(machbstart_t* mbsp)
     }
 
     retsz += mrddadrs->mdc_filbk_e;
+    retsz -= LDRFILEADR;
     mbsp->mb_imgpadr = LDRFILEADR;
     mbsp->mb_imgsz = retsz;
     return retsz;
@@ -106,16 +107,21 @@ u64_t r_file_to_padr(machbstart_t* mbsp, u32_t f2adr, char_t* fnm)
     // 校验
     if (fpadr == 0 || sz == 0) return 0;
 
-    kerror("123");
-
-    //FIXME: ERROR
     // 检查内存
     if (NULL == chk_memsize((e820map_t *)((u32_t)mbsp->mb_e820padr), 
-                            (u32_t)(mbsp->mb_e820nr), f2adr, sz) || 
-                            chkadr_is_ok(mbsp, f2adr, sz) != 0){
+                            (u32_t)(mbsp->mb_e820nr), f2adr, sz)) {
+        return 0;   
+    }
+
+    kprint("123");
+    set_curs(0, 1);
+
+    //FIXME: ERROR
+    if(chkadr_is_ok(mbsp, f2adr, sz) != 0) {
         return 0;
     }
 
+    kerror("123");
 
     // 将文件放到指定内存
     m2mcopy((void *)fpadr, (void *)f2adr, (sint_t)sz);
@@ -138,6 +144,7 @@ void get_file_rpadrandsz(char_t* fname, machbstart_t* mbsp, u32_t* retadr, u32_t
     }
 
     // 结果
+    // TODO: 第一处
     u64_t padr = (u32_t)(fhdsc->fhd_intsf_s + mbsp->mb_imgpadr);
     if (padr > 0xffffffff) {
         *retadr = 0;
