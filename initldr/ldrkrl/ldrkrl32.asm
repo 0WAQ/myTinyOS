@@ -7,6 +7,8 @@ extern ldrkrl_entry
 
 [section .text]
 [bits 32]
+
+;; 该物理地址就是0x200000, 在imginithead.asm中被调用(执行完inithead_entry后)
 _start:
 _entry:
         cli
