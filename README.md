@@ -23,30 +23,16 @@ include/
 | |--cosmosmctrl.h
 | |--cosmostypes.h
 |
-initldr/
-|
+initldr/    # 二级引导器，用于解析内核文件和收集机器环境信息
 |
 |
 release/
-|
-|
-|
 script/
 |
 |
-|
 |--.gitignore
-|
-|
-|
 |--Makefile
-|
-|
-|
 |--Makefile.x86
-|
-|
-|
 |--README.md
 ```
 
