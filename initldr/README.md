@@ -1,9 +1,17 @@
 ### 目录结构
 
 ```bash
-initldr/
+initldr/    # 二级引导器目录
 |
 |--build/
+| |--initldr.mk
+| |--initldrimh.lds
+| |--initldrkrl.lds
+| |--initldrsve.lds
+| |--krnlbuidcmd.mh
+| |--krnlbuidrule.mh
+| |--ldrlink.mk
+| |--ldrobjs.mh
 |
 |--include/
 | |

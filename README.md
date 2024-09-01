@@ -1,3 +1,55 @@
+### 目录结构
+```bash
+build/
+|
+|
+|
+exckrnl/
+| |--.keep
+|
+hal/
+| |--x86/
+| | |--hal_start.c
+| | |--init_entry.asm
+|
+hdisk/
+| |--.keep
+|
+include/
+| |--bastypeinc/
+| |--halinc/
+| |--script/
+| |--config.h
+| |--cosmosmctrl.h
+| |--cosmostypes.h
+|
+initldr/
+|
+|
+|
+release/
+|
+|
+|
+script/
+|
+|
+|
+|--.gitignore
+|
+|
+|
+|--Makefile
+|
+|
+|
+|--Makefile.x86
+|
+|
+|
+|--README.md
+```
+
 ### 手工生产硬盘
 
 #### 生产虚拟硬盘
