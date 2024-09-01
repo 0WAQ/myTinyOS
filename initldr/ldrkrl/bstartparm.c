@@ -21,7 +21,6 @@ void init_bstartparm()
     // 初始化内核栈
     init_krlinitstack(mbsp);
 
-    // FIXME: ERROR
     // 放置内核文件
     init_krlfile(mbsp);
 

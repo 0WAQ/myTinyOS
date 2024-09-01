@@ -113,7 +113,6 @@ u64_t r_file_to_padr(machbstart_t* mbsp, u32_t f2adr, char_t* fnm)
         return 0;   
     }
 
-    //FIXME: ERROR
     if(chkadr_is_ok(mbsp, f2adr, sz) != 0) {
         return 0;
     }
@@ -139,7 +138,6 @@ void get_file_rpadrandsz(char_t* fname, machbstart_t* mbsp, u32_t* retadr, u32_t
     }
 
     // 结果
-    // TODO: 第一处
     u64_t padr = (u32_t)(fhdsc->fhd_intsf_s + mbsp->mb_imgpadr);
     if (padr > 0xffffffff) {
         *retadr = 0;
