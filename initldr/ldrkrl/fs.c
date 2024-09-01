@@ -113,15 +113,10 @@ u64_t r_file_to_padr(machbstart_t* mbsp, u32_t f2adr, char_t* fnm)
         return 0;   
     }
 
-    kprint("123");
-    set_curs(0, 1);
-
     //FIXME: ERROR
     if(chkadr_is_ok(mbsp, f2adr, sz) != 0) {
         return 0;
     }
-
-    kerror("123");
 
     // 将文件放到指定内存
     m2mcopy((void *)fpadr, (void *)f2adr, (sint_t)sz);

@@ -4,23 +4,23 @@ MAKEFLAGS = -sR
 all: moutraw tranvdi idectrnul crtidectr moutvmhd stratvm
 
 createvm:
-	VBoxManage.exe createvm --name Cosmos -register
+	VBoxManage createvm --name Cosmos -register
 
 crtidectr:
-	VBoxManage.exe storagectl Cosmos --name "IDE" --add ide --controller PIIX4
+	VBoxManage storagectl Cosmos --name "IDE" --add ide --controller PIIX4
 
 idectrnul:
-	VBoxManage.exe storagectl Cosmos --name "IDE" --remove 
+	VBoxManage storagectl Cosmos --name "IDE" --remove 
 
 moutvmhd:
-	VBoxManage.exe closemedium disk ../exckrnl/hd.vdi
-	VBoxManage.exe storageattach Cosmos --storagectl "IDE" --port 0 --device 0 --type hdd --medium ../exckrnl/hd.vdi
+	VBoxManage closemedium disk ../exckrnl/hd.vdi
+	VBoxManage storageattach Cosmos --storagectl "IDE" --port 0 --device 0 --type hdd --medium ../exckrnl/hd.vdi
 	
 stratvm:
-	VBoxManage.exe startvm Cosmos
+	VBoxManage startvm Cosmos
 
 tranvdi:
-	VBoxManage.exe convertfromraw ../hd.img --format VDI ../exckrnl/hd.vdi
+	VBoxManage convertfromraw ../hd.img --format VDI ../exckrnl/hd.vdi
 
 moutraw:
 	sudo mount -o loop ../hd.img ../hdisk/
