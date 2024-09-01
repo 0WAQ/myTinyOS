@@ -60,4 +60,4 @@ void ldr_createpage_and_open();
 
 #define CLI_HALT() __asm__ __volatile__("cli; hlt": : :"memory");
 
-#endif
+#endif  // _CHKCPMM_H

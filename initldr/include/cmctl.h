@@ -18,4 +18,4 @@
 #include "bstartparm.h"
 
 
-#endif
+#endif  // _CMCTL_H

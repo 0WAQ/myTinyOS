@@ -18,4 +18,4 @@ void write_ldrkrlfile();
 void error(char_t* estr);
 int strcmpl(const char* a, const char* b);
 
-#endif
+#endif  // _INITHEAD_H

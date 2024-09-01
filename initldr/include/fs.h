@@ -56,4 +56,4 @@ void ret_mbr();
 int is_part(dpt_t* isp);
 u64_t ret_imgfilesz();
 
-#endif
+#endif  // _FS_H

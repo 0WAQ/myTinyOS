@@ -13,4 +13,4 @@ void ldrkrl_entry();
 void kerror(char_t* kestr);
 void die(u32_t dt);
 
-#endif
+#endif  // _LDRKRLENTRY_H

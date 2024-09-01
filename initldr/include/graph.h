@@ -42,4 +42,4 @@ u32_t chk_bgamaxver();
 void init_bgadevice(machbstart_t* mbsp);
 u32_t utf8_to_unicode(utf8_t* utfp, s32_t* retuib);
 
-#endif
+#endif  // _GRAPH_H

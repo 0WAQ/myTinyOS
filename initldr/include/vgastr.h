@@ -75,4 +75,4 @@ KLINE void current_curs(cursor_t* cp, u32_t c_flg)
     }
 }
 
-#endif
+#endif  // _VGASTR_H
