@@ -2,4 +2,4 @@
 #define _IMGMGRHEAD_H
 
 
-#endif
+#endif  // _IMGMGRHEAD_H

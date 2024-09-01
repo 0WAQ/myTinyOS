@@ -44,4 +44,4 @@
 
 typedef unsigned long long pt64_t;
 
-#endif
+#endif  // _CHKCPMM_T_H

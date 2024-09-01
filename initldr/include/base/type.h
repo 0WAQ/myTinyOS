@@ -82,4 +82,4 @@ typedef char_t* va_list_t;
 #define ALIGN(x, a)     (((x) + (a) - 1) & ~((a) - 1))
 #define P4K_ALIGN(x) ALIGN(x, 0x1000)
 
-#endif
+#endif  // _TYPE_H

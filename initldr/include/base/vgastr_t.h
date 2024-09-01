@@ -32,4 +32,4 @@ typedef struct s_CURSOR
     uint_t y;
 }cursor_t;
 
-#endif
+#endif  // _VGASTR_T_H

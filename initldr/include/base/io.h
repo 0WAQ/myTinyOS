@@ -100,4 +100,4 @@ KLINE sint_t m2mcopy(void* src, void* dest, sint_t len)
     return len;    
 }
 
-#endif
+#endif  // _IO_H

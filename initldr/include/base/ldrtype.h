@@ -480,4 +480,4 @@ typedef struct s_MACHBSTART
 // 功能: 在C环境中调用BIOS中断, 并根据参数选择执行对应的汇编函数
 void REGCALL realadr_call_entry(u16_t callint, u16_t val1, u16_t val2);
 
-#endif
+#endif  // _LDRTYPE_H
