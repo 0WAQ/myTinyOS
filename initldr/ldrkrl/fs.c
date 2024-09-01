@@ -138,13 +138,13 @@ void get_file_rpadrandsz(char_t* fname, machbstart_t* mbsp, u32_t* retadr, u32_t
     }
 
     // 结果
-    u64_t padr = (u32_t)(fhdsc->fhd_intsf_s + mbsp->mb_imgpadr);
+    u64_t padr = fhdsc->fhd_intsf_s + mbsp->mb_imgpadr;
     if (padr > 0xffffffff) {
         *retadr = 0;
         return;
     }
 
-    u64_t fsz = (u32_t)fhdsc->fhd_freal_sz;
+    u64_t fsz = fhdsc->fhd_freal_sz;
     if (fsz > 0xffffffff) {
         *retadr = 0;
         return;

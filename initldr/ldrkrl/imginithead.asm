@@ -62,7 +62,7 @@ mbhdr:
 mbhdrend:
 
 
-;;;入口点与保护模式初始化
+;;;入口点与保护模式初始化, 在grub已经开启了CR0的PE位
 ;;关中断并加载GDT
 _entry:
         cli                             ;关中断

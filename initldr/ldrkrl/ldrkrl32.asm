@@ -45,7 +45,7 @@ _32bits_mode:
 
 
 
-;;;功能: 在C环境中, 调用BIOS中断
+;;;功能: 在C环境下(32位), 切换到16位, 调用BIOS中断
 realadr_call_entry:
         ;保存C语言的上下文
         pushad                          ;保存通用寄存器
