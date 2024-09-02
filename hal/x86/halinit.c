@@ -8,10 +8,13 @@
 
 void init_hal()
 {
-
-    init_halplaltform();
+    // 初始化平台
+    init_halplatform();
+    
+    // 初始化内存
     move_img2maxpadr(&kmachbsp);
     init_halmm();
+    
+    // 初始化中断
     init_halintupt();
-    return;
 }
