@@ -5,7 +5,7 @@
 #define _COSMOSTYPES_H
 
 #include "config.h"
-#include "bastypeinc/bastype.h"
-#include "halinc/haltypes.h"
-
+#include "bastype.h"
+#include "haltypes.h"
+#include "krltypes.h"
 #endif

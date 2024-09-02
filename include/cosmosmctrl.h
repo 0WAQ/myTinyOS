@@ -5,6 +5,7 @@
 #define _COSMOSMCTRL_H
 
 #include "config.h"
-#include "halinc/halheads.h"
+#include "halheads.h"
+#include "krlheads.h"
 
 #endif

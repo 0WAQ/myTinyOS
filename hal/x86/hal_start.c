@@ -2,14 +2,12 @@
         开始入口文件hal_start.c
 **********************************************************/
 
-#include "../../include/cosmostypes.h"
-#include "../../include/cosmosmctrl.h"
+#include "cosmostypes.h"
+#include "cosmosmctrl.h"
 
 void hal_start()
 {
-    for(;;);
-
-    kprint("123123\n");
-
+    init_hal();
+    init_krl();
     return;
 }
