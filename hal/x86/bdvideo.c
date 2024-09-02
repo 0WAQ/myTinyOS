@@ -8,6 +8,55 @@ const char *cosmos_version = "Cosmos\n内核版本:114514\nbwb @ 构建于 "__DA
                            " "__TIME__
                            "\n";
 
+pixl_t set_deffontpx(pixl_t setpx)
+{
+    dftgraph_t *kghp = &kdftgh;
+    pixl_t bkpx = kghp->gh_deffontpx;
+    kghp->gh_deffontpx = setpx;
+    return bkpx;
+}
+
+void hal_dspversion()
+{
+    pixl_t bkpx = set_deffontpx(BGRA(0xff, 0, 0));
+    kprint(cosmos_version);
+    kprint("系统处理器工作模式:%d位 系统物理内存大小:%dMB\n", (uint_t)kmachbsp.mb_cpumode, (uint_t)(kmachbsp.mb_memsz >> 20));
+    set_deffontpx(bkpx);
+}
+
+void set_charsdxwflush(u64_t chardxw, u64_t flush)
+{
+    kdftgh.gh_chardxw = chardxw;
+    kdftgh.gh_flush = flush;
+}
+
+void hal_background()
+{
+    dftgraph_t *kghp = &kdftgh;
+    machbstart_t *kmbsp = &kmachbsp;
+    u64_t fadr = 0, fsz = 0;
+    get_file_rvadrandsz("background.bmp", kmbsp, &fadr, &fsz);
+    if (0 == fadr || 0 == fsz) {
+        system_error("lmosbkgderr");
+    }
+    bmdbgr_t *bmdp;
+    u64_t img = fadr + sizeof(bmfhead_t) + sizeof(bitminfo_t);
+    bmdp = (bmdbgr_t *)((uint_t)img);
+    pixl_t pix;
+    int k = 0, l = 0;
+    for (int j = 768; j >= 0; j--, l++)
+    {
+        for (int i = 0; i < 1024; i++)
+        {
+            pix = BGRA(bmdp[k].bmd_r, bmdp[k].bmd_g, bmdp[k].bmd_b);
+            drxw_pixcolor(kghp, i, j, pix);
+            k++;
+        }
+    }
+    hal_dspversion();
+}
+
+// TODO: 主函数
 PUBLIC LKINIT void init_bdvideo()
 {
     dftgraph_t *kghp = &kdftgh;
@@ -83,38 +132,6 @@ void fill_graph(dftgraph_t *kghp, pixl_t pix)
     flush_videoram(kghp);
 }
 
-void set_charsdxwflush(u64_t chardxw, u64_t flush)
-{
-    kdftgh.gh_chardxw = chardxw;
-    kdftgh.gh_flush = flush;
-}
-
-void hal_background()
-{
-    dftgraph_t *kghp = &kdftgh;
-    machbstart_t *kmbsp = &kmachbsp;
-    u64_t fadr = 0, fsz = 0;
-    get_file_rvadrandsz("background.bmp", kmbsp, &fadr, &fsz);
-    if (0 == fadr || 0 == fsz) {
-        system_error("lmosbkgderr");
-    }
-    bmdbgr_t *bmdp;
-    u64_t img = fadr + sizeof(bmfhead_t) + sizeof(bitminfo_t);
-    bmdp = (bmdbgr_t *)((uint_t)img);
-    pixl_t pix;
-    int k = 0, l = 0;
-    for (int j = 768; j >= 0; j--, l++)
-    {
-        for (int i = 0; i < 1024; i++)
-        {
-            pix = BGRA(bmdp[k].bmd_r, bmdp[k].bmd_g, bmdp[k].bmd_b);
-            drxw_pixcolor(kghp, i, j, pix);
-            k++;
-        }
-    }
-    hal_dspversion();
-}
-
 PUBLIC LKINIT void init_dftgraph()
 {
     dftgraph_t *kghp = &kdftgh;
@@ -141,28 +158,12 @@ PUBLIC LKINIT void init_dftgraph()
     kghp->gh_deffontpx = BGRA(0xff, 0xff, 0xff);
 }
 
-pixl_t set_deffontpx(pixl_t setpx)
-{
-    dftgraph_t *kghp = &kdftgh;
-    pixl_t bkpx = kghp->gh_deffontpx;
-    kghp->gh_deffontpx = setpx;
-    return bkpx;
-}
 
 void set_ncharsxy(u64_t x, u64_t y)
 {
     dftgraph_t *kghp = &kdftgh;
     kghp->gh_nxtcharsx = x;
     kghp->gh_nxtcharsy = y;
-}
-
-
-void hal_dspversion()
-{
-    pixl_t bkpx = set_deffontpx(BGRA(0xff, 0, 0));
-    kprint(cosmos_version);
-    kprint("系统处理器工作模式:%d位 系统物理内存大小:%dMB\n", (uint_t)kmachbsp.mb_cpumode, (uint_t)(kmachbsp.mb_memsz >> 20));
-    set_deffontpx(bkpx);
 }
 
 void fill_rect(pixl_t pix, uint_t x, uint_t y, uint_t tx, uint_t ty)
