@@ -19,16 +19,16 @@ CFLAGS	= -I $(HEADFILE_PATH) -c -O2 -m64  -mcmodel=large -mno-red-zone -std=c99 
 CPPFLGSLDS	= $(HEADFILE_PATH) -E -P 
 CSCFLAGS = -I $(HEADFILE_PATH) -c   -fno-builtin -fno-common -fno-stack-protector -fno-ident -ffreestanding
 SCFLAGS	= -I $(HEADFILE_PATH) -S  -std=c99 -fno-ident -Wall -fno-builtin -fno-common -fno-stack-protector
-LDFLAGS		= -s -static -T boot.lds -n  -Map boot.map 
+LDFLAGS		= -s -static -T boot.lds -n  -Map boot.map -z noexecstack
 FDLDRLDFLG	= -s -Ttext 0 -n  -Map fdldr.map 
 LOADERLDFLAGS	= -s -T ldrld.lds -n  -Map hdldr.map  
-LDRIMHLDFLAGS = -s -T initldrimh.lds -n  -Map initldrimh.map
-LDRKRLLDFLAGS = -s -T initldrkrl.lds -n  -Map initldrkrl.map  
-LDRSVELDFLAGS = -s -T initldrsve.lds -n  -Map initldrsve.map 
+LDRIMHLDFLAGS = -s -T initldrimh.lds -n  -Map initldrimh.map -z noexecstack
+LDRKRLLDFLAGS = -s -T initldrkrl.lds -n  -Map initldrkrl.map -z noexecstack
+LDRSVELDFLAGS = -s -T initldrsve.lds -n  -Map initldrsve.map -z noexecstack
 LDRIMGFLAGS = -m k
-KERNELLDFLAGS	= -s -static -T kernelld.lds -n  -Map kernel.map #--entry=_start#-Ttext 0x500 target remote localhost:1234
+KERNELLDFLAGS	= -s -static -T kernelld.lds -n  -Map kernel.map -z noexecstack #--entry=_start#-Ttext 0x500 target remote localhost:1234
 
-DBGKERNELLDFLAGS	= -static -T kernelld.lds -n  -Map kernel.map #--entry=_start#-Ttext 0x500 target remote localhost:1234
+DBGKERNELLDFLAGS	= -static -T kernelld.lds -n  -Map kernel.map -z noexecstack #--entry=_start#-Ttext 0x500 target remote localhost:1234
 
-INITSHELLLDFLAGS = -s -static -T app.lds -n  -Map initshellldr.map
+INITSHELLLDFLAGS = -s -static -T app.lds -n  -Map initshellldr.map -z noexecstack
 
