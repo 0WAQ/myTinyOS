@@ -94,22 +94,22 @@
 #define PMR_F_ARM_64 (1<<3)
 #define PMR_F_HAL_MASK 0xff
 
-
+// 内存布局信息
 typedef struct s_PHYMMARGE
 {
-    spinlock_t pmr_lock;
-    u32_t pmr_type;
+    spinlock_t pmr_lock;        // 自旋锁，保护结构
+    u32_t pmr_type;             // 内存地址空间类型
     u32_t pmr_stype;
-    u32_t pmr_dtype;
-    u32_t pmr_flgs;
-    u32_t pmr_stus;
-    u64_t pmr_saddr;
-    u64_t pmr_lsize;
-    u64_t pmr_end;
-    u64_t pmr_rrvmsaddr;
-    u64_t pmr_rrvmend;
-    void* pmr_prip;
-    void* pmr_extp;
+    u32_t pmr_dtype;            // 内存地址空间的子类型，见上宏
+    u32_t pmr_flgs;             // 结构的标志
+    u32_t pmr_stus;             // 结构的状态
+    u64_t pmr_saddr;            // 内存空间的开始地址
+    u64_t pmr_lsize;            // 内存空间的大小
+    u64_t pmr_end;              // 内存空间的结束地址
+    u64_t pmr_rrvmsaddr;        // 内存保留空间的开始地址
+    u64_t pmr_rrvmend;          // 内存保留空间的结束地址
+    void* pmr_prip;             // 结构的私有数据指针， 以后扩展所用
+    void* pmr_extp;             // 结构的扩展数据指针， 以后扩展所用
 }phymmarge_t;
 
 

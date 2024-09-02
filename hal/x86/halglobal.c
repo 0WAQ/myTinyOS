@@ -13,12 +13,16 @@ HAL_DEFGLOB_VARIABLE(machbstart_t, kmachbsp);
 // 屏幕信息结构
 HAL_DEFGLOB_VARIABLE(dftgraph_t, kdftgh);
 
-HAL_DEFGLOB_VARIABLE(descriptor_t,x64_gdt)[CPUCORE_MAX][GDTMAX];
-HAL_DEFGLOB_VARIABLE(gate_t,x64_idt)[IDTMAX];
-HAL_DEFGLOB_VARIABLE(x64tss_t,x64tss)[CPUCORE_MAX]; 
-HAL_DEFGLOB_VARIABLE(igdtr_t,x64_igdt_reg)[CPUCORE_MAX];
-HAL_DEFGLOB_VARIABLE(iidtr_t,x64_iidt_reg);
+// 中断表
+HAL_DEFGLOB_VARIABLE(gate_t, x64_idt)[IDTMAX];
 
+//  
 HAL_DEFGLOB_VARIABLE(intfltdsc_t, machintflt)[IDTMAX];
+
+HAL_DEFGLOB_VARIABLE(descriptor_t, x64_gdt)[CPUCORE_MAX][GDTMAX];
+HAL_DEFGLOB_VARIABLE(x64tss_t, x64tss)[CPUCORE_MAX]; 
+HAL_DEFGLOB_VARIABLE(igdtr_t, x64_igdt_reg)[CPUCORE_MAX];
+HAL_DEFGLOB_VARIABLE(iidtr_t, x64_iidt_reg);
+
 #endif
 

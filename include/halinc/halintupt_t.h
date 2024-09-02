@@ -14,37 +14,40 @@ typedef struct s_ILNEDSC
     u32_t ild_clxsubinr;
 }ilnedsc_t;
 
+// 中断异常描述符
 typedef struct s_INTFLTDSC
 {
     spinlock_t  i_lock;
     u32_t       i_flg;
     u32_t       i_stus;
-    uint_t      i_prity;        //中断优先级
-    uint_t      i_irqnr;        //中断号
-    uint_t      i_deep;         //中断嵌套深度
-    u64_t       i_indx;         //中断计数
+    uint_t      i_prity;        // 中断优先级
+    uint_t      i_irqnr;        // 中断号
+    uint_t      i_deep;         // 中断嵌套深度
+    u64_t       i_indx;         // 中断计数
     list_h_t    i_serlist;
     uint_t      i_sernr;
-    list_h_t    i_serthrdlst;   //中断线程链表头
-    uint_t      i_serthrdnr;    //中断线程个数
-    void*       i_onethread;    //只有一个中断线程时直接用指针
-    void*       i_rbtreeroot;   //如果中断线程太多则按优先级组成红黑树
-    list_h_t    i_serfisrlst;   //也可以使用中断回调函数的方式
-    uint_t      i_serfisrnr;    //中断回调函数个数
-    void*       i_msgmpool;     //可能的中断消息池
+    list_h_t    i_serthrdlst;   // 中断线程链表头
+    uint_t      i_serthrdnr;    // 中断线程个数
+
+    void*       i_onethread;    // 只有一个中断线程时直接用指针
+    void*       i_rbtreeroot;   // 如果中断线程太多则按优先级组成红黑树
+    list_h_t    i_serfisrlst;   // 也可以使用中断回调函数的方式
+
+    uint_t      i_serfisrnr;    // 中断回调函数个数
+    void*       i_msgmpool;     // 可能的中断消息池
     void*       i_privp;
     void*       i_extp;
 }intfltdsc_t;
 
 typedef struct s_INTSERDSC
 {
-    list_h_t    s_list;
-    list_h_t    s_indevlst;
+    list_h_t    s_list;         // 在中断异常描述符中的链表
+    list_h_t    s_indevlst;     // 在设备描述描述符中的链表
     u32_t       s_flg;
-    intfltdsc_t* s_intfltp;
-    void*       s_device;
+    intfltdsc_t* s_intfltp;     // 指向中断异常描述符
+    void*       s_device;       // 指向设备描述符
     uint_t      s_indx;
-    intflthandle_t s_handle;
+    intflthandle_t s_handle;    // 中断处理的回调函数指针
 }intserdsc_t;
 
 typedef struct s_KITHREAD

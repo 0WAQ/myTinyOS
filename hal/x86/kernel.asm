@@ -1,6 +1,5 @@
 ;*****************************************************************************
 ;*		底层核心文件Kernel.asm				    *
-;*				彭东 
 ;*****************************************************************************
 
 %include "kernel.inc"
@@ -8,67 +7,68 @@
 [BITS 64]
 
 ALIGN	16
-exc_divide_error:
+exc_divide_error:				;除法错误异常
 	SRFTFAULT 0
 ALIGN	16
-exc_single_step_exception:
+exc_single_step_exception:		;单步执行异常
 	SRFTFAULT 1
 ALIGN	16
-exc_nmi:
+exc_nmi:						;
 	SRFTFAULT 2
 ALIGN	16
-exc_breakpoint_exception:
+exc_breakpoint_exception:		;调试断点异常
 	SRFTFAULT 3
 ALIGN	16
-exc_overflow:
+exc_overflow:					;溢出异常
 	SRFTFAULT 4
 ALIGN	16
-exc_bounds_check:
+exc_bounds_check:				;
 	SRFTFAULT 5
 ALIGN	16
-exc_inval_opcode:
+exc_inval_opcode:				;
 	SRFTFAULT 6
 ALIGN	16
-exc_copr_not_available:
+exc_copr_not_available:			;
 	SRFTFAULT 7
 ALIGN	16
-exc_double_fault:
+exc_double_fault:				;
 	SRFTFAULT_ECODE 8
 ALIGN	16
-exc_copr_seg_overrun:
+exc_copr_seg_overrun:			;
 	SRFTFAULT 9
 ALIGN	16
-exc_inval_tss:
+exc_inval_tss:					;
 	SRFTFAULT_ECODE 10
 ALIGN	16
-exc_segment_not_present:
+exc_segment_not_present:		;段不存在异常
 	SRFTFAULT_ECODE 11
 ALIGN	16
-exc_stack_exception:
+exc_stack_exception:			;栈异常
 	SRFTFAULT_ECODE 12
 ALIGN	16
-exc_general_protection:
+exc_general_protection:			;通用异常
 	SRFTFAULT_ECODE 13
 ALIGN	16
-exc_page_fault:
+exc_page_fault:					;缺页异常
 	SRFTFAULT_ECODE 14
 ALIGN	16
-exc_copr_error:
+exc_copr_error:					;
 	SRFTFAULT 16
 ALIGN	16
-exc_alignment_check:
+exc_alignment_check:			;
 	SRFTFAULT_ECODE 17
 ALIGN	16
-exc_machine_check:
+exc_machine_check:				;
 	SRFTFAULT 18
 ALIGN	16
-exc_simd_fault:
+exc_simd_fault:					;
 	SRFTFAULT 19
 ALIGN	16
-hxi_exc_general_intpfault:
+hxi_exc_general_intpfault:		;
 	SRFTFAULT 256
 	
-	
+
+;;; 硬件 1 ～ 7 号中断
 ALIGN	16
 hxi_hwint00:
 	HARWINT	(INT_VECTOR_IRQ0+0)
@@ -93,6 +93,7 @@ hxi_hwint06:
 ALIGN	16
 hxi_hwint07:
 	HARWINT	(INT_VECTOR_IRQ0+7)
+
 ALIGN	16
 hxi_hwint08:
 	HARWINT	(INT_VECTOR_IRQ0+8)

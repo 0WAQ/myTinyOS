@@ -3,9 +3,10 @@
 **********************************************************/
 #include "cosmostypes.h"
 #include "cosmosmctrl.h"
+
 void init_i8259()
 {
-
+	// 初始化主从8259a
 	out_u8_p(ZIOPT, ICW1);
 	out_u8_p(SIOPT, ICW1);
 	out_u8_p(ZIOPT1, ZICW2);
@@ -15,10 +16,9 @@ void init_i8259()
 	out_u8_p(ZIOPT1, ICW4);
 	out_u8_p(SIOPT1, ICW4);
 
+	// 屏蔽全部中断源
 	out_u8_p(ZIOPT1, 0xff);
 	out_u8_p(SIOPT1, 0xff);
-	
-	return;
 }
 
 void i8259_send_eoi()

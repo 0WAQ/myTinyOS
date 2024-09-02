@@ -15,7 +15,7 @@ void init_krl()
     // init_krlcpuidle();
 
     // hal_enable_irqfiq();
-   
+    
+    // 禁止函数返回
     die(0);
-    return;
 }
