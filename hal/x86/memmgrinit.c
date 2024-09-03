@@ -91,7 +91,6 @@ void memmgrob_t_init(memmgrob_t *initp)
 
 bool_t copy_pages_data(machbstart_t *mbsp)
 {
-
 	uint_t topgadr = mbsp->mb_nextwtpadr;
 
 	if (initchkadr_is_ok(mbsp, topgadr, mbsp->mb_subpageslen) != 0) {
