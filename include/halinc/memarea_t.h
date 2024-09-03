@@ -28,11 +28,11 @@ typedef struct s_MMAFRETS
 struct s_MEMAREA;
 typedef struct s_MAFUNCOBJS
 {
-	mmstus_t (*mafo_init)(struct s_MEMAREA* memarea,void* valp,uint_t val);
+	mmstus_t (*mafo_init)(struct s_MEMAREA* memarea, void* valp, uint_t val);
 	mmstus_t (*mafo_exit)(struct s_MEMAREA* memarea);
-	mmstus_t (*mafo_aloc)(struct s_MEMAREA* memarea,mmafrets_t* mafrspack,void* valp,uint_t val);
-	mmstus_t (*mafo_free)(struct s_MEMAREA* memarea,mmafrets_t* mafrspack,void* valp,uint_t val);
-	mmstus_t (*mafo_recy)(struct s_MEMAREA* memarea,mmafrets_t* mafrspack,void* valp,uint_t val);
+	mmstus_t (*mafo_aloc)(struct s_MEMAREA* memarea, mmafrets_t* mafrspack, void* valp, uint_t val);
+	mmstus_t (*mafo_free)(struct s_MEMAREA* memarea, mmafrets_t* mafrspack, void* valp, uint_t val);
+	mmstus_t (*mafo_recy)(struct s_MEMAREA* memarea, mmafrets_t* mafrspack, void* valp, uint_t val);
 
 }mafuncobjs_t;
 
@@ -40,25 +40,29 @@ typedef struct s_MAFUNCOBJS
 #define BAFH_STUS_ONEM 1
 #define BAFH_STUS_DIVP 2
 #define BAFH_STUS_DIVM 3
+
+// 组织内存页(msadsc_t)的数据结构
 typedef struct s_BAFHLST
 {
-	spinlock_t af_lock;
-	u32_t af_stus;
-	uint_t af_oder;
-	uint_t af_oderpnr;
-	uint_t af_fobjnr;
+	spinlock_t af_lock;		// 自旋锁
+	u32_t af_stus;			// 状态
+	uint_t af_oder;			// 页面数的偏移量
+	uint_t af_oderpnr;		// oder对应的页面数，例如，oder为2，那么 1 << 2 = 4
+	uint_t af_fobjnr;		// 空闲页面数
 	//uint_t af_aobjnr;
-	uint_t af_mobjnr;
-	uint_t af_alcindx;
-	uint_t af_freindx;
-	list_h_t af_frelst;
-	list_h_t af_alclst;
+	uint_t af_mobjnr;		// 总页面数
+	uint_t af_alcindx;		// 分配计数
+	uint_t af_freindx;		// 释放计数
+	list_h_t af_frelst;		// 挂载此结构的空闲msadsc_t结构
+	list_h_t af_alclst;		// 挂在此结构的已经分配的msadsc_t结构
 	list_h_t af_ovelst;
 }bafhlst_t;
 
 #define MDIVMER_ARR_LMAX 52
 #define MDIVMER_ARR_BMAX 11
 #define MDIVMER_ARR_OMAX 9
+
+// 组织(bafhlst_t)的数据结构
 typedef struct s_MEMDIVMER
 {
 	spinlock_t dm_lock;
@@ -66,13 +70,14 @@ typedef struct s_MEMDIVMER
 	uint_t dm_dmmaxindx;
 	uint_t dm_phydmindx;
 	uint_t dm_predmindx;
-	uint_t dm_divnr;
-	uint_t dm_mernr;
+	uint_t dm_divnr;		// 内存分割(分配)次数
+	uint_t dm_mernr;		// 内存合并(释放)次数
 	//bafhlst_t dm_mdmonelst[MDIVMER_ARR_OMAX];
 	//bafhlst_t dm_mdmblklst[MDIVMER_ARR_BMAX];
-	bafhlst_t dm_mdmlielst[MDIVMER_ARR_LMAX];
-	bafhlst_t dm_onemsalst;
+	bafhlst_t dm_mdmlielst[MDIVMER_ARR_LMAX];	// 结构体数组，每个数组挂载的msadsc_t的数量是下标左移一位
+	bafhlst_t dm_onemsalst;						// 单个的结构体
 }memdivmer_t;
+
 #define MA_TYPE_INIT 0
 #define MA_TYPE_HWAD 1
 #define MA_TYPE_KRNL 2
@@ -90,23 +95,24 @@ typedef struct s_MEMDIVMER
 #define MA_PROC_LEND (MA_PROC_LSTART+MA_PROC_LSZ)
 //0x400000000  0x40000000
 
+// 内存分区，逻辑上分为硬件区、内核区、应用区
 typedef struct s_MEMAREA
 {
-	list_h_t ma_list;
-	spinlock_t ma_lock;
-	uint_t ma_stus;
-	uint_t ma_flgs;
-	uint_t ma_type;
-	sem_t ma_sem;
-	wait_l_head_t ma_waitlst;
-	uint_t ma_maxpages;
-	uint_t ma_allocpages;
-	uint_t ma_freepages;
-	uint_t ma_resvpages;
-	uint_t ma_horizline;
-	adr_t ma_logicstart;
-	adr_t ma_logicend;
-	uint_t ma_logicsz;
+	list_h_t ma_list;			// 链表
+	spinlock_t ma_lock;			// 自旋锁
+	uint_t ma_stus;				// 状态
+	uint_t ma_flgs;				// 标志
+	uint_t ma_type;				// 类型
+	sem_t ma_sem;				// 信号量
+	wait_l_head_t ma_waitlst;	// 等待队列
+	uint_t ma_maxpages;			// 总页面数
+	uint_t ma_allocpages;		// 分配的页面数
+	uint_t ma_freepages;		// 空闲的页面数
+	uint_t ma_resvpages;		// 保留的页面数
+	uint_t ma_horizline;		// 分配时的水位线
+	adr_t ma_logicstart;		// 开始地址
+	adr_t ma_logicend;			// 结束地址
+	uint_t ma_logicsz;			// 大小
 	adr_t ma_effectstart;
 	adr_t ma_effectend;
 	uint_t ma_effectsz;
