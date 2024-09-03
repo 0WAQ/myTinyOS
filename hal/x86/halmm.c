@@ -179,5 +179,9 @@ void init_phymmarge()
 
 void init_halmm()
 {
+    // 将二级引导器中获取的内存布局信息转换为phymmarge_t，并排序
     init_phymmarge();
+
+    // 初始化物理内存初始化
+    init_memmgr();
 }
