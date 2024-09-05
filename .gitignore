@@ -4,6 +4,7 @@ build/*
 !build/lmkfbuild
 !build/pretreatment.mkf
 !build/vbox.mkf
+!build/vbox_win.mkf
 
 */*.bin
 

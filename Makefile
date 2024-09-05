@@ -15,6 +15,7 @@ MAKE = make
 X86BARD = -f ./Makefile.x86
 
 VVMRLMOSFLGS = -C $(BUILD_PATH) -f vbox.mkf
+WINVBFLAGS = -C $(BUILD_PATH) -f vbox_win.mkf
 
 VBOXVMFLGS = -C $(VM_PATH) -f vbox.mkf
 VMFLAGES = -smp 4 -hda $(VMDKFNAME) -m 256 -enable-kvm
@@ -95,6 +96,9 @@ KVMRUN:
 VBOXRUN:
 	$(MAKE) $(VVMRLMOSFLGS)
 
+WIN_VBOXRUN:
+	$(MAKE) $(WINVBFLAGS)
+
 #cpkrnl cprelease
 release: clean all cplmildr cpkrnl cprelease KIMG 
 
@@ -102,6 +106,7 @@ kvmtest: release KVMRUN
 
 vboxtest: release VBOXRUN
 
+win_vboxtest: release WIN_VBOXRUN
 
 createimg:
 	$(DD) bs=512 if=/dev/zero of=$(DSKIMG) count=$(IMGSECTNR)
