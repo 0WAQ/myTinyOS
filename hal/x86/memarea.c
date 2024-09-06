@@ -12,6 +12,7 @@ LKINIT void init_memarea()
 	}
 }
 
+// 初始化内存区，分为硬件区、内核区、应用区
 bool_t init_memarea_core(machbstart_t *mbsp)
 {
 	u64_t phymarea = mbsp->mb_nextwtpadr;
@@ -20,99 +21,49 @@ bool_t init_memarea_core(machbstart_t *mbsp)
 	}
 
 	memarea_t *virmarea = (memarea_t *)phyadr_to_viradr((adr_t)phymarea);
+
+	// 循环初始化每个memarea_t
 	for (uint_t mai = 0; mai < MEMAREA_MAX; mai++) {
 		memarea_t_init(&virmarea[mai]);
 	}
 
+	// 硬件区的类型和空间大小
 	virmarea[0].ma_type = MA_TYPE_HWAD;
 	virmarea[0].ma_logicstart = MA_HWAD_LSTART;
 	virmarea[0].ma_logicend = MA_HWAD_LEND;
 	virmarea[0].ma_logicsz = MA_HWAD_LSZ;
+
+	// 内核区的类型和空间大小
 	virmarea[1].ma_type = MA_TYPE_KRNL;
 	virmarea[1].ma_logicstart = MA_KRNL_LSTART;
 	virmarea[1].ma_logicend = MA_KRNL_LEND;
 	virmarea[1].ma_logicsz = MA_KRNL_LSZ;
+
+	// 应用区的类型和空间大小
 	virmarea[2].ma_type = MA_TYPE_PROC;
 	virmarea[2].ma_logicstart = MA_PROC_LSTART;
 	virmarea[2].ma_logicend = MA_PROC_LEND;
 	virmarea[2].ma_logicsz = MA_PROC_LSZ;
+
 	virmarea[3].ma_type = MA_TYPE_SHAR;
 
+	// memarea_t数组起始地址
 	mbsp->mb_memznpadr = phymarea;
+	// 数组元素个数
 	mbsp->mb_memznnr = MEMAREA_MAX;
+	// 数组大小
 	mbsp->mb_memznsz = sizeof(memarea_t) * MEMAREA_MAX;
+	// 计算下一个空闲内存的开始地址
 	mbsp->mb_nextwtpadr = PAGE_ALIGN(phymarea + sizeof(memarea_t) * MEMAREA_MAX);
 	//.......
+	
 	return TRUE;
 }
 
-void arclst_t_init(arclst_t *initp)
-{
-	list_init(&initp->al_lru1);
-	list_init(&initp->al_lru2);
-	initp->al_lru1nr = 0;
-	initp->al_lru2nr = 0;
-}
-
-mmstus_t mafo_deft_init(struct s_MEMAREA *memarea, void *valp, uint_t val)
-{
-	return MMSTUS_ERR;
-}
-
-mmstus_t mafo_deft_exit(struct s_MEMAREA *memarea)
-{
-	return MMSTUS_ERR;
-}
-
-mmstus_t mafo_deft_afry(struct s_MEMAREA *memarea, mmafrets_t *mafrspack, void *valp, uint_t val)
-{
-	return MMSTUS_ERR;
-}
-
-void mafuncobjs_t_init(mafuncobjs_t *initp)
-{
-	initp->mafo_init = mafo_deft_init;
-	initp->mafo_exit = mafo_deft_exit;
-	initp->mafo_aloc = mafo_deft_afry;
-	initp->mafo_free = mafo_deft_afry;
-	initp->mafo_recy = mafo_deft_afry;
-}
-
-void bafhlst_t_init(bafhlst_t *initp, u32_t stus, uint_t oder, uint_t oderpnr)
-{
-	knl_spinlock_init(&initp->af_lock);
-	initp->af_stus = stus;
-	initp->af_oder = oder;
-	initp->af_oderpnr = oderpnr;
-	initp->af_fobjnr = 0;
-	//initp->af_aobjnr=0;
-	initp->af_mobjnr = 0;
-	initp->af_alcindx = 0;
-	initp->af_freindx = 0;
-
-	list_init(&initp->af_frelst);
-	list_init(&initp->af_alclst);
-	list_init(&initp->af_ovelst);
-}
-
-void memdivmer_t_init(memdivmer_t *initp)
-{
-	knl_spinlock_init(&initp->dm_lock);
-	initp->dm_stus = 0;
-	initp->dm_dmmaxindx = 0;
-	initp->dm_phydmindx = 0;
-	initp->dm_predmindx = 0;
-	initp->dm_divnr = 0;
-	initp->dm_mernr = 0;
-
-	for (uint_t li = 0; li < MDIVMER_ARR_LMAX; li++) {
-		bafhlst_t_init(&initp->dm_mdmlielst[li], BAFH_STUS_DIVM, li, (1UL << li));
-	}
-	bafhlst_t_init(&initp->dm_onemsalst, BAFH_STUS_ONEM, 0, 1UL);
-}
-
+// 初始化memarea_t结构
 void memarea_t_init(memarea_t *initp)
 {
+	// 初始化ma_list和锁
 	list_init(&initp->ma_list);
 	knl_spinlock_init(&initp->ma_lock);
 
@@ -135,8 +86,75 @@ void memarea_t_init(memarea_t *initp)
 	initp->ma_allmsadscnr = 0;
 	arclst_t_init(&initp->ma_arcpglst);
 	mafuncobjs_t_init(&initp->ma_funcobj);
+
+	// 初始化memarea_t中的memdiver_t
 	memdivmer_t_init(&initp->ma_mdmdata);
+	
 	initp->ma_privp = NULL;
+}
+
+void arclst_t_init(arclst_t *initp)
+{
+	list_init(&initp->al_lru1);
+	list_init(&initp->al_lru2);
+	initp->al_lru1nr = 0;
+	initp->al_lru2nr = 0;
+}
+
+void mafuncobjs_t_init(mafuncobjs_t *initp)
+{
+	initp->mafo_init = mafo_deft_init;
+	initp->mafo_exit = mafo_deft_exit;
+	initp->mafo_aloc = mafo_deft_afry;
+	initp->mafo_free = mafo_deft_afry;
+	initp->mafo_recy = mafo_deft_afry;
+}
+
+mmstus_t mafo_deft_init(struct s_MEMAREA *memarea, void *valp, uint_t val) {
+	return MMSTUS_ERR;
+}
+
+mmstus_t mafo_deft_exit(struct s_MEMAREA *memarea) {
+	return MMSTUS_ERR;
+}
+
+mmstus_t mafo_deft_afry(struct s_MEMAREA *memarea, mmafrets_t *mafrspack, void *valp, uint_t val) {
+	return MMSTUS_ERR;
+}
+
+void bafhlst_t_init(bafhlst_t *initp, u32_t stus, uint_t oder, uint_t oderpnr)
+{
+	knl_spinlock_init(&initp->af_lock);
+	initp->af_stus = stus;
+	initp->af_oder = oder;
+	initp->af_oderpnr = oderpnr;
+	initp->af_fobjnr = 0;
+	//initp->af_aobjnr=0;
+	initp->af_mobjnr = 0;
+	initp->af_alcindx = 0;
+	initp->af_freindx = 0;
+
+	list_init(&initp->af_frelst);
+	list_init(&initp->af_alclst);
+	list_init(&initp->af_ovelst);
+}
+
+// 初始化memdivmer_t
+void memdivmer_t_init(memdivmer_t *initp)
+{
+	knl_spinlock_init(&initp->dm_lock);
+	initp->dm_stus = 0;
+	initp->dm_dmmaxindx = 0;
+	initp->dm_phydmindx = 0;
+	initp->dm_predmindx = 0;
+	initp->dm_divnr = 0;
+	initp->dm_mernr = 0;
+
+	// 初始化memdivmer中的bafhlst
+	for (uint_t li = 0; li < MDIVMER_ARR_LMAX; li++) {
+		bafhlst_t_init(&initp->dm_mdmlielst[li], BAFH_STUS_DIVM, li, (1UL << li));
+	}
+	bafhlst_t_init(&initp->dm_onemsalst, BAFH_STUS_ONEM, 0, 1UL);
 }
 
 bool_t find_inmarea_msadscsegmant(memarea_t *mareap, msadsc_t *fmstat, uint_t fmsanr, msadsc_t **retmsastatp,
