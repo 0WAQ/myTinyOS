@@ -4,6 +4,48 @@
 #include "cosmostypes.h"
 #include "cosmosmctrl.h"
 
+// 初始化内存区
+LKINIT void init_memarea()
+{
+	if (init_memarea_core(&kmachbsp) == FALSE) {
+		system_error("init_memarea_core fail");
+	}
+}
+
+bool_t init_memarea_core(machbstart_t *mbsp)
+{
+	u64_t phymarea = mbsp->mb_nextwtpadr;
+	if (initchkadr_is_ok(mbsp, phymarea, (sizeof(memarea_t) * MEMAREA_MAX)) != 0) {
+		return FALSE;
+	}
+
+	memarea_t *virmarea = (memarea_t *)phyadr_to_viradr((adr_t)phymarea);
+	for (uint_t mai = 0; mai < MEMAREA_MAX; mai++) {
+		memarea_t_init(&virmarea[mai]);
+	}
+
+	virmarea[0].ma_type = MA_TYPE_HWAD;
+	virmarea[0].ma_logicstart = MA_HWAD_LSTART;
+	virmarea[0].ma_logicend = MA_HWAD_LEND;
+	virmarea[0].ma_logicsz = MA_HWAD_LSZ;
+	virmarea[1].ma_type = MA_TYPE_KRNL;
+	virmarea[1].ma_logicstart = MA_KRNL_LSTART;
+	virmarea[1].ma_logicend = MA_KRNL_LEND;
+	virmarea[1].ma_logicsz = MA_KRNL_LSZ;
+	virmarea[2].ma_type = MA_TYPE_PROC;
+	virmarea[2].ma_logicstart = MA_PROC_LSTART;
+	virmarea[2].ma_logicend = MA_PROC_LEND;
+	virmarea[2].ma_logicsz = MA_PROC_LSZ;
+	virmarea[3].ma_type = MA_TYPE_SHAR;
+
+	mbsp->mb_memznpadr = phymarea;
+	mbsp->mb_memznnr = MEMAREA_MAX;
+	mbsp->mb_memznsz = sizeof(memarea_t) * MEMAREA_MAX;
+	mbsp->mb_nextwtpadr = PAGE_ALIGN(phymarea + sizeof(memarea_t) * MEMAREA_MAX);
+	//.......
+	return TRUE;
+}
+
 void arclst_t_init(arclst_t *initp)
 {
 	list_init(&initp->al_lru1);
@@ -95,47 +137,6 @@ void memarea_t_init(memarea_t *initp)
 	mafuncobjs_t_init(&initp->ma_funcobj);
 	memdivmer_t_init(&initp->ma_mdmdata);
 	initp->ma_privp = NULL;
-}
-
-bool_t init_memarea_core(machbstart_t *mbsp)
-{
-	u64_t phymarea = mbsp->mb_nextwtpadr;
-	if (initchkadr_is_ok(mbsp, phymarea, (sizeof(memarea_t) * MEMAREA_MAX)) != 0) {
-		return FALSE;
-	}
-
-	memarea_t *virmarea = (memarea_t *)phyadr_to_viradr((adr_t)phymarea);
-	for (uint_t mai = 0; mai < MEMAREA_MAX; mai++) {
-		memarea_t_init(&virmarea[mai]);
-	}
-
-	virmarea[0].ma_type = MA_TYPE_HWAD;
-	virmarea[0].ma_logicstart = MA_HWAD_LSTART;
-	virmarea[0].ma_logicend = MA_HWAD_LEND;
-	virmarea[0].ma_logicsz = MA_HWAD_LSZ;
-	virmarea[1].ma_type = MA_TYPE_KRNL;
-	virmarea[1].ma_logicstart = MA_KRNL_LSTART;
-	virmarea[1].ma_logicend = MA_KRNL_LEND;
-	virmarea[1].ma_logicsz = MA_KRNL_LSZ;
-	virmarea[2].ma_type = MA_TYPE_PROC;
-	virmarea[2].ma_logicstart = MA_PROC_LSTART;
-	virmarea[2].ma_logicend = MA_PROC_LEND;
-	virmarea[2].ma_logicsz = MA_PROC_LSZ;
-	virmarea[3].ma_type = MA_TYPE_SHAR;
-
-	mbsp->mb_memznpadr = phymarea;
-	mbsp->mb_memznnr = MEMAREA_MAX;
-	mbsp->mb_memznsz = sizeof(memarea_t) * MEMAREA_MAX;
-	mbsp->mb_nextwtpadr = PAGE_ALIGN(phymarea + sizeof(memarea_t) * MEMAREA_MAX);
-	//.......
-	return TRUE;
-}
-
-LKINIT void init_memarea()
-{
-	if (init_memarea_core(&kmachbsp) == FALSE) {
-		system_error("init_memarea_core fail");
-	}
 }
 
 bool_t find_inmarea_msadscsegmant(memarea_t *mareap, msadsc_t *fmstat, uint_t fmsanr, msadsc_t **retmsastatp,
