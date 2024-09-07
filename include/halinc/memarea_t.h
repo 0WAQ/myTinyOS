@@ -74,7 +74,7 @@ typedef struct s_MEMDIVMER
 	uint_t dm_mernr;		// 内存合并(释放)次数
 	//bafhlst_t dm_mdmonelst[MDIVMER_ARR_OMAX];
 	//bafhlst_t dm_mdmblklst[MDIVMER_ARR_BMAX];
-	bafhlst_t dm_mdmlielst[MDIVMER_ARR_LMAX];	// 结构体数组，每个数组挂载的msadsc_t的数量是下标左移一位
+	bafhlst_t dm_mdmlielst[MDIVMER_ARR_LMAX];	// 结构体数组，每个元素挂载的msadsc_t的数量是其下标左移一位
 	bafhlst_t dm_onemsalst;						// 单个的结构体
 }memdivmer_t;
 

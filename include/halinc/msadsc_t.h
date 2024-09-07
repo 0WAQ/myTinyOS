@@ -6,7 +6,6 @@
 
 #define MSAD_PAGE_MAX (8)
 
-
 #define MF_OLKTY_INIT (0)
 #define MF_OLKTY_ODER (1)
 #define MF_OLKTY_BAFH (2)
@@ -25,7 +24,7 @@
 #define MF_MARTY_PRC (3)
 #define MF_MARTY_SHD (4)
 
-// 内存地址空间描述符的标志
+// msadsc_t的标志
 typedef struct s_MSADFLGS
 {
 	u32_t mf_olkty:2;		// 挂入链表的类型
@@ -33,7 +32,7 @@ typedef struct s_MSADFLGS
 	u32_t mf_mocty:2;		// 分配类型，被谁占用了？内核、应用、空闲
 	u32_t mf_marty:3;		// 属于哪个区
 	u32_t mf_uindx:24;		// 分配计数
-}__attribute__((packed)) msadflgs_t; 
+}__attribute__((packed)) msadflgs_t;
 
 
 #define  PAF_NO_ALLOC (0)
@@ -60,18 +59,20 @@ typedef struct s_PHYADRFLGS
 	u64_t paf_dirty:1;		// 脏位
 	u64_t paf_busy:1;		// 忙位
 	u64_t paf_rv2:4;		// 保留位
-	u64_t paf_padrs:52;		// 页物理索引，左移12为是页物理地址
+	u64_t paf_padrs:52;		// 物理页索引，左移12为是页物理地址
 }__attribute__((packed)) phyadrflgs_t;
 
-// 内存空间地址描述符，表示一个内存页面
+// 表示一个页表
 typedef struct s_MSADSC
 {
 	list_h_t md_list;//16			// 链表
 	spinlock_t md_lock; //4			// 保护自身的自旋锁
+
 	msadflgs_t md_indxflgs;//4		// 内存页的各种标志
-	phyadrflgs_t md_phyadrs;//8		// 物理地址和标志
+	phyadrflgs_t md_phyadrs;//8		// 对应的页的地址和相关标志
+	
 	void* md_odlink;//8				// 相邻且相同大小的msadsc的指针
 }__attribute__((packed)) msadsc_t;//32+24
 
 
-#endif
+#endif	// _MSADSC_T_H
