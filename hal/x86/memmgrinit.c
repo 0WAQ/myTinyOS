@@ -13,16 +13,19 @@ void init_memmgr()
 
 	// 初始化内存区结构memarea_t
 	init_memarea();
-	
-	init_copy_pagesfvm();
-	init_search_krloccupymm(&kmachbsp);
-	init_merlove_mem();
-	init_memmgrob();
-}
 
-void disp_memmgrob()
-{
-	test_divsion_pages();
+// 将内核之前占用的内存页标记为已分配
+
+	init_copy_pagesfvm();
+
+	// 查找内核占用的内存页面，将其标记为已分配
+	init_search_krloccupymm(&kmachbsp);
+	
+	// 合并内存页到内存区
+	init_merlove_mem();
+	
+	// 将各种结构转换成虚拟地址
+	init_memmgrob();
 }
 
 void init_memmgrob()
@@ -87,6 +90,11 @@ void memmgrob_t_init(memmgrob_t *initp)
 	initp->mo_mareanr = 0;
 	initp->mo_privp = NULL;
 	initp->mo_extp = NULL;
+}
+
+void disp_memmgrob()
+{
+	test_divsion_pages();
 }
 
 bool_t copy_pages_data(machbstart_t *mbsp)

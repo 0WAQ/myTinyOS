@@ -169,27 +169,31 @@ bool_t find_inmarea_msadscsegmant(memarea_t *mareap, msadsc_t *fmstat, uint_t fm
 	return TRUE;
 }
 
+// 
 uint_t continumsadsc_is_ok(msadsc_t *prevmsa, msadsc_t *nextmsa, msadflgs_t *cmpmdfp)
 {
-	if (NULL == prevmsa || NULL == cmpmdfp) {
+	if (prevmsa == NULL || cmpmdfp == NULL) {
 		return (~0UL);
 	}
 
-	if (NULL != prevmsa && NULL != nextmsa)
+	if (prevmsa != NULL && nextmsa != NULL)
 	{
 		if (prevmsa->md_indxflgs.mf_marty == cmpmdfp->mf_marty &&
-			0 == prevmsa->md_indxflgs.mf_uindx &&
-			MF_MOCTY_FREE == prevmsa->md_indxflgs.mf_mocty &&
-			PAF_NO_ALLOC == prevmsa->md_phyadrs.paf_alloc)
+			prevmsa->md_indxflgs.mf_uindx == 0 				   &&
+			prevmsa->md_indxflgs.mf_mocty == MF_MOCTY_FREE	   &&
+			prevmsa->md_phyadrs.paf_alloc == PAF_NO_ALLOC)
 		{
 			if (nextmsa->md_indxflgs.mf_marty == cmpmdfp->mf_marty &&
-				0 == nextmsa->md_indxflgs.mf_uindx &&
-				MF_MOCTY_FREE == nextmsa->md_indxflgs.mf_mocty &&
-				PAF_NO_ALLOC == nextmsa->md_phyadrs.paf_alloc)
+				nextmsa->md_indxflgs.mf_uindx == 0 				   &&
+				nextmsa->md_indxflgs.mf_mocty == MF_MOCTY_FREE 	   &&
+				nextmsa->md_phyadrs.paf_alloc == PAF_NO_ALLOC)
 			{
-				if ((nextmsa->md_phyadrs.paf_padrs << PSHRSIZE) - (prevmsa->md_phyadrs.paf_padrs << PSHRSIZE) == PAGESIZE)
-					return 2;
-
+				if ((nextmsa->md_phyadrs.paf_padrs << PSHRSIZE) - 
+				    (prevmsa->md_phyadrs.paf_padrs << PSHRSIZE) == PAGESIZE)
+				{	
+					return 2;	// 返回 2 表示继续
+				}
+				
 				return 1;
 			}
 
@@ -202,32 +206,37 @@ uint_t continumsadsc_is_ok(msadsc_t *prevmsa, msadsc_t *nextmsa, msadflgs_t *cmp
 	return (~0UL);
 }
 
+// 在msadsc_t数组的某一个元素为首地址，找出连续的、尽可能多的页
 bool_t scan_len_msadsc(msadsc_t *mstat, msadflgs_t *cmpmdfp, uint_t mnr, uint_t *retmnr)
 {
 	uint_t retclok = 0;
-	uint_t retnr = 0;
+	uint_t retnr = 0;	// 连续个数
 
 	if (NULL == mstat || NULL == cmpmdfp || 0 == mnr || NULL == retmnr) {
 		return FALSE;
 	}
 
+	// 算出连续的元素个数retnr
 	for (uint_t tmdx = 0; tmdx < mnr - 1; tmdx++)
 	{
+		// 判断当前页与下一个页是否同一个区 且连续的，若连续返回2
 		retclok = continumsadsc_is_ok(&mstat[tmdx], &mstat[tmdx + 1], cmpmdfp);
-		if ((~0UL) == retclok) {
+		
+		if (retclok == (~0UL)) {
 			*retmnr = 0;
 			return FALSE;
 		}
 
-		if (0 == retclok) {
+		if (retclok == 0) {
 			*retmnr = 0;
 			return FALSE;
 		}
 
-		if (1 == retclok) {
+		if (retclok == 1) {
 			*retmnr = retnr;
 			return TRUE;
 		}
+
 		retnr++;
 	}
 	*retmnr = retnr;
@@ -334,6 +343,7 @@ uint_t check_continumsadsc(memarea_t *mareap, msadsc_t *stat, msadsc_t *end, uin
 	return ok;
 }
 
+// 
 bool_t merlove_scan_continumsadsc(memarea_t *mareap, msadsc_t *fmstat, uint_t *fntmsanr, uint_t fmsanr,
 								  msadsc_t **retmsastatp, msadsc_t **retmsaendp, uint_t *retfmnr)
 {
@@ -346,6 +356,7 @@ bool_t merlove_scan_continumsadsc(memarea_t *mareap, msadsc_t *fmstat, uint_t *f
 		return FALSE;
 	}
 
+// 通过当前内存区的类型获取msadflgs_t
 	u32_t muindx = 0;
 	msadflgs_t *mdfp = NULL;
 	switch (mareap->ma_type)
@@ -384,14 +395,21 @@ bool_t merlove_scan_continumsadsc(memarea_t *mareap, msadsc_t *fmstat, uint_t *f
 	uint_t retfindmnr = 0;
 	bool_t rets = FALSE;
 	uint_t tmidx = *fntmsanr;
+
+	// 从 fntmsanr开始 遍历 msadsc_t 数组
 	for (; tmidx < fmsanr; tmidx++)
 	{
+		// 判断该页是否属于该内存区、是否空闲等
 		if (msastat[tmidx].md_indxflgs.mf_marty == mdfp->mf_marty &&
-			0 == msastat[tmidx].md_indxflgs.mf_uindx &&
-			MF_MOCTY_FREE == msastat[tmidx].md_indxflgs.mf_mocty &&
-			PAF_NO_ALLOC == msastat[tmidx].md_phyadrs.paf_alloc)
+			msastat[tmidx].md_indxflgs.mf_uindx == 0 			  &&
+			msastat[tmidx].md_indxflgs.mf_mocty == MF_MOCTY_FREE  &&
+			msastat[tmidx].md_phyadrs.paf_alloc == PAF_NO_ALLOC)
 		{
+		// 若满足条件...
+
+			// 以该元素为首元素，找出最大的连续个数retfindmnr
 			rets = scan_len_msadsc(&msastat[tmidx], mdfp, fmsanr, &retfindmnr);
+
 			if (FALSE == rets) {
 				system_error("scan_len_msadsc err\n");
 			}
@@ -423,29 +441,30 @@ uint_t merlove_setallmarflgs_onmemarea(memarea_t *mareap, msadsc_t *mstat, uint_
 		return ~0UL;
 	}
 
+// 先给内存区分配标签
 	u32_t muindx = 0;
 	msadflgs_t *mdfp = NULL;
 	switch (mareap->ma_type)
 	{
 		case MA_TYPE_HWAD:
 		{
-			muindx = MF_MARTY_HWD << 5;
+			muindx = MF_MARTY_HWD << 5;		// 硬件区
 			mdfp = (msadflgs_t *)(&muindx);
 			break;
 		}
 		case MA_TYPE_KRNL:
 		{
-			muindx = MF_MARTY_KRL << 5;
+			muindx = MF_MARTY_KRL << 5;		// 内核区
 			mdfp = (msadflgs_t *)(&muindx);
 			break;
 		}
 		case MA_TYPE_PROC:
 		{
-			muindx = MF_MARTY_PRC << 5;
+			muindx = MF_MARTY_PRC << 5;		// 应用区
 			mdfp = (msadflgs_t *)(&muindx);
 			break;
 		}
-		case MA_TYPE_SHAR:
+		case MA_TYPE_SHAR:					// 
 		{
 			return 0;
 		}
@@ -463,22 +482,32 @@ uint_t merlove_setallmarflgs_onmemarea(memarea_t *mareap, msadsc_t *mstat, uint_
 
 	u64_t phyadr = 0;
 	uint_t retnr = 0;
+
+// 再给内存页打上标签
+
+	// 遍历 msadsc_t 数组
 	for (uint_t mix = 0; mix < msanr; mix++)
 	{
 		if (MF_MARTY_INIT == mstat[mix].md_indxflgs.mf_marty)
 		{
+			// 获取内存页的物理地址
 			phyadr = mstat[mix].md_phyadrs.paf_padrs << PSHRSIZE;
+
+			// 判断当前内存页是否在该 mareap 对应的地址中
 			if (phyadr >= mareap->ma_logicstart && ((phyadr + PAGESIZE) - 1) <= mareap->ma_logicend)
 			{
+				// 若是，给该内存页打上标签
 				mstat[mix].md_indxflgs.mf_marty = mdfp->mf_marty;
 				retnr++;
 			}
 		}
 	}
 
+	// 返回该内存区中物理页的数量
 	return retnr;
 }
 
+// 该函数基本同上，在打标签时改为判断，用于校验
 uint_t test_setflgs(memarea_t *mareap, msadsc_t *mstat, uint_t msanr)
 {
 	u32_t muindx = 0;
@@ -530,6 +559,7 @@ uint_t test_setflgs(memarea_t *mareap, msadsc_t *mstat, uint_t msanr)
 		phyadr = mstat[mix].md_phyadrs.paf_padrs << PSHRSIZE;
 		if (phyadr >= mareap->ma_logicstart && ((phyadr + PAGESIZE) - 1) <= mareap->ma_logicend)
 		{
+			// 若当前内存页标签正确
 			if (mstat[mix].md_indxflgs.mf_marty == mdfp->mf_marty)
 				retnr++;
 		}
@@ -598,23 +628,30 @@ bool_t continumsadsc_add_procmareabafh(memarea_t *mareap, bafhlst_t *bafhp, msad
 	return TRUE;
 }
 
+// 执行真正的挂载
 bool_t continumsadsc_add_bafhlst(memarea_t *mareap, bafhlst_t *bafhp, msadsc_t *fstat, msadsc_t *fend, uint_t fmnr)
 {
-	if (NULL == mareap || NULL == bafhp || NULL == fstat || NULL == fend || 0 == fmnr)
+	if (mareap == NULL || bafhp == NULL || fstat == NULL || fend == NULL || fmnr == 0)
 		return FALSE;
+
 	if (bafhp->af_oderpnr != fmnr)
 		return FALSE;
-	if ((&fstat[fmnr - 1]) != fend)
+	
+	if (&fstat[fmnr - 1] != fend)
 		return FALSE;
+
 
 	fstat->md_indxflgs.mf_olkty = MF_OLKTY_ODER;
 	fstat->md_odlink = fend;
-	// fstat==fend
+	// fstat == fend
 	fend->md_indxflgs.mf_olkty = MF_OLKTY_BAFH;
 	fend->md_odlink = bafhp;
+
 	list_add(&fstat->md_list, &bafhp->af_frelst);
 	bafhp->af_fobjnr++;
 	bafhp->af_mobjnr++;
+	
+	// 更新内存区的统计数据
 	mareap->ma_maxpages += fmnr;
 	mareap->ma_freepages += fmnr;
 	mareap->ma_allmsadscnr += fmnr;
@@ -622,46 +659,56 @@ bool_t continumsadsc_add_bafhlst(memarea_t *mareap, bafhlst_t *bafhp, msadsc_t *
 	return TRUE;
 }
 
+// 
 bool_t continumsadsc_mareabafh_core(memarea_t *mareap, msadsc_t **rfstat, msadsc_t **rfend, uint_t *rfmnr)
 {
-
-	if (NULL == mareap || NULL == rfstat || NULL == rfend || NULL == rfmnr) {
+	if (mareap == NULL || rfstat == NULL || rfend == NULL || rfmnr == NULL) {
 		return FALSE;
 	}
 
 	uint_t retval = *rfmnr, tmpmnr = 0;
 	msadsc_t *mstat = *rfstat, *mend = *rfend;
-	if (1 > (retval)) {
+	if (retval < 1) {
 		return FALSE;
 	}
 
+	// 根据连续的个数寻找合适的结构体
 	bafhlst_t *bafhp = find_continumsa_inbafhlst(mareap, retval);
-	if (NULL == bafhp) {
+	if (bafhp == NULL) {
 		return FALSE;
 	}
 
 	if (retval < bafhp->af_oderpnr) {
 		return FALSE;
 	}
-	if ((BAFH_STUS_DIVP == bafhp->af_stus || BAFH_STUS_DIVM == bafhp->af_stus) && MA_TYPE_PROC != mareap->ma_type)
+
+	// 判断bafhlst_t结构的状态和类型
+	if ((bafhp->af_stus == BAFH_STUS_DIVP || bafhp->af_stus == BAFH_STUS_DIVM) && 
+		 mareap->ma_type != MA_TYPE_PROC)
 	{
+		// 判断还剩多少个元素
 		tmpmnr = retval - bafhp->af_oderpnr;
+		
+		// 挂载
 		if (continumsadsc_add_bafhlst(mareap, bafhp, mstat, &mstat[bafhp->af_oderpnr - 1], bafhp->af_oderpnr) == FALSE)
 			return FALSE;
 
+		// 正好挂载完
 		if (tmpmnr == 0) {
 			*rfmnr = tmpmnr;
 			*rfend = NULL;
 			return TRUE;
 		}
 
+		// 将剩余的放回去
 		*rfstat = &mstat[bafhp->af_oderpnr];
 		*rfmnr = tmpmnr;
 
 		return TRUE;
 	}
 
-	if (BAFH_STUS_ONEM == bafhp->af_stus && MA_TYPE_PROC == mareap->ma_type)
+	// TODO:
+	if (bafhp->af_stus == BAFH_STUS_ONEM && mareap->ma_type == MA_TYPE_PROC)
 	{
 		if (continumsadsc_add_procmareabafh(mareap, bafhp, mstat, mend, *rfmnr) == FALSE)
 			return FALSE;
@@ -675,6 +722,7 @@ bool_t continumsadsc_mareabafh_core(memarea_t *mareap, msadsc_t **rfstat, msadsc
 	return FALSE;
 }
 
+// 将一段连续的msadsc_t挂载到m_mdmlielst数组中的bafhlst_t上
 bool_t merlove_continumsadsc_mareabafh(memarea_t *mareap, msadsc_t *mstat, msadsc_t *mend, uint_t mnr)
 {
 	if (NULL == mareap || NULL == mstat || NULL == mend || 0 == mnr) {
@@ -683,7 +731,11 @@ bool_t merlove_continumsadsc_mareabafh(memarea_t *mareap, msadsc_t *mstat, msads
 
 	uint_t mnridx = mnr;
 	msadsc_t *fstat = mstat, *fend = mend;
-	for (; (mnridx > 0 && NULL != fend);) {
+	
+	// 
+	for (; mnridx > 0 && fend != NULL;) 
+	{
+		// 挂载这一段数组，有可能找不到合适的结构，故需多次挂载直到挂载完成
 		if (continumsadsc_mareabafh_core(mareap, &fstat, &fend, &mnridx) == FALSE) {
 			system_error("continumsadsc_mareabafh_core fail\n");
 		}
@@ -692,6 +744,7 @@ bool_t merlove_continumsadsc_mareabafh(memarea_t *mareap, msadsc_t *mstat, msads
 	return TRUE;
 }
 
+// 将该内存区所拥有的内存页合并到一起
 bool_t merlove_mem_onmemarea(memarea_t *mareap, msadsc_t *mstat, uint_t msanr)
 {
 	if (NULL == mareap || NULL == mstat || 0 == msanr)
@@ -706,16 +759,22 @@ bool_t merlove_mem_onmemarea(memarea_t *mareap, msadsc_t *mstat, uint_t msanr)
 	uint_t fntmnr = 0;
 	bool_t retscan = FALSE;
 
+	// 遍历所有内存页
 	for (; fntmnr < msanr;)
 	{
+		// 从fntmnr开始获取地址连续、尽可能多的msadsc_t结构体 及其 开始地址、结束地址、数量、下一次循环的数组下标 
 		retscan = merlove_scan_continumsadsc(mareap, fntmsap, &fntmnr, msanr, &retstatmsap, &retendmsap, &retfindmnr);
 		if (FALSE == retscan) {
 			system_error("merlove_scan_continumsadsc fail\n");
 		}
 
-		if (NULL != retstatmsap && NULL != retendmsap) {
+		if (retstatmsap != NULL && retendmsap == NULL) 
+		{
+			// 校验
 			if (check_continumsadsc(mareap, retstatmsap, retendmsap, retfindmnr) == 0)
 				system_error("check_continumsadsc fail\n");
+			
+			// 将这一组连续的msadsc_t挂载到合适的 m_mdlielst 中的 bafhlst_t 中
 			if (merlove_continumsadsc_mareabafh(mareap, retstatmsap, retendmsap, retfindmnr) == FALSE)
 				system_error("merlove_continumsadsc_mareabafh fail\n");
 		}
@@ -724,18 +783,28 @@ bool_t merlove_mem_onmemarea(memarea_t *mareap, msadsc_t *mstat, uint_t msanr)
 	return TRUE;
 }
 
+// 标记内存页属于哪个内存区
 bool_t merlove_mem_core(machbstart_t *mbsp)
 {
+	// 获取 msadsc_t 数组
 	msadsc_t *mstatp = (msadsc_t *)phyadr_to_viradr((adr_t)mbsp->mb_memmappadr);
 	uint_t msanr = (uint_t)mbsp->mb_memmapnr, maxp = 0;
+
+	// 获取 memarea_t 数组
 	memarea_t *marea = (memarea_t *)phyadr_to_viradr((adr_t)mbsp->mb_memznpadr);
 	uint_t sretf = ~0UL, tretf = ~0UL;
+
+// 给内存页打标签
+
+	// 遍历内存区数组(memarea_t)
 	for (uint_t mi = 0; mi < (uint_t)mbsp->mb_memznnr; mi++)
 	{
+		// 给 msadsc_t 打上 memarea_t 的标签
 		sretf = merlove_setallmarflgs_onmemarea(&marea[mi], mstatp, msanr);
 		if ((~0UL) == sretf)
 			return FALSE;
 
+		// 校验标签是否正确
 		tretf = test_setflgs(&marea[mi], mstatp, msanr);
 
 		if ((~0UL) == tretf)
@@ -744,6 +813,9 @@ bool_t merlove_mem_core(machbstart_t *mbsp)
 			return FALSE;
 	}
 
+// 合并内存页到内存区
+
+	// 遍历内存区数组(memarea_t)
 	for (uint_t maidx = 0; maidx < (uint_t)mbsp->mb_memznnr; maidx++)
 	{
 		if (merlove_mem_onmemarea(&marea[maidx], mstatp, msanr) == FALSE) {
@@ -888,12 +960,14 @@ void mem_check_mareadata(machbstart_t *mbsp)
 	}
 }
 
+// 标记内存页属于哪个内存区，并合并内存页
 void init_merlove_mem()
 {
 	if (merlove_mem_core(&kmachbsp) == FALSE) {
 		system_error("merlove_mem_core fail\n");
 	}
 
+	// 校验
 	mem_check_mareadata(&kmachbsp);
 }
 

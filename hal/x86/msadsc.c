@@ -150,6 +150,100 @@ bool_t ret_msadsc_vadrandsz(machbstart_t *mbsp, msadsc_t **retmasvp, u64_t *retm
 	return TRUE;
 }
 
+// 查找内核之前占用的内存页面，在页结构和内存区被初始化后调用
+void init_search_krloccupymm(machbstart_t *mbsp)
+{
+	if (search_krloccupymsadsc_core(mbsp) == FALSE) {
+		system_error("search_krloccupymsadsc_core fail\n");
+	}
+}
+
+// 查找内核已占用内存页面
+bool_t search_krloccupymsadsc_core(machbstart_t *mbsp)
+{
+	u64_t retschmnr = 0;
+	msadsc_t *msadstat = (msadsc_t *)phyadr_to_viradr((adr_t)mbsp->mb_memmappadr);
+	u64_t msanr = mbsp->mb_memmapnr;
+	
+	// 查找 0 ～ 0x1000(BIOS中断表) 所对应的msadsc_t结构
+	retschmnr = search_segment_occupymsadsc(msadstat, msanr, 0, 0x1000);
+	if(retschmnr == 0) return FALSE;
+	
+	// 查找内核栈
+	retschmnr = search_segment_occupymsadsc(msadstat, msanr, mbsp->mb_krlinitstack & (~(0xfffUL)), mbsp->mb_krlinitstack);
+	if(retschmnr == 0) return FALSE;
+	
+	// 查找内核自己占用的内存页
+	retschmnr = search_segment_occupymsadsc(msadstat, msanr, mbsp->mb_krlimgpadr, mbsp->mb_nextwtpadr);
+	if(retschmnr == 0) return FALSE;
+	
+	// 查找内核映像文件
+	retschmnr = search_segment_occupymsadsc(msadstat, msanr, mbsp->mb_imgpadr, mbsp->mb_imgpadr + mbsp->mb_imgsz);
+	if(retschmnr == 0) return FALSE;
+
+	return TRUE;
+}
+
+// 查找一段内存空间所对应的 msadsc_t 结构
+u64_t search_segment_occupymsadsc(msadsc_t *msastart, u64_t msanr, u64_t ocpystat, u64_t ocpyend)
+{
+	u64_t mphyadr = 0, fsmsnr = 0;
+	msadsc_t *fstatmp = NULL; // 以之后找到的第一个页为首元素的一个数组
+
+	// 在内存页中找出对应的起始地址
+	for (u64_t mnr = 0; mnr < msanr; mnr++)
+	{
+		// 判断物理页地址是否相同
+		if ((msastart[mnr].md_phyadrs.paf_padrs << PSHRSIZE) == ocpystat)
+		{
+			// 对应内存段中的第一个页
+			fstatmp = &msastart[mnr];
+			break;
+		}
+	}
+
+// 找到 或者 遍历完所有页面后...
+	// 若遍历完没有对应的页
+	if (fstatmp == NULL)
+		return 0;
+ 
+	fsmsnr = 0;
+	// 遍历内存段，找出所有的页
+	for (u64_t tmpadr = ocpystat; tmpadr < ocpyend; tmpadr += PAGESIZE, fsmsnr++)
+	{
+		// 获取页的物理地址
+		mphyadr = fstatmp[fsmsnr].md_phyadrs.paf_padrs << PSHRSIZE;
+		if (mphyadr != tmpadr)
+			return 0;
+
+		if (MF_MOCTY_FREE != fstatmp[fsmsnr].md_indxflgs.mf_mocty ||
+			0 != fstatmp[fsmsnr].md_indxflgs.mf_uindx ||
+			PAF_NO_ALLOC != fstatmp[fsmsnr].md_phyadrs.paf_alloc)
+		{
+			return 0;
+		}
+
+		// 设置页的属性
+		fstatmp[fsmsnr].md_indxflgs.mf_mocty = MF_MOCTY_KRNL;
+		fstatmp[fsmsnr].md_indxflgs.mf_uindx++;
+		fstatmp[fsmsnr].md_phyadrs.paf_alloc = PAF_ALLOC;
+	}
+
+	// 正确性检验
+	u64_t ocpysz = ocpyend - ocpystat;
+	if ((ocpysz & 0xfff) != 0) 
+	{
+		if (((ocpysz >> PSHRSIZE) + 1) != fsmsnr)
+			return 0;
+		return fsmsnr;
+	}
+
+	if ((ocpysz >> PSHRSIZE) != fsmsnr)
+		return 0;
+	
+	return fsmsnr;
+}
+
 void disp_one_msadsc(msadsc_t *mp)
 {
 	kprint("msadsc_t.md_f:_ux[%x],_my[%x],md_phyadrs:_alc[%x],_shd[%x],_swp[%x],_che[%x],_kmp[%x],_lck[%x],_dty[%x],_bsy[%x],_padrs[%x]\n",
@@ -174,57 +268,6 @@ void disp_phymsadsc()
 
 	for (u64_t i = coremdnr - 10; i < coremdnr; ++i)
 		disp_one_msadsc(&msadscvp[i]);
-}
-
-u64_t search_segment_occupymsadsc(msadsc_t *msastart, u64_t msanr, u64_t ocpystat, u64_t ocpyend)
-{
-	u64_t mphyadr = 0, fsmsnr = 0;
-	msadsc_t *fstatmp = NULL;
-	for (u64_t mnr = 0; mnr < msanr; mnr++)
-	{
-		if ((msastart[mnr].md_phyadrs.paf_padrs << PSHRSIZE) == ocpystat)
-		{
-			fstatmp = &msastart[mnr];
-			goto step1;
-		}
-	}
-step1:
-	fsmsnr = 0;
-	if (NULL == fstatmp) {
-		return 0;
-	}
-
-	for (u64_t tmpadr = ocpystat; tmpadr < ocpyend; tmpadr += PAGESIZE, fsmsnr++)
-	{
-		mphyadr = fstatmp[fsmsnr].md_phyadrs.paf_padrs << PSHRSIZE;
-		if (mphyadr != tmpadr) {
-			return 0;
-		}
-
-		if (MF_MOCTY_FREE != fstatmp[fsmsnr].md_indxflgs.mf_mocty ||
-			0 != fstatmp[fsmsnr].md_indxflgs.mf_uindx ||
-			PAF_NO_ALLOC != fstatmp[fsmsnr].md_phyadrs.paf_alloc)
-		{
-			return 0;
-		}
-		fstatmp[fsmsnr].md_indxflgs.mf_mocty = MF_MOCTY_KRNL;
-		fstatmp[fsmsnr].md_indxflgs.mf_uindx++;
-		fstatmp[fsmsnr].md_phyadrs.paf_alloc = PAF_ALLOC;
-	}
-
-	u64_t ocpysz = ocpyend - ocpystat;
-	if ((ocpysz & 0xfff) != 0)
-	{
-		if (((ocpysz >> PSHRSIZE) + 1) != fsmsnr) {
-			return 0;
-		}
-		return fsmsnr;
-	}
-
-	if ((ocpysz >> PSHRSIZE) != fsmsnr) {
-		return 0;
-	}
-	return fsmsnr;
 }
 
 void test_schkrloccuymm(machbstart_t *mbsp, u64_t ocpystat, u64_t sz)
@@ -267,33 +310,4 @@ step1:
 	}
 	if (chkadr != (ocpystat + (chkmnr * PAGESIZE)))
 		system_error("test_schkrloccuymm err\n");
-}
-
-bool_t search_krloccupymsadsc_core(machbstart_t *mbsp)
-{
-	u64_t retschmnr = 0;
-	msadsc_t *msadstat = (msadsc_t *)phyadr_to_viradr((adr_t)mbsp->mb_memmappadr);
-	u64_t msanr = mbsp->mb_memmapnr;
-	retschmnr = search_segment_occupymsadsc(msadstat, msanr, 0, 0x1000);
-
-	if (0 == retschmnr)
-		return FALSE;
-	retschmnr = search_segment_occupymsadsc(msadstat, msanr, mbsp->mb_krlinitstack & (~(0xfffUL)), mbsp->mb_krlinitstack);
-	if (0 == retschmnr)
-		return FALSE;
-	retschmnr = search_segment_occupymsadsc(msadstat, msanr, mbsp->mb_krlimgpadr, mbsp->mb_nextwtpadr);
-	if (0 == retschmnr)
-		return FALSE;
-	retschmnr = search_segment_occupymsadsc(msadstat, msanr, mbsp->mb_imgpadr, mbsp->mb_imgpadr + mbsp->mb_imgsz);
-	if (0 == retschmnr)
-		return FALSE;
-
-	return TRUE;
-}
-
-void init_search_krloccupymm(machbstart_t *mbsp)
-{
-	if (search_krloccupymsadsc_core(mbsp) == FALSE) {
-		system_error("search_krloccupymsadsc_core fail\n");
-	}
 }

@@ -60,7 +60,7 @@ typedef struct s_PHYADRFLGS
 	u64_t paf_dirty:1;		// 脏位
 	u64_t paf_busy:1;		// 忙位
 	u64_t paf_rv2:4;		// 保留位
-	u64_t paf_padrs:52;		// 页物理地址
+	u64_t paf_padrs:52;		// 页物理索引，左移12为是页物理地址
 }__attribute__((packed)) phyadrflgs_t;
 
 // 内存空间地址描述符，表示一个内存页面

@@ -19,6 +19,9 @@ HAL_DEFGLOB_VARIABLE(gate_t, x64_idt)[IDTMAX];
 //  
 HAL_DEFGLOB_VARIABLE(intfltdsc_t, machintflt)[IDTMAX];
 
+// 内核所需的内存相关的数据结构
+HAL_DEFGLOB_VARIABLE(memmgrob_t, memmgrob);
+
 HAL_DEFGLOB_VARIABLE(descriptor_t, x64_gdt)[CPUCORE_MAX][GDTMAX];
 HAL_DEFGLOB_VARIABLE(x64tss_t, x64tss)[CPUCORE_MAX]; 
 HAL_DEFGLOB_VARIABLE(igdtr_t, x64_igdt_reg)[CPUCORE_MAX];
