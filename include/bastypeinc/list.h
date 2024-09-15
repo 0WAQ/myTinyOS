@@ -92,6 +92,7 @@ KLINE bool_t list_is_empty_careful(const list_h_t *head)
 /* 	一直for，直到head的下一个等于head（在循环的过程中需要改变head，否则死循环） 
 	keep doing for loop until "next" of head equals to head (head need to be changed during the loop, otherwise that will be a infinite loop) */
 
+// container_of
 #define list_entry(ptr, type, member) \
 	((type *)((char *)(ptr) - (unsigned long)(&((type *)0)->member)))
 

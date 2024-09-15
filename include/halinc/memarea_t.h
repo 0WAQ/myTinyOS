@@ -47,10 +47,10 @@ typedef struct s_BAFHLST
 	spinlock_t af_lock;		// 自旋锁
 	u32_t af_stus;			// 状态
 	uint_t af_oder;			// 页面数的偏移量
-	uint_t af_oderpnr;		// oder对应的页面数，例如，oder为2，那么 1 << 2 = 4
+	uint_t af_oderpnr;		// oder对应的连续页面数，例如，oder为2，那么 1 << 2 = 4
 	uint_t af_fobjnr;		// 空闲页面数
 	//uint_t af_aobjnr;
-	uint_t af_mobjnr;		// 总页面数
+	uint_t af_mobjnr;		// 当前总页面数
 	uint_t af_alcindx;		// 分配计数
 	uint_t af_freindx;		// 释放计数
 	list_h_t af_frelst;		// 挂载此结构的空闲msadsc_t结构
