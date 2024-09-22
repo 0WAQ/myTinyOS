@@ -20,6 +20,8 @@
 #include "krlcpuidle.h"
 #include "krldevice.h"
 #include "krlspinlock.h"
+#include "krliocache.h"
+#include "krlvadrsmem.h"
 
 #include "task.h"
 #include "krlservice.h"
@@ -31,5 +33,4 @@
 #include "krlsvewrite.h"
 #include "krlsveioctrl.h"
 #include "krlsvelseek.h"
-
 #endif // KRLHEADS_H

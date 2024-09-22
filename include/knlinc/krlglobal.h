@@ -10,10 +10,10 @@
 #define KEXTERN
 #endif
 #if((defined CFG_X86_PLATFORM) || (defined CFG_S3C2440A_PLATFORM))   
-// KRL_DEFGLOB_VARIABLE(kvirmemadrs_t, krlvirmemadrs);
-// KRL_DEFGLOB_VARIABLE(mmadrsdsc_t, initmmadrsdsc);
+KRL_DEFGLOB_VARIABLE(kvirmemadrs_t, krlvirmemadrs);
+KRL_DEFGLOB_VARIABLE(mmadrsdsc_t, initmmadrsdsc);
 
-// KRL_DEFGLOB_VARIABLE(kmempool_t,oskmempool);
+KRL_DEFGLOB_VARIABLE(kmempool_t,oskmempool);
 // KRL_DEFGLOB_VARIABLE(schedclass_t,osschedcls);
 // KRL_DEFGLOB_VARIABLE(ktime_t,osktime);
 // KRL_DEFGLOB_VARIABLE(syscall_t,osscalltab)[SWINR_MAX];

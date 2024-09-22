@@ -36,7 +36,20 @@
 #define NF_FLG 0x4
 
 #ifdef CFG_X86_PLATFORM
-
+/*
+Push(EAX);
+Push(ECX);
+Push(EDX);
+Push(EBX);
+Push(Temp);
+Push(EBP);
+Push(ESI);
+Push(EDI);
+push    ds
+push    es
+push    fs
+push    gs
+*/
 typedef struct s_STKPARAME
 {
     reg_t rvsgs;    

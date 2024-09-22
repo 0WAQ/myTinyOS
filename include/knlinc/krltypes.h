@@ -20,6 +20,9 @@
 #include "krlcpuidle_t.h"
 #include "krldevice_t.h"
 #include "krlspinlock_t.h"
+#include "krliocache_t.h"
+#include "krlvadrsmem_t.h"
+
 #include "krlservice_t.h"
 #include "krlsvemm_t.h"
 #include "krlsvethread_t.h"

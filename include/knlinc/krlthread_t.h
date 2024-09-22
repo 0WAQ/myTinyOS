@@ -66,7 +66,7 @@ typedef struct s_CONTEXT
     reg_t       ctx_nxtesp;
     reg_t       ctx_nxtss;
     reg_t       ctx_nxtcs;
-    x64tss_t*      ctx_nxttss;
+    x64tss_t*   ctx_nxttss;
 #endif
 #endif
 #if((defined CFG_STM32F0XX_PLATFORM))
