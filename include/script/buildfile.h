@@ -6,8 +6,10 @@
 #define BUILD_HALY_OBJS init_entry.o hal_start.o halinit.o halglobal.o\
                         halplatform.o bdvideo.o halcpuctrl.o halprint.o\
                         halmm.o halintupt.o kernel.o i8259.o halgdtidt.o\
-                        memmgrinit.o memdivmer.o memarea.o msadsc.o
-#define BUILD_KRNL_OBJS krlinit.o
+                        memmgrinit.o memdivmer.o memarea.o msadsc.o\
+                        kmsob.o halmmu.o
+#define BUILD_KRNL_OBJS krlinit.o krlvadrsmem.o krlglobal.o krlmm.o krlpagempol.o\
+                        krlsem.o krlspinlock.o krlwaitlist.o
 #define BUILD_MEMY_OBJS
 #define BUILD_FSYS_OBJS
 #define BUILD_DRIV_OBJS
