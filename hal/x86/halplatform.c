@@ -65,7 +65,7 @@ fhdsc_t *get_fileinfo(char_t *fname, machbstart_t *mbsp)
         mrddadrs->mdc_fhdnr < 2 ||
         mrddadrs->mdc_filnr < 2)
     {
-        system_error("no mrddsc");
+        return NULL;
     }
     s64_t rethn = -1;
     fhdsc_t *fhdscstart = (fhdsc_t *)((uint_t)((mrddadrs->mdc_fhdbk_s) + (phyadr_to_viradr((adr_t)mbsp->mb_imgpadr))));
@@ -218,9 +218,11 @@ int initchkadr_is_ok(machbstart_t *mbsp, u64_t chkadr, u64_t cksz)
     return 0;
 }
 
-#pragma GCC push_options
-#pragma GCC optimize("O0")
-void die(u32_t dt)
+//__attribute__((optimize("O0"))) 
+//__attribute__ ((optnone))
+//#pragma clang diagnostic push
+//#pragma clang optimize off
+void die(u32_t dt)   
 {
     u32_t dttt = dt, dtt = dt;
     if (dt == 0)
@@ -233,4 +235,4 @@ void die(u32_t dt)
                 ;
 }
 
-#pragma GCC pop_options
+// #pragma clang pop_options

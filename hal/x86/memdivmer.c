@@ -288,7 +288,6 @@ bool_t onmpgs_retn_bafhlst(memarea_t *malckp, uint_t pages, bafhlst_t **retrelba
 	return FALSE;
 }
 
-// 释放页，
 bool_t onfpgs_retn_bafhlst(memarea_t *malckp, uint_t freepgs, bafhlst_t **retrelbf, bafhlst_t **retmerbf)
 {
 	if (malckp == NULL || freepgs < 1 || retrelbf == NULL || retmerbf == NULL) {

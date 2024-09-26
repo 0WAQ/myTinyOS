@@ -1,20 +1,23 @@
 ;*****************************************************************************
 ;*		内核初始化入口文件init_entry.asm				    *
-;*				彭东	     
 ;*****************************************************************************
 %define MBSP_ADR 0x100000
 %define IA32_EFER 0C0000080H
-%define PML4T_BADR 0x1000000  
+%define MSR_IA32_MISC_ENABLE 0x000001a0
+%define PML4T_BADR 0x1000000      ;0x20000;0x5000
 %define KRLVIRADR 0xffff800000000000
 %define KINITSTACK_OFF 16
 global _start
 global x64_GDT
+global kernel_pml4
 extern hal_start
 
 [section .start.text]
 [BITS 32]
 _start:
 	cli
+	cmp eax,0xa5
+	je uefientry
 	mov ax,0x10
 	mov ds,ax
 	mov es,ax
@@ -28,11 +31,22 @@ _start:
     mov cr4, eax
     mov eax, PML4T_BADR
     mov cr3, eax	
+;开启SSE
+	mov eax, cr4
+    bts eax, 9                      ; CR4.OSFXSR = 1
+    bts eax, 10                      ; CR4.OSXMMEXCPT = 1
+    mov cr4, eax	
 ;开启 64bits long-mode
     mov ecx, IA32_EFER
     rdmsr
     bts eax, 8                      ; IA32_EFER.LME =1
     wrmsr
+	
+	mov ecx, MSR_IA32_MISC_ENABLE
+	rdmsr
+	btr eax, 6                      ; L3Cache =1
+    wrmsr
+	
 ;开启 PE 和 paging
     mov eax, cr0
     bts eax, 0                      ; CR0.PE =1
@@ -44,6 +58,45 @@ _start:
     mov cr0, eax                    ; IA32_EFER.LMA = 1
     jmp 08:entry64
 [BITS 64]
+uefientry:
+    lgdt [eGdtPtr]        
+;开启 PAE
+    mov rax, cr4
+    bts rax, 5                      ; CR4.PAE = 1
+    mov cr4, rax
+    
+	mov rax, PML4T_BADR
+    mov cr3, rax
+
+;开启SSE
+	mov rax, cr4
+    bts rax, 9                      ; CR4.OSFXSR = 1
+    bts rax, 10                      ; CR4.OSXMMEXCPT = 1
+    mov cr4, rax
+
+;开启 64bits long-mode
+    mov ecx, IA32_EFER
+    rdmsr
+    bts eax, 8                      ; IA32_EFER.LME =1
+    wrmsr
+
+	mov ecx, MSR_IA32_MISC_ENABLE
+	rdmsr
+	btr eax, 6                      ; L3Cache =1
+    wrmsr
+
+;开启 PE 和 paging
+    mov rax, cr0
+    bts rax, 0                      ; CR0.PE =1
+    bts rax, 31
+
+;开启 CACHE       
+    btr rax,29		;CR0.NW=0
+    btr rax,30		;CR0.CD=0  CACHE
+        
+    mov cr0, rax                    ; IA32_EFER.LMA = 1
+    
+	jmp entry64
 entry64:
 	mov ax,0x10
 	mov ds,ax
@@ -94,3 +147,10 @@ eGdtLen			equ	$ - enull_x64_dsc			; GDT长度
 eGdtPtr:		dw eGdtLen - 1					; GDT界限
 				dq ex64_GDT
 
+[section .start.data.pml4]
+
+stack:
+	times 1024 dq 0
+
+kernel_pml4:	
+	times 512*10 dq 0

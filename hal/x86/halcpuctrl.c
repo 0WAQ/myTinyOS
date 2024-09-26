@@ -5,6 +5,36 @@
 #include "cosmostypes.h"
 #include "cosmosmctrl.h"
 
+void hal_wbinvd()
+{
+	__asm__ __volatile__("wbinvd": : :"memory");
+}
+
+void hal_invd()
+{
+	__asm__ __volatile__("invd": : :"memory");
+}
+
+void hal_sti_cpuflag(cpuflg_t* cpuflg)
+{
+    restore_flags_sti(cpuflg);
+}
+
+void hal_cli_cpuflag(cpuflg_t* cpuflg)
+{
+    save_flags_cli(cpuflg);
+}
+
+void hal_cpuflag_sti(cpuflg_t* cpuflg)
+{
+    save_flags_sti(cpuflg);
+}
+
+void hal_cpuflag_cli(cpuflg_t* cpuflg)
+{
+    restore_flags_cli(cpuflg);
+}
+
 void hal_spinlock_init(spinlock_t *lock)
 {
     lock->lock = 0;
@@ -63,6 +93,17 @@ void hal_spinlock_saveflg_cli(spinlock_t *lock, cpuflg_t *cpuflg)
         : "r"(1), "m"(*lock));
     return;
 }
+void knl_spinlock(spinlock_t * lock)
+{
+	hal_spinlock_lock(lock);
+	return;
+}
+void knl_spinunlock(spinlock_t * lock)
+{
+	hal_spinlock_unlock(lock);
+	return;
+}
+
 
 void hal_spinunlock_restflg_sti(spinlock_t *lock, cpuflg_t *cpuflg)
 {
@@ -145,7 +186,7 @@ void knl_spinunlock_sti(spinlock_t *lock, cpuflg_t *cpuflg)
     return;
 }
 
-void hal_memset(void *setp, size_t n, u8_t setval)
+void hal_memset(void *setp, u8_t setval, size_t n)
 {
     u8_t *_p = (u8_t *)setp;
     for (uint_t i = 0; i < n; i++)
@@ -167,6 +208,8 @@ void hal_memcpy(void *src, void *dst, size_t n)
 
 void hal_sysdie(char_t *errmsg)
 {
+    kprint("threads:%d currthread:%s\n", osschedcls.scls_threadnr, krlsched_retn_currthread()->td_appfilenm);
+    kprint("mem freepages:%d allocpages:%d maxpages:%d\n", memmgrob.mo_freepages, memmgrob.mo_alocpages, memmgrob.mo_maxpages);
     kprint("COSMOS SYSTEM IS DIE %s", errmsg);
     for (;;)
         ;

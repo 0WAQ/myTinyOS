@@ -76,6 +76,10 @@ bool_t init_one_pmrge(e820map_t *e8p, phymmarge_t *pmargep)
         ptype = PMR_T_BUGRAM;
         pstype = RAM_AREACON;
         break;
+    case RAM_MEGER:
+        ptype = PMR_T_BUGRAM;
+        pstype = RAM_MEGER;
+        break;
     default:
         break;
     }
@@ -184,4 +188,6 @@ void init_halmm()
 
     // 初始化物理内存初始化
     init_memmgr();
+
+    kprint("物理内存初始化成功\n");
 }

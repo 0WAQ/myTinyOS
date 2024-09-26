@@ -17,4 +17,6 @@ void init_hal()
     
     // 初始化中断
     init_halintupt();
+
+    kprint("HAL层初始化成功\n");
 }

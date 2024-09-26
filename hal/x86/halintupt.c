@@ -5,6 +5,18 @@
 #include "cosmostypes.h"
 #include "cosmosmctrl.h"
 
+void dump_stack(void* stk)
+{
+    faultstkregs_t* f = (faultstkregs_t*)stk;
+    kprint("程序指令寄存器%x:\n",f->r_rip_old);
+    kprint("程序标志寄存器%x:\n",f->r_rflgs);
+    kprint("程序栈寄存器%x:\n",f->r_rsp_old);
+    kprint("程序缺页地址%x:\n",read_cr2());
+    kprint("程序段寄存器CS:%x SS:%x DS:%x ES:%x FS:%x GS:%x\n",
+    f->r_cs_old, f->r_ss_old, f->r_ds, f->r_es, f->r_fs, f->r_gs);
+    return;
+}
+
 void intfltdsc_t_init(intfltdsc_t *initp, u32_t flg, u32_t sts, uint_t prity, uint_t irq)
 {
     hal_spinlock_init(&initp->i_lock);
@@ -47,7 +59,8 @@ PUBLIC void init_halintupt()
 
     // 
     init_i8259();
-    i8259_enabled_line(0);
+
+    kprint("中断初始化成功\n");
 }
 
 PUBLIC intfltdsc_t *hal_retn_intfltdsc(uint_t irqnr)
@@ -86,7 +99,7 @@ drvstus_t hal_enable_intline(uint_t ifdnr)
     if (20 > ifdnr || 36 < ifdnr) {
         return DFCERRSTUS;
     }
-    i8259_enabled_line((u32_t)ifdnr);
+    i8259_enabled_line((u32_t)(ifdnr - 20));
     return DFCOKSTUS;
 }
 
@@ -95,7 +108,7 @@ drvstus_t hal_disable_intline(uint_t ifdnr)
     if (20 > ifdnr || 36 < ifdnr) {
         return DFCERRSTUS;
     }
-    i8259_disable_line((u32_t)ifdnr);
+    i8259_disable_line((u32_t)(ifdnr - 20));
     return DFCOKSTUS;
 }
 
@@ -131,6 +144,11 @@ void hal_run_intflthandle(uint_t ifdnr, void *sframe)
     }
 }
 
+void hal_hwint_eoi()
+{
+    i8259_send_eoi();
+}
+
 // 中断处理函数
 void hal_do_hwint(uint_t intnumb, void *krnlsframp)
 {
@@ -163,21 +181,47 @@ void hal_do_hwint(uint_t intnumb, void *krnlsframp)
     hal_spinunlock_restflg_sti(&ifdscp->i_lock, &cpuflg);
 }
 
-// 异常分发器
-void hal_fault_allocator(uint_t faultnumb, void *krnlsframp)
+void hal_fault_allocator(uint_t faultnumb, void *krnlsframp) //eax,edx
 {
-    kprint("faultnumb:%x\n", faultnumb);
-    for (;;);
+    adr_t fairvadrs;
+    cpuflg_t cpuflg;
+    hal_cpuflag_sti(&cpuflg);
+    if (faultnumb == 14)
+    {
+        fairvadrs = (adr_t)read_cr2();
+        // kprint("当前进程:%s,缺页异常地址:%x\n", krlsched_retn_currthread()->td_appfilenm, fairvadrs);
+        if (krluserspace_accessfailed(fairvadrs) != 0)
+        {
+            dump_stack(krnlsframp);
+            system_error("缺页处理失败\n");
+        }
+        hal_cpuflag_cli(&cpuflg);
+        return;
+    }
+    kprint("当前进程:%s,犯了不该犯的错误:%d,所以要杀\n", krlsched_retn_currthread()->td_appfilenm, faultnumb);
+    dump_stack(krnlsframp);
+    krlsve_exit_thread();
+    hal_cpuflag_cli(&cpuflg);
+    return;
 }
 
-sysstus_t hal_syscl_allocator(uint_t sys_nr,void* msgp)
+sysstus_t hal_syscl_allocator(uint_t inr,void* krnlsframp)
 {
-	return 0; 
+    cpuflg_t cpuflg;
+    sysstus_t ret;
+    hal_cpuflag_sti(&cpuflg);
+	ret = krlservice(inr,krnlsframp);
+    hal_cpuflag_cli(&cpuflg);
+    return ret;
 }
 
 // 中断分发器
 void hal_hwint_allocator(uint_t intnumb, void *krnlsframp)
 {
-    i8259_send_eoi();
-    hal_do_hwint(intnumb, krnlsframp);
+    cpuflg_t cpuflg;
+    hal_cpuflag_sti(&cpuflg);
+    hal_hwint_eoi();
+    hal_do_hwint(intnumb, krnlsframp);   
+    krlsched_chkneed_pmptsched();
+    hal_cpuflag_cli(&cpuflg);
 }
