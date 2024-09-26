@@ -304,8 +304,10 @@ global  asm_ret_from_user_mode
 	mov es,r14w
 	mov fs,r14w
 	mov gs,r14w
-
-	call   	hal_syscl_allocator
+	
+	mov	rdi, rax
+	mov rsi, rsp
+	call hal_syscl_allocator
 	
 	pop r14
 	mov gs,r14w

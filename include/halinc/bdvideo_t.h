@@ -86,27 +86,27 @@ typedef u32_t pixl_t;
 #define BGAMODE 3
 typedef struct s_GRAPH
 {
-    u32_t gh_mode;
-    u32_t gh_x;
-    u32_t gh_y;
-    u32_t gh_framphyadr;
-    u32_t gh_onepixbits;
-    u32_t gh_vbemodenr;
-    u32_t gh_vifphyadr;
-    u32_t gh_vmifphyadr;
-    u32_t gh_bank;
-    u32_t gh_curdipbnk;
-    u32_t gh_nextbnk;
-    u32_t gh_banksz;
-    u32_t gh_logophyadrs;
-    u32_t gh_logophyadre;
-    u32_t gh_fontadr;
-    u32_t gh_ftsectadr;
-    u32_t gh_ftsectnr;
-    u32_t gh_fnthight;
-    u32_t gh_nxtcharsx;
-    u32_t gh_nxtcharsy;
-    u32_t gh_linesz;
+    uint_t gh_mode;
+    uint_t gh_x;
+    uint_t gh_y;
+    uint_t gh_framphyadr;
+    uint_t gh_onepixbits;
+    uint_t gh_vbemodenr;
+    uint_t gh_vifphyadr;
+    uint_t gh_vmifphyadr;
+    uint_t gh_bank;
+    uint_t gh_curdipbnk;
+    uint_t gh_nextbnk;
+    uint_t gh_banksz;
+    uint_t gh_logophyadrs;
+    uint_t gh_logophyadre;
+    uint_t gh_fontadr;
+    uint_t gh_ftsectadr;
+    uint_t gh_ftsectnr;
+    uint_t gh_fnthight;
+    uint_t gh_nxtcharsx;
+    uint_t gh_nxtcharsy;
+    uint_t gh_linesz;
     vbeinfo_t gh_vbeinfo;
     vbeominfo_t gh_vminfo;
 }__attribute__((packed)) graph_t;
@@ -192,24 +192,24 @@ typedef struct s_DFTGHOPS
     size_t (*dgo_read)(void* ghpdev,void* outp,size_t rdsz);
     size_t (*dgo_write)(void* ghpdev,void* inp,size_t wesz);
     sint_t (*dgo_ioctrl)(void* ghpdev,void* outp,uint_t iocode);
-    
+
     // 刷新
     void   (*dgo_flush)(void* ghpdev);
     sint_t (*dgo_set_bank)(void* ghpdev, sint_t bnr);
-    
+
     // 读写像素
     pixl_t (*dgo_readpix)(void* ghpdev,uint_t x,uint_t y);
     void   (*dgo_writepix)(void* ghpdev,pixl_t pix,uint_t x,uint_t y);
-    
+
     // 直接读写像素
     pixl_t (*dgo_dxreadpix)(void* ghpdev,uint_t x,uint_t y);
     void   (*dgo_dxwritepix)(void* ghpdev,pixl_t pix,uint_t x,uint_t y);
-    
+
     // 设置x、y坐标和偏移
     sint_t (*dgo_set_xy)(void* ghpdev,uint_t x,uint_t y);
     sint_t (*dgo_set_vwh)(void* ghpdev,uint_t vwt,uint_t vhi);
     sint_t (*dgo_set_xyoffset)(void* ghpdev,uint_t xoff,uint_t yoff);
-    
+   
     // 获取x、y坐标和偏移
     sint_t (*dgo_get_xy)(void* ghpdev,uint_t* rx,uint_t* ry);
     sint_t (*dgo_get_vwh)(void* ghpdev,uint_t* rvwt,uint_t* rvhi);

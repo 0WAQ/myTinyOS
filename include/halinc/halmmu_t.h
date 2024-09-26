@@ -217,4 +217,12 @@ typedef struct MMUDSC
         uint_t mud_mdirmsanr;
 } mmudsc_t;
 
+typedef struct MMU
+{
+        uint_t mud_tdirmsanr;
+        uint_t mud_sdirmsanr;
+        uint_t mud_idirmsanr;
+        uint_t mud_mdirmsanr;
+} MMU;
+
 #endif // HALMMU_T_H

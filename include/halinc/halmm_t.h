@@ -82,6 +82,7 @@
 #define RAM_ACPIREC 3
 #define RAM_ACPINVS 4
 #define RAM_AREACON 5
+#define RAM_MEGER 6
 
 #define PMR_T_OSAPUSERRAM 1
 #define PMR_T_RESERVRAM 2

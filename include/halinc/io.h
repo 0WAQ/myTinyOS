@@ -4,6 +4,13 @@
 #ifndef _IO_H
 #define _IO_H
 
+// #define LKFS __attribute__((section(".fs.text")))
+// #define LKSED __attribute__((section(".sched.text")))
+// #define LKINIT __attribute__((section(".init.text")))
+// #define LKDRV __attribute__((section(".drive.text")))
+// #define LKSIRQ __attribute__((section(".sirq.text")))
+// #define LKSCALL __attribute__((section(".scall.text")))
+// #define LKKEND __attribute__((section(".krnl.krnend")))
 
 #define ICW1 0x11
 #define ZICW2 0x20
@@ -233,6 +240,29 @@ KLINE void restore_flags_sti(cpuflg_t *flagsres)
     return;
 }
 
+KLINE void restore_flags_cli(cpuflg_t *flags)
+{
+    __asm__ __volatile__(
+        "pushq %0 \t\n"
+        "popfq \t\n"
+        : "=m"(*flags)
+        :
+        : "memory");
+    return;
+}
+
+KLINE void save_flags_sti(cpuflg_t *flags)
+{
+    __asm__ __volatile__(
+        "pushfq \t\n"
+        "popq %0\t\n"
+        "sti\t\n"
+        :
+        : "m"(*flags)
+        : "memory");
+    return;
+}
+
 KLINE u64_t x86_rdpmc(const int ctrsel)
 {
     u32_t eax, edx;
@@ -255,6 +285,12 @@ KLINE u64_t x86_rdtsc(void)
 
     return (((u64_t)ledx) << 32) | (u64_t)leax;
 }
+
+/*
+ * AMD64 says BSRQ won't clobber the dest reg if x==0; Intel64 says the
+ * dest reg is undefined if x==0, but their CPU architect says its
+ * value is written to set it to the same as before.
+ */
 
 KLINE sint_t search_64rlbits(u64_t val)
 {
@@ -289,28 +325,62 @@ KLINE u32_t read_kesp()
     return esp;
 }
 
-KLINE u32_t read_kcr2()
+KLINE u64_t read_rsp()
 {
-    u32_t cr2;
+    u64_t rsp;
 
     __asm__ __volatile__(
-        "movl %%cr2,%0"
-        : "=g"(cr2)
+        "movq %%rsp,%0"
+        : "=g"(rsp)
         :
         : "memory");
 
-    return cr2;
+    return rsp;
 }
 KLINE void set_cr3(u64_t pl4adr)
 {
-	__asm__ __volatile__(
-		
-             "movq %0,%%cr3 \n\t"
-	     :
-             : "r"(pl4adr)
-             : "memory"//, "edx"
-        );
-	return;
+    __asm__ __volatile__(
+
+        "movq %0,%%cr3 \n\t"
+        :
+        : "r"(pl4adr)
+        : "memory" //, "edx"
+    );
+    return;
+}
+
+KLINE uint_t read_cr2()
+{
+    uint_t regtmp = 0;
+    __asm__ __volatile__(
+        "movq %%cr2,%0\n\t"
+        : "=r"(regtmp)
+        :
+        : "memory");
+    return regtmp;
+}
+
+KLINE uint_t read_cr3()
+{
+    uint_t regtmp = 0;
+    __asm__ __volatile__(
+        "movq %%cr3,%0\n\t"
+        : "=r"(regtmp)
+        :
+        : "memory");
+    return regtmp;
+}
+
+KLINE void write_cr3(uint_t r_val)
+{
+    __asm__ __volatile__(
+
+        "movq %0,%%cr3 \n\t"
+        :
+        : "r"(r_val)
+        : "memory" //, "edx"
+    );
+    return;
 }
 
 #endif

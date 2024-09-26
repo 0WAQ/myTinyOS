@@ -28,7 +28,7 @@ typedef sint_t sysstus_t;
 typedef sint_t hand_t;
 typedef void* buf_t;
 typedef unsigned long size_t;
-typedef u32_t reg_t;
+typedef u64_t reg_t;
 
 
 typedef void (*inthandler_t)();

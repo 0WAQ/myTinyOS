@@ -4,6 +4,7 @@
 #ifndef _HALPRINT_H
 #define _HALPRINT_H
 
+void printfk(const char* fmt,...);
 void kprint(const char* fmt,...);
 char_t* strcopyk(char_t* buf,char_t* str_s);
 void vsprintfk(char* buf,const char* fmt,va_list args);

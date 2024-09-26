@@ -8,6 +8,7 @@ void mm_update_memmgrob(uint_t realpnr,uint_t flgs);
 void mm_update_memarea(memarea_t* malokp,uint_t pgnr,uint_t flgs);
 memarea_t* onfrmsa_retn_marea(memmgrob_t* mmobjp,msadsc_t* freemsa,uint_t freepgs);
 memarea_t* onmrtype_retn_marea(memmgrob_t* mmobjp,uint_t mrtype);
+u64_t onfrmsa_retn_fpagenr(msadsc_t* freemsa);
 bafhlst_t* onma_retn_maxbafhlst(memarea_t* malckp);
 msadsc_t* mm_divpages_opmsadsc(msadsc_t* msastat,uint_t mnr);
 sint_t mm_merpages_opmsadsc(bafhlst_t* bafh,msadsc_t* freemsa,uint_t freepgs);
