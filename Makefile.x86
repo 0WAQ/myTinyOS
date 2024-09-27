@@ -1,4 +1,8 @@
-MAKEFLAGS = -sR
+###################################################################
+#		主控自动化编译配置文件 Makefile			  #
+###################################################################
+
+MAKEFLAGS =
 
 MKDIR = mkdir
 RMDIR = rmdir
@@ -12,8 +16,9 @@ HALYMFLGS = -C $(BUILD_PATH) -f hal.mk
 KRNLMFLGS = -C $(BUILD_PATH) -f krl.mk
 DRIVMFLGS = -C $(BUILD_PATH) -f drv.mk
 LIBSMFLGS = -C $(BUILD_PATH) -f lib.mk
-TASKMFLGS = -C $(BUILD_PATH) -f task.mk
 LINKMFLGS = -C $(BUILD_PATH) -f link.mk
+APPSMFLGS = -C $(BUILD_PATH) -f app.mk
+LAPPMFLGS = -C $(BUILD_PATH) -f appslink.mk
 BUILD_PATH = ./build/
 INITLDR_PATH =./initldr/
 
@@ -24,5 +29,8 @@ all:
 	$(CD) $(INITLDR_PATH) && $(MAKE)
 	$(MAKE) $(HALYMFLGS)
 	$(MAKE) $(KRNLMFLGS)
+	$(MAKE) $(DRIVMFLGS)
+	$(MAKE) $(LIBSMFLGS)
 	$(MAKE) $(LINKMFLGS)
-	@echo '恭喜我，系统编译构建完成！ ^_^'
+	$(MAKE) $(APPSMFLGS)
+	@echo '恭喜我，Cosmos内核编译构建完成！ ^_^'

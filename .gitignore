@@ -1,5 +1,7 @@
 .vscode/
 
+exckrnl/*
+!exckrnl/.keep
 build/*
 !build/lmkfbuild
 !build/pretreatment.mkf

@@ -218,6 +218,7 @@ typedef struct s_DFTGHOPS
 
 typedef struct s_DFTGRAPH
 {
+    spinlock_t gh_lock;
     u64_t gh_mode;          // 图形模式
     u64_t gh_x;             // 水平像素点
     u64_t gh_y;             // 垂直像素点
