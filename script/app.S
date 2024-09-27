@@ -1,19 +1,24 @@
 ###################################################################
-#		task自动化编译配置文件 Makefile                    #
-#				彭东  ＠ 2013.09.19.18.30	  #
+#		APP自动化编译配置文件 Makefile                    #
 ###################################################################
 
-MAKEFLAGS = -s
-KERNELCE_PATH	= ../task/
+MAKEFLAGS =
+KERNELCE_PATH	= ../apps/
 HEADFILE_PATH = -I ../include -I ../include/bastypeinc -I ../include/halinc -I ../include/knlinc -I ../include/libinc -I ../include/drvinc
 CCBUILDPATH	= $(KERNELCE_PATH)
 include krnlbuidcmd.mk
 include krnlobjs.mk
 
-.PHONY : all everything  build_kernel
-all: build_kernel
+APPS := $(addsuffix .app, $(basename $(BUILD_MK_APPS_OBJS)))
+.PHONY : all everything  build_kernel linkapp
+all: build_kernel linkapp
 
 build_kernel:everything
 
-everything :$(BUILD_MK_TASK_OBJS)
+everything :$(BUILD_MK_APPS_OBJS)
+
+linkapp: $(APPS)
+
+%.app:
+[make -f appslink.mk OBJ=$@
 include krnlbuidrule.mk
