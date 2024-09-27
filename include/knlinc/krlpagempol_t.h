@@ -1,7 +1,5 @@
 ﻿/**********************************************************
         内核层内存页面池管理头文件krlpagempol_t.h
-***********************************************************
-                彭东
 **********************************************************/
 #ifndef _KRLPAGEMPOL_T_H
 #define _KRLPAGEMPOL_T_H
@@ -71,8 +69,6 @@ typedef struct s_KMEMPOOL
     msahead_t       mp_msalsthead[PHYMSA_MAX]; 
 #endif
 }kmempool_t;
-
-
 
 
 #endif // KRLPAGEMPOL_T_H

@@ -1,7 +1,5 @@
 /**********************************************************
         LMOSEM IO缓存块头文件krliocache_t.h
-***********************************************************
-                彭东 ＠ 2018.03.08.10.10
 **********************************************************/
 #ifndef _KRLIOCACHE_T_H
 #define _KRLIOCACHE_T_H
@@ -36,8 +34,5 @@ typedef struct s_IOCHEBLK
 	void*  icb_priv;
 	void*  icb_extp;
 }iocheblk_t;
-
-
-
 
 #endif // _KRLIOCACHE_T_H

@@ -1,7 +1,5 @@
 /**********************************************************
         内核虚拟地址空间头文件krlvadrsmem_t.h
-***********************************************************
-                彭东
 **********************************************************/
 #ifndef _KRLVADRSMEM_T_H
 #define _KRLVADRSMEM_T_H
@@ -57,6 +55,15 @@ typedef struct KVMEMCBOXMGR
 	list_h_t kbm_cachehead;
 	void* kbm_ext;
 }kvmemcboxmgr_t;
+
+#define KMV_TEXT_TYPE 1
+#define KMV_DATA_TYPE 2
+#define KMV_BSS_TYPE 4
+#define KMV_HEAP_TYPE 8
+#define KMV_STACK_TYPE 16
+#define KMV_BIN_TYPE 64
+
+#define THREAD_HEAPADR_START 0x100000000
 
 typedef struct KVMEMCBOX 
 {
@@ -155,12 +162,14 @@ typedef struct s_VIRMEMADRS
 	kmvarsdsc_t* vs_krlmapdsc;
 	kmvarsdsc_t* vs_krlhwmdsc;
 	kmvarsdsc_t* vs_krlolddsc;
+	kmvarsdsc_t* vs_heapkmvdsc;
+	kmvarsdsc_t* vs_stackkmvdsc;
 	adr_t vs_isalcstart;
 	adr_t vs_isalcend;
 	void* vs_privte;
 	void* vs_ext;
 }virmemadrs_t;
-
+typedef struct s_THREAD thread_t;
 typedef struct s_MMADRSDSC
 {
 	spinlock_t msd_lock;
@@ -168,6 +177,7 @@ typedef struct s_MMADRSDSC
 	uint_t msd_flag;
 	uint_t msd_stus;
 	uint_t msd_scount;
+	thread_t* msd_thread;
 	sem_t  msd_sem;
 	mmudsc_t msd_mmu;
 	virmemadrs_t msd_virmemadrs;

@@ -1,10 +1,9 @@
 /**********************************************************
         IO缓存块头文件krliocache.h
-***********************************************************
-                彭东 
 **********************************************************/
 #ifndef _KRLIOCACHE_H
 #define _KRLIOCACHE_H
+
 void krliocheblkdsc_t_init(iocheblkdsc_t* initp);
 void iocheblk_t_init(iocheblk_t* initp);
 void init_krliocacheblk();
@@ -16,4 +15,5 @@ iocheblk_t* krliocheblk_alloc(iocheblkdsc_t* icblkdsc,uint_t icblknr,uint_t icbl
 bool_t krliocheblk_free_core(iocheblkdsc_t* icblkdsc, uint_t icblknr,uint_t icblksz);
 bool_t krliocheblk_free(iocheblkdsc_t* icblkdsc,uint_t icblknr,uint_t icblksz);
 void krliocheblk_test();
+
 #endif // _KRLIOCACHE_H

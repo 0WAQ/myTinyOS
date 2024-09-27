@@ -1,10 +1,9 @@
 /**********************************************************
         线程调度头文件krlsched_t.h
-***********************************************************
-                彭东 
 **********************************************************/
 #ifndef _KRLSCHED_T_H
 #define _KRLSCHED_T_H
+
 #define NOTS_SCHED_FLGS (0)
 #define NEED_SCHED_FLGS (1)
 #define NEED_START_CPUILDE_SCHED_FLGS (2)
@@ -33,7 +32,8 @@ typedef struct s_SCHDATA
     uint_t      sda_prityidx;
     thread_t*   sda_cpuidle;
     thread_t*   sda_currtd;
-    thrdlst_t   sda_thdlst[PRITY_MAX];  
+    thrdlst_t   sda_thdlst[PRITY_MAX];
+    list_h_t    sda_exitlist;  
 }schdata_t;
 
 typedef struct s_SCHEDCALSS
@@ -44,7 +44,6 @@ typedef struct s_SCHEDCALSS
     uint_t      scls_threadid_inc;
     schdata_t   scls_schda[CPUCORE_MAX];
 }schedclass_t;
-
 
 
 #endif // KRLSCHED_T_H

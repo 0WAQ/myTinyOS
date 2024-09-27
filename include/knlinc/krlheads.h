@@ -1,10 +1,9 @@
 /****************************************************************
         kernel头文件krlheads.h
-*****************************************************************
-                彭东
 ****************************************************************/
 #ifndef _KRLHEADS_H
 #define _KRLHEADS_H
+
 #include "krlsem.h"
 #include "krlintupt.h"
 #include "krlpagempol.h"
@@ -33,4 +32,6 @@
 #include "krlsvewrite.h"
 #include "krlsveioctrl.h"
 #include "krlsvelseek.h"
+#include "krlstr.h"
+
 #endif // KRLHEADS_H

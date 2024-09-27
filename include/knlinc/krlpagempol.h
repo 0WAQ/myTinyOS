@@ -1,7 +1,5 @@
 /**********************************************************
         内核层内存页面池管理头文件krlpagempol.h
-***********************************************************
-                彭东
 **********************************************************/
 #ifndef _KRLPAGEMPOL_H
 #define _KRLPAGEMPOL_H
@@ -40,4 +38,6 @@ adr_t kmempool_onsize_new(size_t msize);
 bool_t kmempool_onsize_delete(adr_t fradr,size_t frsz);
 adr_t kmempool_new(size_t msize);
 bool_t kmempool_delete(adr_t fradr,size_t frsz);
+
+
 #endif // _KRLPAGEMPOL_H

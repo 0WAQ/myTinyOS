@@ -1,12 +1,8 @@
 /**********************************************************
        设备管理头文件krldevice_t.h
-***********************************************************
-                彭东
 **********************************************************/
 #ifndef _KRLDEVICE_T_H
 #define _KRLDEVICE_T_H
-
-
 
 #define NOT_DEVICE 0
 #define AMBABUS_DEVICE 1
@@ -41,8 +37,8 @@
 #define FILESYS_DEVICE 30
 #define SYSTICK_DEVICE 31
 #define UNKNOWN_DEVICE 32
-
-#define DEVICE_MAX 33
+#define HD_DEVICE 33
+#define DEVICE_MAX 34
 
 #define IOIF_CODE_OPEN 0 //对应于open操作
 #define IOIF_CODE_CLOSE 1 //对应于close操作
@@ -75,7 +71,7 @@ typedef struct s_DEVID
     uint_t  dev_mtype;
     uint_t  dev_stype;
     uint_t  dev_nr;
-}devid_t;
+} __attribute__((aligned(64))) devid_t;
 
 typedef struct s_DEVTLST
 {
@@ -147,7 +143,5 @@ typedef struct s_DRIVER
     void* drv_extdata;
     char_t* drv_name; //驱动程序的名字。
 }driver_t;
-
-
 
 #endif // KRLDEVICE_T_H

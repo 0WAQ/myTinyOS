@@ -1,10 +1,9 @@
 /**********************************************************
         内核层内存对象池管理头文件krlobjsmpol.h
-***********************************************************
-                彭东 
 **********************************************************/
 #ifndef _KRLOBJSMPOL_H
 #define _KRLOBJSMPOL_H
+
 void init_krlobjsmpol();
 void objmgrhead_t_init(objmgrhead_t* initp,objalst_t* alstp,size_t objsz,adr_t start,adr_t end);
 void objalst_t_init(objalst_t* initp,olcfgdat_t* ocfgp);
@@ -24,4 +23,5 @@ adr_t krlobjsmpol_alloc(size_t msize);
 adr_t aloc_objsz_onobjmgrhead(objmgrhead_t* omghp);
 adr_t krlobjmplalc_core_onobjalst(objalst_t* alstp, size_t msize);
 adr_t krlobjsmpol_alloc_core(size_t msize);
+
 #endif // KRLOBJSMPOL_H
