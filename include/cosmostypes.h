@@ -8,4 +8,6 @@
 #include "bastype.h"
 #include "haltypes.h"
 #include "krltypes.h"
+#include "drvtypes.h"
+
 #endif

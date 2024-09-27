@@ -6,4 +6,7 @@
 
 #define CFG_X86_PLATFORM
 
+// #define CFG_DEBUG_BUILD
+#define APPRUN_START_VITRUALADDR (0x100000)
+
 #endif
