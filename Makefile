@@ -40,6 +40,7 @@ ELFSFILE = *.elf
 DBUGFILE = *.debug
 KERNEL_BUILD_PATH = ./build
 EXKNL_PATH = ./exckrnl
+INITLDR_PATH = ./initldr
 OVMF_PATH = ./ovmf/
 DSTPATH = ../exckrnl
 #RELEDSTPATH = ../release
@@ -77,6 +78,7 @@ clean:
 	$(CD) $(EXKNL_PATH); $(RM) -f *.o *.bin *.i *.krnl *.s *.map *.lib *.btoj *.vdi *.elf *vmdk *.lds *.mk *.mki krnlobjs.mh *.app *.bc *.dbg *.debug
 	$(CD) $(LEGACY_RELEASE_PATH); $(RM) -f *.o *.bin *.i *.krnl *.s *.eki *.map *.lib *.btoj *.elf *.vdi *vmdk *.lds *.mk *.mki krnlobjs.mh *.app *.dbg *.debug
 	$(CD) $(UEFI_RELEASE_PATH); $(RM) -f *.o *.bin *.i *.krnl *.s *.eki *.map *.lib *.btoj *.elf *.vdi *vmdk *.lds *.mk *.mki krnlobjs.mh *.app *.dbg *.debug
+	$(MAKE) -C $(INITLDR_PATH) clean
 	@echo '清理全部已构建文件... ^_^'
 
 print:

@@ -11,3 +11,11 @@ build/*
 */*.bin
 
 hd.*
+
+./ovmf/esp/Kernel/Cosmos.eki
+
+./release/*/*.bin
+./release/*/*.debug
+./release/*/*.eki
+./release/*/*.elf
+./release/*/*.app
