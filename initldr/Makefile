@@ -1,3 +1,7 @@
+###################################################################
+#		主控自动化编译配置文件 Makefile
+###################################################################
+
 MAKEFLAGS = -sR
 
 MKDIR = mkdir
@@ -6,25 +10,31 @@ CP = cp
 CD = cd
 DD = dd
 RM = rm
-
-BUILD_PATH = ./build
+PREMENTMFLGS = -C $(BUILD_PATH) -f pretreatment.mkf
+LEGABUILD_PATH = ./legacy/ 
+UEFIBUILD_PATH = ./uefi/
 MAKE = make
-INITLDRMFLGS = -C $(BUILD_PATH) -f initldr.mk
-INITLDRLINKMFLGS = -C $(BUILD_PATH) -f ldrlink.mk
+LEGACYMFLGS = -C $(LEGABUILD_PATH) -f Makefile
+UEFIMFLGS = -C $(UEFIBUILD_PATH) -f Makefile 
+DSTPATH = ../exckrnl
+RELEDSTPATH = ../release
 SRCFILE = $(BOOTEXCIMG) $(KRNLEXCIMG) $(LDEREXCIMG) $(SHELEXCIMG)
 RSRCFILE = $(BOOTEXCIMG) $(KRNLEXCIMG) $(LDEREXCIMG) $(SHELEXCIMG) $(VDIFNAME) $(VMDKFNAME)
-.PHONY : build print clean all
+.PHONY : all build print clean legacy uefi
 
-build: clean print all
+all: clean print build
 
-all:
-	$(MAKE) $(INITLDRMFLGS)
-	$(MAKE) $(INITLDRLINKMFLGS)
-	@echo '恭喜我, Initldr编译构建完成！ ^_^'
+build: legacy uefi
+legacy:
+	$(MAKE) $(LEGACYMFLGS)
+	@echo '恭喜我，Legacy引导编译构建完成！ ^_^'
+uefi:
+	$(MAKE) $(UEFIMFLGS)
+	@echo '恭喜我，UEFI引导编译构建完成！ ^_^'
 clean:
-	$(CD) $(BUILD_PATH); $(RM) -f *.o *.bin *.i *.krnl *.s *.map *.lib *.btoj *.vdi *vmdk *.eki *.elf
-	@echo 'Initldr:清理全部已构建文件... ^_^'
+	$(CD) $(LEGABUILD_PATH) && $(MAKE) clean
+	$(CD) $(UEFIBUILD_PATH) && $(MAKE) clean
+	
 
 print:
-	@echo '*********正在开始编译构建系统*************'
-
+	@echo '*********正在开始编译构建引导初始化组件*************'
