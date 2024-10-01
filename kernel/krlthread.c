@@ -6,23 +6,26 @@
 
 void micrstk_t_init(micrstk_t *initp)
 {
-    for (uint_t i = 0; i < MICRSTK_MAX; i++) {
+    for (uint_t i = 0; i < MICRSTK_MAX; i++)
+    {
         initp->msk_val[i] = 0;
     }
+    return;
 }
 
 void context_t_init(context_t *initp)
 {
+
     initp->ctx_nextrip = 0;
     initp->ctx_nextrsp = 0;
     initp->ctx_nexttss = &x64tss[hal_retn_cpuid()];
+    return;
 }
 
 uint_t krlretn_thread_id(thread_t *tdp)
 {
     return (uint_t)tdp;
 }
-
 void thread_t_init(thread_t *initp)
 {
     krlspinlock_init(&initp->td_lock);
@@ -47,17 +50,20 @@ void thread_t_init(thread_t *initp)
     initp->td_appfilenm = NULL;
     initp->td_appfilenmlen = 0;
     context_t_init(&initp->td_context);
-    for (uint_t hand = 0; hand < TD_HAND_MAX; hand++) {
+    for (uint_t hand = 0; hand < TD_HAND_MAX; hand++)
+    {
         initp->td_handtbl[hand] = NULL;
     }
     krlmemset((void*)initp->td_name, 0, THREAD_NAME_MAX);
+    return;
 }
 
 thread_t *krlnew_thread_dsc()
 {
 
     thread_t *rettdp = (thread_t *)(krlnew((size_t)(sizeof(thread_t))));
-    if (rettdp == NULL) {
+    if (rettdp == NULL)
+    {
         return NULL;
     }
     thread_t_init(rettdp);
@@ -66,6 +72,7 @@ thread_t *krlnew_thread_dsc()
 
 void krlthd_inc_tick(thread_t *thdp)
 {
+
     cpuflg_t cpuflg;
     krlspinlock_cli(&thdp->td_lock, &cpuflg);
     thdp->td_tick++;
@@ -77,11 +84,13 @@ void krlthd_inc_tick(thread_t *thdp)
         krlsched_set_schedflgs();
     }
     krlspinunlock_sti(&thdp->td_lock, &cpuflg);
+    return;
 }
 
 uint_t krlthread_sumtick(thread_t* thdp)
 {
-    if(NULL == thdp) {
+    if(NULL == thdp)
+    {
         return 0;
     }
     return thdp->td_sumtick;
@@ -136,7 +145,8 @@ retn_step:
 
 hand_t krlthd_del_objnode(thread_t *thdp, hand_t hand)
 {
-    if ((hand >= TD_HAND_MAX) || (hand <= NO_HAND)) {
+    if ((hand >= TD_HAND_MAX) || (hand <= NO_HAND))
+    {
         return NO_HAND;
     }
 
@@ -158,7 +168,8 @@ retn_step:
 
 objnode_t *krlthd_retn_objnode(thread_t *thdp, hand_t hand)
 {
-    if ((hand >= TD_HAND_MAX) || (hand <= NO_HAND)) {
+    if ((hand >= TD_HAND_MAX) || (hand <= NO_HAND))
+    {
         return NULL;
     }
 
@@ -197,6 +208,8 @@ void krlthread_kernstack_init(thread_t *thdp, void *runadr, uint_t cpuflags)
  
     thdp->td_context.ctx_nextrip = (uint_t)runadr;
     thdp->td_context.ctx_nextrsp = (uint_t)arp;
+
+    return;
 }
 
 void krlthread_userstack_init(thread_t *thdp, void *runadr, uint_t cpuflags)
@@ -219,23 +232,25 @@ void krlthread_userstack_init(thread_t *thdp, void *runadr, uint_t cpuflags)
  
     thdp->td_context.ctx_nextrip = (uint_t)runadr;
     thdp->td_context.ctx_nextrsp = (uint_t)arp;
+
+    return;
 }
 
 char_t* thread_name(thread_t* thread, char_t* name)
 {
     uint_t len = 0;
     adr_t vadr = NULL;
-    if(thread == NULL) {
+    if(NULL == thread)
+    {
         return NULL;
     }
-    if(name == NULL)
+    if(NULL == name)
     {
         krlstrcpy("unkown thread", thread->td_name);
         thread->td_appfilenm = thread->td_name;
         thread->td_appfilenmlen = THREAD_NAME_MAX;
         return thread->td_appfilenm;
     }
-
     len = krlstrlen(name);
     if(len < (THREAD_NAME_MAX - 1))
     {
@@ -244,9 +259,9 @@ char_t* thread_name(thread_t* thread, char_t* name)
         thread->td_appfilenmlen = THREAD_NAME_MAX;
         return thread->td_appfilenm;
     }
-
     vadr = krlnew(((size_t)len + 1));
-    if(vadr == NULL) {
+    if(NULL == vadr)
+    {
         return NULL;
     }
     krlmemset((void*)vadr, 0, len + 1);
@@ -263,10 +278,11 @@ thread_t *krlnew_user_thread_core(char_t* name, void *filerun, uint_t flg, uint_
     adr_t usrstkadr = NULL, usrstktop = NULL, krlstkadr = NULL;
     mmadrsdsc_t* mm; 
     mm = new_mmadrsdsc();
-    if(mm == NULL) {
+    if(NULL == mm)
+    {
         return NULL;
     }
-    if(mm->msd_virmemadrs.vs_stackkmvdsc == NULL)
+    if(NULL == mm->msd_virmemadrs.vs_stackkmvdsc)
     {
         del_mmadrsdsc(mm);
         return NULL;
@@ -292,13 +308,13 @@ thread_t *krlnew_user_thread_core(char_t* name, void *filerun, uint_t flg, uint_
         del_mmadrsdsc(mm);
         return NULL;
     }
-
     ret_td = krlnew_thread_dsc();
     if (ret_td == NULL)
     {
         acs = krldelete(krlstkadr, krlstksz);
         acs = del_mmadrsdsc(mm);
-        if (acs == FALSE) {
+        if (acs == FALSE)
+        {
             return NULL;
         }
         return NULL;
@@ -327,14 +343,16 @@ thread_t *krlnew_kern_thread_core(char_t* name, void *filerun, uint_t flg, uint_
     adr_t krlstkadr = NULL;
 
     krlstkadr = krlnew(krlstksz);
-    if (krlstkadr == NULL) {
+    if (krlstkadr == NULL)
+    {
         return NULL;
     }
     ret_td = krlnew_thread_dsc();
     if (ret_td == NULL)
     {
         acs = krldelete(krlstkadr, krlstksz);
-        if (acs == FALSE) {
+        if (acs == FALSE)
+        {
             return NULL;
         }
         return NULL;
@@ -356,24 +374,29 @@ thread_t *krlnew_kern_thread_core(char_t* name, void *filerun, uint_t flg, uint_
 thread_t *krlnew_thread(char_t* name, void *filerun, uint_t flg, uint_t prilg, uint_t prity, size_t usrstksz, size_t krlstksz)
 {
     size_t tustksz = usrstksz, tkstksz = krlstksz;
-    if (filerun == NULL || usrstksz > DAFT_TDUSRSTKSZ || krlstksz > DAFT_TDKRLSTKSZ) {
+    if (filerun == NULL || usrstksz > DAFT_TDUSRSTKSZ || krlstksz > DAFT_TDKRLSTKSZ)
+    {
         return NULL;
     }
 
-    if ((prilg != PRILG_USR && prilg != PRILG_SYS) || (prity >= PRITY_MAX)) {
+    if ((prilg != PRILG_USR && prilg != PRILG_SYS) || (prity >= PRITY_MAX))
+    {
         return NULL;
     }
-    if (usrstksz < DAFT_TDUSRSTKSZ) {
+    if (usrstksz < DAFT_TDUSRSTKSZ)
+    {
         tustksz = DAFT_TDUSRSTKSZ;
     }
-    if (krlstksz < DAFT_TDKRLSTKSZ) {
+    if (krlstksz < DAFT_TDKRLSTKSZ)
+    {
         tkstksz = DAFT_TDKRLSTKSZ;
     }
-
-    if (KERNTHREAD_FLG == flg) {
+    if (KERNTHREAD_FLG == flg)
+    {
         return krlnew_kern_thread_core(name, filerun, flg, prilg, prity, tustksz, tkstksz);
     }
-    else if (USERTHREAD_FLG == flg) {
+    else if (USERTHREAD_FLG == flg)
+    {
         return krlnew_user_thread_core(name, filerun, flg, prilg, prity, tustksz, tkstksz);
     }
     return NULL;
@@ -383,25 +406,29 @@ thread_t* krlthread_execvl(thread_t* thread, char_t* filename)
 {
     u64_t retadr = 0, filelen = 0;
     adr_t vadr = 0;
-    if(thread == NULL || filename == NULL) {
+    if(NULL == thread || NULL == filename)
+    {
         return NULL;
     }
     get_file_rvadrandsz(filename, &kmachbsp, &retadr, &filelen);
-    if(retadr == NULL || filelen == 0) {
+    if(NULL == retadr || 0 == filelen)
+    {
         return NULL;
     }
-
-    if(thread->td_mmdsc == &initmmadrsdsc) {
+    if(thread->td_mmdsc == &initmmadrsdsc)
+    {
         return NULL;
     }
-
-    if((0x100000+filelen) >= THREAD_HEAPADR_START) {
+    if((0x100000+filelen) >= THREAD_HEAPADR_START)
+    {
         return NULL;
     }
-
     vadr = kvma_initdefault_virmemadrs(thread->td_mmdsc, APPRUN_START_VITRUALADDR, filelen, KMV_BIN_TYPE);
-    if(vadr == NULL) {
+    if(NULL == vadr)
+    {
         return NULL;
     }
+    
     return thread;
+
 }

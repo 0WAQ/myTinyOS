@@ -9,19 +9,22 @@ void kwlst_t_init(kwlst_t *initp)
     krlspinlock_init(&initp->wl_lock);
     initp->wl_tdnr = 0;
     list_init(&initp->wl_list);
+    return;
 }
-
 void krlwlst_wait(kwlst_t *wlst)
 {
     krlsched_wait(wlst);
+    return;
 }
-
 void krlwlst_up(kwlst_t *wlst)
 {
-    if (list_is_empty_careful(&wlst->wl_list) == TRUE) {
+    if (list_is_empty_careful(&wlst->wl_list) == TRUE)
+    {
         return;
     }
     krlsched_up(wlst);
+
+    return;
 }
 
 void krlwlst_allup(kwlst_t *wlst)
@@ -30,6 +33,7 @@ void krlwlst_allup(kwlst_t *wlst)
     {
         krlsched_up(wlst);
     }
+    return;
 }
 
 void krlwlst_add_thread(kwlst_t *wlst, thread_t *tdp)
@@ -40,10 +44,12 @@ void krlwlst_add_thread(kwlst_t *wlst, thread_t *tdp)
     list_add(&tdp->td_list, &wlst->wl_list);
     wlst->wl_tdnr++;
     krlspinunlock_sti(&wlst->wl_lock, &cufg);
+    return;
 }
 
 thread_t *krlwlst_del_thread(kwlst_t *wlst)
 {
+
     thread_t *tdp = NULL;
     cpuflg_t cufg;
     list_h_t *list;

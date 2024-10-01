@@ -12,4 +12,5 @@ void init_krl()
     init_krlcpuidle();
     //STI();
     die(0);
+    return;
 }

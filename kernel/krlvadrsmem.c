@@ -11,12 +11,14 @@ void teststc_t_init(teststc_t *initp)
 	initp->tst_vsiz = 0;
 	initp->tst_type = 0;
 	initp->tst_lime = 0;
+	return;
 }
 
 teststc_t *new_teststc()
 {
 	teststc_t *t = (teststc_t *)kmsob_new(sizeof(teststc_t));
-	if (t == NULL) {
+	if (NULL == t)
+	{
 		return NULL;
 	}
 	teststc_t_init(t);
@@ -25,46 +27,51 @@ teststc_t *new_teststc()
 
 void del_teststc(teststc_t *delstc)
 {
-	if (delstc != NULL)
+
+	if ((NULL != delstc))
 	{
 		teststc_t_init(delstc);
-		if (TRUE == kmsob_delete((void *)delstc, sizeof(teststc_t))) {
+		if (TRUE == kmsob_delete((void *)delstc, sizeof(teststc_t)))
+		{
 			return;
 		}
 	}
 	system_error("del_teststc err\n");
+	return;
 }
 
 void add_new_teststc(adr_t vadr, size_t vsiz)
 {
-	if (vadr == NULL || vsiz < 1) {
+	if (NULL == vadr || 1 > vsiz)
+	{
 		system_error("add_new_teststc parm err\n");
 	}
-
 	teststc_t *t = NULL;
 	t = new_teststc();
-	if (t == NULL) {
+	if (NULL == t)
+	{
 		system_error("add_new_teststc new_teststc NULL\n");
 	}
-
 	t->tst_vadr = vadr;
 	t->tst_vsiz = vsiz;
 	list_add(&t->tst_list, &krlvirmemadrs.kvs_testhead);
 	krlvirmemadrs.kvs_tstcnr++;
+	return;
 }
 
 void vaslknode_t_init(vaslknode_t *initp)
 {
-	if (NULL == initp) {
+	if (NULL == initp)
+	{
 		system_error("vaslknode_t_init pram err\n");
 	}
-
 	initp->vln_color = 0;
 	initp->vln_flags = 0;
 	initp->vln_left = NULL;
 	initp->vln_right = NULL;
 	initp->vln_prev = NULL;
 	initp->vln_next = NULL;
+	return;
 }
 
 void pgtabpage_t_init(pgtabpage_t *initp)
@@ -72,14 +79,15 @@ void pgtabpage_t_init(pgtabpage_t *initp)
 	krlspinlock_init(&initp->ptp_lock);
 	list_init(&initp->ptp_msalist);
 	initp->ptp_msanr = 0;
+	return;
 }
 
 void virmemadrs_t_init(virmemadrs_t *initp)
 {
-	if (initp == NULL) {
+	if (NULL == initp)
+	{
 		return;
 	}
-
 	krlspinlock_init(&initp->vs_lock);
 	initp->vs_resalin = 0;
 	list_init(&initp->vs_list);
@@ -98,14 +106,15 @@ void virmemadrs_t_init(virmemadrs_t *initp)
 	initp->vs_isalcend = 0;
 	initp->vs_privte = 0;
 	initp->vs_ext = 0;
+	return;
 }
 
 void kmvarsdsc_t_init(kmvarsdsc_t *initp)
 {
-	if (initp == NULL) {
+	if (NULL == initp)
+	{
 		system_error("kmvarsdsc_t_init pram err\n");
 	}
-
 	krlspinlock_init(&initp->kva_lock);
 	initp->kva_maptype = 0;
 	list_init(&initp->kva_list);
@@ -117,11 +126,13 @@ void kmvarsdsc_t_init(kmvarsdsc_t *initp)
 	initp->kva_end = 0;
 	initp->kva_kvmbox = NULL;
 	initp->kva_kvmcobj = NULL;
+	return;
 }
 
 void kvirmemadrs_t_init(kvirmemadrs_t *initp)
 {
-	if (initp == NULL) {
+	if (NULL == initp)
+	{
 		system_error("kvirmemadrs_t_init pram err\n");
 	}
 	krlspinlock_init(&initp->kvs_lock);
@@ -142,13 +153,15 @@ void kvirmemadrs_t_init(kvirmemadrs_t *initp)
 	pgtabpage_t_init(&initp->kvs_ptabpgcs);
 	kvmcobjmgr_t_init(&initp->kvs_kvmcomgr);
 	kvmemcboxmgr_t_init(&initp->kvs_kvmemcboxmgr);
+	return;
 }
 
 kmvarsdsc_t *new_kmvarsdsc()
 {
 	kmvarsdsc_t *kmvdc = NULL;
 	kmvdc = (kmvarsdsc_t *)kmsob_new(sizeof(kmvarsdsc_t));
-	if (kmvdc == NULL) {
+	if (NULL == kmvdc)
+	{
 		return NULL;
 	}
 	kmvarsdsc_t_init(kmvdc);
@@ -157,7 +170,8 @@ kmvarsdsc_t *new_kmvarsdsc()
 
 bool_t del_kmvarsdsc(kmvarsdsc_t *delkmvd)
 {
-	if (delkmvd == NULL) {
+	if (NULL == delkmvd)
+	{
 		return FALSE;
 	}
 	return kmsob_delete((void *)delkmvd, sizeof(kmvarsdsc_t));
@@ -167,17 +181,18 @@ virmemadrs_t *new_virmemadrs()
 {
 	virmemadrs_t *vmdsc = NULL;
 	vmdsc = (virmemadrs_t *)kmsob_new(sizeof(virmemadrs_t));
-	if (vmdsc == NULL) {
+	if (NULL == vmdsc)
+	{
 		return NULL;
 	}
-
 	virmemadrs_t_init(vmdsc);
 	return vmdsc;
 }
 
 bool_t del_virmemadrs(virmemadrs_t *vmdsc)
 {
-	if (vmdsc == NULL) {
+	if (NULL == vmdsc)
+	{
 		return FALSE;
 	}
 	return kmsob_delete((void *)vmdsc, sizeof(virmemadrs_t));
@@ -186,15 +201,15 @@ bool_t del_virmemadrs(virmemadrs_t *vmdsc)
 void kvma_seting_kvirmemadrs(kvirmemadrs_t *kvma)
 {
 	kmvarsdsc_t *kmvdc = NULL;
-	if (kvma == NULL) {
+	if (NULL == kvma)
+	{
 		system_error("kvma_seting_kvirmemadrs parm err\n");
 	}
-
 	kmvdc = new_kmvarsdsc();
-	if (kmvdc == NULL) {
+	if (NULL == kmvdc)
+	{
 		system_error("kvma_seting_kvirmemadrs nomem err\n");
 	}
-
 	kvma->kvs_isalcstart = KRNL_VIRTUAL_ADDRESS_START + KRNL_MAP_VIRTADDRESS_SIZE;
 	kvma->kvs_isalcend = KRNL_VIRTUAL_ADDRESS_END;
 	kmvdc->kva_start = KRNL_VIRTUAL_ADDRESS_START;
@@ -204,28 +219,30 @@ void kvma_seting_kvirmemadrs(kvirmemadrs_t *kvma)
 	kvma->kvs_endkmvdsc = kmvdc;
 	kvma->kvs_krlmapdsc = kmvdc;
 	kvma->kvs_kmvdscnr++;
+	return;
 }
 
 bool_t kvma_inituserspace_virmemadrs(virmemadrs_t *vma)
 {
 	kmvarsdsc_t *kmvdc = NULL, *stackkmvdc = NULL, *heapkmvdc = NULL;
-	if (vma == NULL) {
+	if (NULL == vma)
+	{
 		return FALSE;
 	}
-
 	kmvdc = new_kmvarsdsc();
-	if (kmvdc == NULL) {
+	if (NULL == kmvdc)
+	{
 		return FALSE;
 	}
-
 	heapkmvdc = new_kmvarsdsc();
-	if (heapkmvdc = NULL) {
+	if(NULL == heapkmvdc)
+	{
 		del_kmvarsdsc(kmvdc);
 		return FALSE;
 	}
 
 	stackkmvdc = new_kmvarsdsc();
-	if (stackkmvdc == NULL)
+	if (NULL == stackkmvdc)
 	{
 		del_kmvarsdsc(kmvdc);
 		del_kmvarsdsc(heapkmvdc);
@@ -263,18 +280,18 @@ bool_t kvma_inituserspace_virmemadrs(virmemadrs_t *vma)
 
 adr_t kvma_initdefault_virmemadrs(mmadrsdsc_t* mm, adr_t start, size_t size, u32_t type)
 {
-	if(start <= 0x1000 || size <= 0|| mm == NULL) {
+	if(0x1000 >= start || 0 >= size || NULL == mm)
+	{
 		return NULL;
 	}
 	return vma_new_vadrs(mm, start, size, 0, type);
 }
-
 void mmadrsdsc_t_init(mmadrsdsc_t* initp)
 {
-	if(initp == NULL) {
+	if(NULL == initp)
+	{
 		return;
 	}
-
 	krlspinlock_init(&initp->msd_lock);
 	list_init(&initp->msd_list);
 	initp->msd_flag = 0;
@@ -293,16 +310,17 @@ void mmadrsdsc_t_init(mmadrsdsc_t* initp)
 	initp->msd_ebss = 0;
 	initp->msd_sbrk = 0;
 	initp->msd_ebrk = 0;
+	return; 
 }
 
 mmadrsdsc_t* new_mmadrsdsc()
 {
 	mmadrsdsc_t* mm;
 	mm = (mmadrsdsc_t*)kmsob_new(sizeof(mmadrsdsc_t));
-	if(mm == NULL) {
+	if(NULL == mm)
+	{
 		return NULL;
 	}
-
 	mmadrsdsc_t_init(mm);
 	kvma_inituserspace_virmemadrs(&mm->msd_virmemadrs);
 	hal_mmu_init(&mm->msd_mmu);
@@ -311,11 +329,12 @@ mmadrsdsc_t* new_mmadrsdsc()
 
 bool_t del_mmadrsdsc(mmadrsdsc_t* mm)
 {
-	if(mm == NULL) {
+	if(NULL == mm)
+	{
 		return FALSE;
 	}
-
-	if(hal_mmu_clean(&mm->msd_mmu) == FALSE) {
+	if(hal_mmu_clean(&mm->msd_mmu) == FALSE)
+	{
 		return FALSE;
 	}
 	return kmsob_delete((void*)mm, sizeof(mmadrsdsc_t));
@@ -324,7 +343,7 @@ bool_t del_mmadrsdsc(mmadrsdsc_t* mm)
 void test_vadr()
 {
 	adr_t vadr = vma_new_vadrs(&initmmadrsdsc, NULL, 0x1000, 0, 0);
-	if(vadr == NULL)
+	if(NULL == vadr)
 	{
 		kprint("分配虚拟地址空间失败\n");
 	}
@@ -332,6 +351,7 @@ void test_vadr()
 	kprint("开始写入分配虚拟地址空间\n");
 	hal_memset((void*)vadr, 0, 0x1000);
 	kprint("结束写入分配虚拟地址空间\n");
+	return;
 }
 
 void init_kvirmemadrs()
@@ -345,7 +365,9 @@ void init_kvirmemadrs()
 	//test_vadr();
 	kprint("虚拟内存初始化成功\n");
     // die(0x400);
+	return;
 }
+
 
 kmvarsdsc_t *vma_find_kmvarsdsc_is_ok(virmemadrs_t *vmalocked, kmvarsdsc_t *curr, adr_t start, size_t vassize)
 {
@@ -395,19 +417,21 @@ kmvarsdsc_t *vma_find_kmvarsdsc(virmemadrs_t *vmalocked, adr_t start, size_t vas
 	kmvarsdsc_t *kmvdcurrent = NULL, *curr = vmalocked->vs_currkmvdsc;
 	adr_t newend = start + vassize;
 	list_h_t *listpos = NULL;
-	if (vassize < 0x1000) {
+	if (0x1000 > vassize)
+	{
 		return NULL;
 	}
 
-	if (newend > vmalocked->vs_isalcend) {
+	if (newend > vmalocked->vs_isalcend)
+	{
 		return NULL;
 	}
 	
 
-	if (curr != NULL)
+	if (NULL != curr)
 	{
 		kmvdcurrent = vma_find_kmvarsdsc_is_ok(vmalocked, curr, start, vassize);
-		if (kmvdcurrent != NULL)
+		if (NULL != kmvdcurrent)
 		{
 			if(vaslimits == kmvdcurrent->kva_limits && vastype == kmvdcurrent->kva_maptype)
 			{
@@ -422,7 +446,7 @@ kmvarsdsc_t *vma_find_kmvarsdsc(virmemadrs_t *vmalocked, adr_t start, size_t vas
 		if(vaslimits == curr->kva_limits && vastype == curr->kva_maptype)
 		{
 			kmvdcurrent = vma_find_kmvarsdsc_is_ok(vmalocked, curr, start, vassize);
-			if (kmvdcurrent != NULL)
+			if (NULL != kmvdcurrent)
 			{
 				return kmvdcurrent;
 			}
@@ -434,7 +458,7 @@ kmvarsdsc_t *vma_find_kmvarsdsc(virmemadrs_t *vmalocked, adr_t start, size_t vas
 	{
 		curr = list_entry(listpos, kmvarsdsc_t, kva_list);
 		kmvdcurrent = vma_find_kmvarsdsc_is_ok(vmalocked, curr, start, vassize);
-		if (kmvdcurrent != NULL)
+		if (NULL != kmvdcurrent)
 		{
 			return kmvdcurrent;
 		}
@@ -452,15 +476,13 @@ adr_t vma_new_vadrs_core(mmadrsdsc_t *mm, adr_t start, size_t vassize, u64_t vas
 	krlspinlock_cli(&vma->vs_lock, &cpuflg);
 
 	currkmvd = vma_find_kmvarsdsc(vma, start, vassize, vaslimits, vastype);
-	if (currkmvd == NULL)
+	if (NULL == currkmvd)
 	{
 		retadrs = NULL;
 		goto out;
 	}
 
-	if ((start == NULL || start == currkmvd->kva_end) && 
-		(vaslimits == currkmvd->kva_limits) && 
-		(vastype == currkmvd->kva_maptype))
+	if (((NULL == start) || (start == currkmvd->kva_end)) && (vaslimits == currkmvd->kva_limits) && (vastype == currkmvd->kva_maptype))
 	{
 		retadrs = currkmvd->kva_end;
 		currkmvd->kva_end += vassize;
@@ -469,13 +491,13 @@ adr_t vma_new_vadrs_core(mmadrsdsc_t *mm, adr_t start, size_t vassize, u64_t vas
 	}
 
 	newkmvd = new_kmvarsdsc();
-	if (newkmvd == NULL)
+	if (NULL == newkmvd)
 	{
 		retadrs = NULL;
 		goto out;
 	}
 
-	if (start == NULL)
+	if (NULL == start)
 	{
 		newkmvd->kva_start = currkmvd->kva_end;
 	}
@@ -503,15 +525,13 @@ out:
 
 adr_t vma_new_vadrs(mmadrsdsc_t *mm, adr_t start, size_t vassize, u64_t vaslimits, u32_t vastype)
 {
-	if (mm == NULL || vassize < 1) {
+	if (NULL == mm || 1 > vassize)
+	{
 		return NULL;
 	}
-
-	if (start != NULL)
+	if (NULL != start)
 	{
-		if ((start & 0xfff) != 0 || 
-			0x1000 > start || 
-			USER_VIRTUAL_ADDRESS_END < (start + vassize))
+		if (((start & 0xfff) != 0) || (0x1000 > start) || (USER_VIRTUAL_ADDRESS_END < (start + vassize)))
 		{
 			return NULL;
 		}
@@ -525,11 +545,12 @@ kmvarsdsc_t *vma_del_find_kmvarsdsc(virmemadrs_t *vmalocked, adr_t start, size_t
 	kmvarsdsc_t *curr = vmalocked->vs_currkmvdsc;
 	adr_t newend = start + (adr_t)vassize;
 	list_h_t *listpos = NULL;
-	if (0x1000 > vassize) {
+	if (0x1000 > vassize)
+	{
 		return NULL;
 	}
 
-	if (curr != NULL)
+	if (NULL != curr)
 	{
 		if ((curr->kva_start) <= start && (newend <= curr->kva_end))
 		{

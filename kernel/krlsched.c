@@ -9,6 +9,7 @@ void thrdlst_t_init(thrdlst_t *initp)
     list_init(&initp->tdl_lsth);
     initp->tdl_curruntd = NULL;
     initp->tdl_nr = 0;
+    return;
 }
 
 void schdata_t_init(schdata_t *initp)
@@ -21,10 +22,12 @@ void schdata_t_init(schdata_t *initp)
     initp->sda_prityidx = 0;
     initp->sda_cpuidle = NULL;
     initp->sda_currtd = NULL;
-    for (uint_t ti = 0; ti < PRITY_MAX; ti++) {
+    for (uint_t ti = 0; ti < PRITY_MAX; ti++)
+    {
         thrdlst_t_init(&initp->sda_thdlst[ti]);
     }
     list_init(&initp->sda_exitlist);
+    return;
 }
 
 void schedclass_t_init(schedclass_t *initp)
@@ -33,22 +36,26 @@ void schedclass_t_init(schedclass_t *initp)
     initp->scls_cpunr = CPUCORE_MAX;
     initp->scls_threadnr = 0;
     initp->scls_threadid_inc = 0;
-    for (uint_t si = 0; si < CPUCORE_MAX; si++) {
+    for (uint_t si = 0; si < CPUCORE_MAX; si++)
+    {
         schdata_t_init(&initp->scls_schda[si]);
     }
+    return;
 }
 
 void init_krlsched()
 {
     schedclass_t_init(&osschedcls);
     kprint("进程调度器初始化成功\n");
+    return;
 }
 
 thread_t *krlsched_retn_currthread()
 {
     uint_t cpuid = hal_retn_cpuid();
     schdata_t *schdap = &osschedcls.scls_schda[cpuid];
-    if (schdap->sda_currtd == NULL) {
+    if (schdap->sda_currtd == NULL)
+    {
         hal_sysdie("schdap->sda_currtd NULL");
     }
     return schdap->sda_currtd;
@@ -69,10 +76,12 @@ void krlsched_wait(kwlst_t *wlst)
     thread_t *tdp = krlsched_retn_currthread();
     uint_t pity = tdp->td_priority;
 
-    if (pity >= PRITY_MAX || wlst == NULL) {
+    if (pity >= PRITY_MAX || wlst == NULL)
+    {
         goto err_step;
     }
-    if (schdap->sda_thdlst[pity].tdl_nr < 1) {
+    if (schdap->sda_thdlst[pity].tdl_nr < 1)
+    {
         goto err_step;
     }
 
@@ -83,7 +92,8 @@ void krlsched_wait(kwlst_t *wlst)
     list_del(&tdp->td_list);
     krlspinunlock_sti(&tdp->td_lock, &tcufg);
 
-    if (schdap->sda_thdlst[pity].tdl_curruntd == tdp) {
+    if (schdap->sda_thdlst[pity].tdl_curruntd == tdp)
+    {
         schdap->sda_thdlst[pity].tdl_curruntd = NULL;
     }
     schdap->sda_thdlst[pity].tdl_nr--;
@@ -95,6 +105,7 @@ void krlsched_wait(kwlst_t *wlst)
 
 err_step:
     hal_sysdie("krlsched_wait err");
+    return;
 }
 
 void krlsched_up(kwlst_t *wlst)
@@ -104,16 +115,18 @@ void krlsched_up(kwlst_t *wlst)
     schdata_t *schdap = &osschedcls.scls_schda[cpuid];
     thread_t *tdp;
     uint_t pity;
-    if (wlst == NULL) {
+    if (wlst == NULL)
+    {
         goto err_step;
     }
     tdp = krlwlst_del_thread(wlst);
-    if (tdp == NULL) {
+    if (tdp == NULL)
+    {
         goto err_step;
     }
-
     pity = tdp->td_priority;
-    if (pity >= PRITY_MAX) {
+    if (pity >= PRITY_MAX)
+    {
         goto err_step;
     }
     krlspinlock_cli(&schdap->sda_lock, &cufg);
@@ -127,6 +140,7 @@ void krlsched_up(kwlst_t *wlst)
     return;
 err_step:
     hal_sysdie("krlsched_up err");
+    return;
 }
 
 thread_t *krlsched_retn_idlethread()
@@ -134,7 +148,8 @@ thread_t *krlsched_retn_idlethread()
     uint_t cpuid = hal_retn_cpuid();
     schdata_t *schdap = &osschedcls.scls_schda[cpuid];
 
-    if (schdap->sda_cpuidle == NULL) {
+    if (schdap->sda_cpuidle == NULL)
+    {
         hal_sysdie("schdap->sda_cpuidle NULL");
     }
     return schdap->sda_cpuidle;
@@ -149,6 +164,7 @@ void krlsched_set_schedflgs()
     krlspinlock_cli(&schdap->sda_lock, &cpuflg);
     schdap->sda_schdflgs = NEED_SCHED_FLGS;
     krlspinunlock_sti(&schdap->sda_lock, &cpuflg);
+    return;
 }
 
 void krlsched_set_schedflgs_ex(uint_t flags)
@@ -160,6 +176,7 @@ void krlsched_set_schedflgs_ex(uint_t flags)
     krlspinlock_cli(&schdap->sda_lock, &cpuflg);
     schdap->sda_schdflgs = flags;
     krlspinunlock_sti(&schdap->sda_lock, &cpuflg);
+    return;
 }
 
 void krlsched_chkneed_pmptsched()
@@ -175,15 +192,17 @@ void krlsched_chkneed_pmptsched()
         schdap->sda_schdflgs = NOTS_SCHED_FLGS;
         schd = 1;
     }
-
-    if (schdap->sda_schdflgs == NEED_START_CPUILDE_SCHED_FLGS) {
+    if (schdap->sda_schdflgs == NEED_START_CPUILDE_SCHED_FLGS)
+    {
         schd = 1;
     }
-
     krlspinunlock_sti(&schdap->sda_lock, &cpuflg);
-    if (schd == 1) {
+    if (schd == 1)
+    {
+
         krlschedul();
     }
+    return;
 }
 thread_t *krlsched_select_thread()
 {
@@ -197,6 +216,7 @@ thread_t *krlsched_select_thread()
 
     for (uint_t pity = 0; pity < PRITY_MAX; pity++)
     {
+
         list_for_each(pos, &(schdap->sda_thdlst[pity].tdl_lsth))
         {
             tdtmp = list_entry(pos, thread_t, td_list);
@@ -204,7 +224,8 @@ thread_t *krlsched_select_thread()
             {
                 list_del(&tdtmp->td_list);
                 cur = schdap->sda_thdlst[pity].tdl_curruntd;
-                if (cur != NULL) {
+                if (cur != NULL)
+                {
                     list_add_tail(&cur->td_list, &schdap->sda_thdlst[pity].tdl_lsth);
                 }
 
@@ -232,6 +253,7 @@ return_step:
 
 void krlschedul()
 {
+
     if (krlsched_retn_schedflgs() == NEED_START_CPUILDE_SCHED_FLGS)
     {
         krlsched_set_schedflgs_ex(NOTS_SCHED_FLGS);
@@ -241,6 +263,7 @@ void krlschedul()
     thread_t *prev = krlsched_retn_currthread(),
              *next = krlsched_select_thread();
     save_to_new_context(next, prev);
+    return;
 }
 
 void krlschdclass_del_thread_addexit(thread_t *thdp)
@@ -254,7 +277,9 @@ void krlschdclass_del_thread_addexit(thread_t *thdp)
     schdap->sda_thdlst[thdp->td_priority].tdl_nr--;
     schdap->sda_threadnr--;
 
-    if (schdap->sda_thdlst[thdp->td_priority].tdl_curruntd == thdp) {
+    if (schdap->sda_thdlst[thdp->td_priority].tdl_curruntd == thdp)
+    {
+ 
         schdap->sda_thdlst[thdp->td_priority].tdl_curruntd = NULL;
     }
 
@@ -263,6 +288,7 @@ void krlschdclass_del_thread_addexit(thread_t *thdp)
     list_add(&thdp->td_list, &schdap->sda_exitlist);
 
     krlspinunlock_sti(&schdap->sda_lock, &cufg);
+    return;
 }
 
 void krlsched_exit()
@@ -280,16 +306,19 @@ void krlsched_exit()
 
     uint_t pity = tdp->td_priority;
 
-    if (pity >= PRITY_MAX) {
+    if (pity >= PRITY_MAX)
+    {
         goto err_step;
     }
-    if (schdap->sda_thdlst[pity].tdl_nr < 1) {
+    if (schdap->sda_thdlst[pity].tdl_nr < 1)
+    {
         goto err_step;
     }
 
     return krlschdclass_del_thread_addexit(tdp);
 err_step:
     hal_sysdie("krlsched_wait err");
+    return;
 }
 
 void krlschdclass_add_thread(thread_t *thdp)
@@ -306,6 +335,8 @@ void krlschdclass_add_thread(thread_t *thdp)
     krlspinlock_cli(&osschedcls.scls_lock, &cufg);
     osschedcls.scls_threadnr++;
     krlspinunlock_sti(&osschedcls.scls_lock, &cufg);
+
+    return;
 }
 
 TNCCALL void __to_new_context(thread_t *next, thread_t *prev)
@@ -322,6 +353,8 @@ TNCCALL void __to_new_context(thread_t *next, thread_t *prev)
         next->td_stus = TDSTUS_RUN;
         retnfrom_first_sched(next);
     }
+
+    return;
 }
 
 void save_to_new_context(thread_t *next, thread_t *prev)
@@ -369,11 +402,13 @@ void save_to_new_context(thread_t *next, thread_t *prev)
         : [PREV_RSP] "=m"(prev->td_context.ctx_nextrsp)
         : [NEXT_RSP] "m"(next->td_context.ctx_nextrsp), "D"(next), "S"(prev)
         : "memory");
-#endif  // CFG_X86_PLATFORM
+#endif
+    return;
 }
 
 void retnfrom_first_sched(thread_t *thrdp)
 {
+
 #ifdef CFG_X86_PLATFORM
     __asm__ __volatile__(
         "movq %[NEXT_RSP],%%rsp\n\t"
@@ -405,5 +440,5 @@ void retnfrom_first_sched(thread_t *thrdp)
         :
         : [NEXT_RSP] "m"(thrdp->td_context.ctx_nextrsp)
         : "memory");
-#endif  // CFG_X86_PLATFORM
+#endif
 }

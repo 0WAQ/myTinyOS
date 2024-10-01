@@ -9,7 +9,6 @@ void objnode_t_init(objnode_t *initp)
     krlspinlock_init(&initp->on_lock);
     list_init(&initp->on_list);
     krlsem_t_init(&initp->on_complesem);
-    
     initp->on_flgs = 0;
     initp->on_stus = 0;
     initp->on_opercode = -1;
@@ -28,21 +27,24 @@ void objnode_t_init(objnode_t *initp)
     initp->on_fname = NULL;
     initp->on_finode = NULL;
     initp->on_extp = NULL;
+
+    return;
 }
 
 objnode_t *krlnew_objnode()
 {
     objnode_t *ondp = (objnode_t *)krlnew((size_t)sizeof(objnode_t));
-    if (ondp == NULL) {
+    if (ondp == NULL)
+    {
         return NULL;
     }
-
     objnode_t_init(ondp);
     return ondp;
 }
 
 bool_t krldel_objnode(objnode_t *onodep)
 {
+
     if (krldelete((adr_t)onodep, (size_t)sizeof(objnode_t)) == FALSE)
     {
         hal_sysdie("krldel_objnode err");

@@ -6,7 +6,8 @@
 
 sysstus_t krlsvetabl_open(uint_t inr, stkparame_t *stkparv)
 {
-    if (inr != INR_FS_OPEN) {
+    if (inr != INR_FS_OPEN)
+    {
         return SYSSTUSERR;
     }
     return (sysstus_t)krlsve_open((void *)stkparv->parmv1, (uint_t)stkparv->parmv2,
@@ -15,7 +16,8 @@ sysstus_t krlsvetabl_open(uint_t inr, stkparame_t *stkparv)
 
 hand_t krlsve_open(void *file, uint_t flgs, uint_t stus)
 {
-    if (file == NULL) {
+    if (file == NULL)
+    {
         return SYSSTUSERR;
     }
     // kprint("krlsve_open:%x\n", (uint_t)file);
@@ -44,11 +46,13 @@ op_dev_step:
     devid.dev_stype = ((devid_t *)file)->dev_stype;
     devid.dev_nr = ((devid_t *)file)->dev_nr;
     devp = krlonidfl_retn_device((void *)(&devid), DIDFIL_IDN);
-    if (devp == NULL) {
+    if (devp == NULL)
+    {
         return NO_HAND;
     }
     ondp = krlnew_objnode();
-    if (ondp == NULL) {
+    if (ondp == NULL)
+    {
         return NO_HAND;
     }
     ondp->on_opercode = IOIF_CODE_OPEN;
@@ -72,11 +76,13 @@ op_fil_step:
     devid.dev_stype = 0;
     devid.dev_nr = 0;
     devp = krlonidfl_retn_device((void *)(&devid), DIDFIL_IDN);
-    if (devp == NULL) {
+    if (devp == NULL)
+    {
         return NO_HAND;
     }
     ondp = krlnew_objnode();
-    if (ondp == NULL) {
+    if (ondp == NULL)
+    {
         return NO_HAND;
     }
 
@@ -92,7 +98,8 @@ op_fil_step:
         {
             goto res_step;
         }
-        if (krldel_objnode(ondp) == FALSE) {
+        if (krldel_objnode(ondp) == FALSE)
+        {
             hal_sysdie("NEWFILE api del objnode err");
         }
         return 0;
@@ -119,12 +126,13 @@ res_step:
     printfk("call open ok had%x \n\r", rethd);
     if (rethd != NO_HAND)
     {
-        if (krlthd_del_objnode(tdp, rethd) == NO_HAND) {
+        if (krlthd_del_objnode(tdp, rethd) == NO_HAND)
+        {
             hal_sysdie("open api td del objnode err");
         }
     }
-
-    if (krldel_objnode(ondp) == FALSE) {
+    if (krldel_objnode(ondp) == FALSE)
+    {
         hal_sysdie("open api del objnode err");
     }
     return NO_HAND;
@@ -132,11 +140,12 @@ res_step:
 
 sysstus_t krlsve_open_device(objnode_t *ondep)
 {
-    if (ondep->on_objadr == NULL) {
+    if (ondep->on_objadr == NULL)
+    {
         return SYSSTUSERR;
     }
-
-    if (krldev_io(ondep) == DFCERRSTUS) {
+    if (krldev_io(ondep) == DFCERRSTUS)
+    {
         return SYSSTUSERR;
     }
     return SYSSTUSOK;

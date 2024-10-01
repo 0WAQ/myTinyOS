@@ -15,12 +15,15 @@ void ktime_t_init(ktime_t *initp)
     initp->kt_min = 0;
     initp->kt_sec = 0;
     initp->kt_datap = NULL;
+    return;
 }
 
 void init_ktime()
 {
     ktime_t_init(&osktime);
+    return;
 }
+
 
 void krlupdate_times_from_cmos()
 {
@@ -43,6 +46,7 @@ void krlupdate_times_from_cmos()
     // kprint("osktime y:%d,m:%x,d:%d,h:%d,m:%d,s:%d\n", initp->kt_year, initp->kt_mon,initp->kt_day,
     //                                                     initp->kt_hour, initp->kt_min, initp->kt_sec);
     krlspinunlock_sti(&initp->kt_lock, &cpufg);
+    return;
 }
 
 
@@ -60,11 +64,13 @@ void krlupdate_times(uint_t year, uint_t mon, uint_t day, uint_t date, uint_t ho
     initp->kt_min = min;
     initp->kt_sec = sec;
     krlspinunlock_sti(&initp->kt_lock, &cpufg);
+    return;
 }
 
 sysstus_t krlsvetabl_time(uint_t inr, stkparame_t *stkparv)
 {
-    if (inr != INR_TIME) {
+    if (inr != INR_TIME)
+    {
         return SYSSTUSERR;
     }
     return krlsve_time((time_t *)stkparv->parmv1);
@@ -72,7 +78,8 @@ sysstus_t krlsvetabl_time(uint_t inr, stkparame_t *stkparv)
 
 sysstus_t krlsve_time(time_t *time)
 {
-    if (time == NULL) {
+    if (time == NULL)
+    {
         return SYSSTUSERR;
     }
 

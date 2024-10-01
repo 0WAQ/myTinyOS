@@ -10,6 +10,7 @@ void krlsem_t_init(sem_t* initp)
     initp->sem_flg=0;
     initp->sem_count=0;
     kwlst_t_init(&initp->sem_waitlst);
+    return;
 }
 
 void krlsem_set_sem(sem_t* setsem,uint_t flg,sint_t conut)
@@ -19,6 +20,7 @@ void krlsem_set_sem(sem_t* setsem,uint_t flg,sint_t conut)
     setsem->sem_flg=flg;
     setsem->sem_count=conut;
     krlspinunlock_sti(&setsem->sem_lock,&cpufg);
+    return;
 }    
 
 void krlsem_down(sem_t* sem)
@@ -28,6 +30,7 @@ start_step:
     krlspinlock_cli(&sem->sem_lock,&cpufg);
     if(sem->sem_count<1)
     {
+    
         krlwlst_wait(&sem->sem_waitlst);
         krlspinunlock_sti(&sem->sem_lock,&cpufg);
         krlschedul();
@@ -35,6 +38,7 @@ start_step:
     }
     sem->sem_count--;
     krlspinunlock_sti(&sem->sem_lock,&cpufg);
+    return;
 }
 
 void krlsem_up(sem_t* sem)
@@ -51,4 +55,5 @@ void krlsem_up(sem_t* sem)
     krlwlst_allup(&sem->sem_waitlst);
     krlspinunlock_sti(&sem->sem_lock,&cpufg);
     krlsched_set_schedflgs();
+    return;
 }

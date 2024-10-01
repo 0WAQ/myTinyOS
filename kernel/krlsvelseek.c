@@ -5,7 +5,8 @@
 #include "cosmosmctrl.h"
 sysstus_t krlsvetabl_lseek(uint_t inr, stkparame_t *stkparv)
 {
-    if (inr != INR_FS_LSEEK) {
+    if (inr != INR_FS_LSEEK)
+    {
         return SYSSTUSERR;
     }
     return krlsve_lseek((hand_t)stkparv->parmv1, (uint_t)stkparv->parmv2,
