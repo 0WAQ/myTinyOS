@@ -1,7 +1,6 @@
-!build/lmkfbuild
-!build/lmoskrlimg
-!build/pretreatment.mkf
-
-!build/*.mk
-!build/*.mh
-!build/*.lds
+*.o
+*.bin
+*.debug
+*.elf
+*.map
+build/*.mki
