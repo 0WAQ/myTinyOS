@@ -12,6 +12,8 @@ void init_halplatform()
     
     // 初始化图形显示驱动 
     init_bdvideo();
+
+    kprint("平台初始化成功\n");
 }
 
 void init_machbstart()
@@ -81,7 +83,7 @@ fhdsc_t *get_fileinfo(char_t *fname, machbstart_t *mbsp)
     rethn = -1;
 ok_l:
     if (rethn < 0) {
-        system_error("not find file");
+        return NULL;
     }
     return &fhdscstart[rethn];
 }
