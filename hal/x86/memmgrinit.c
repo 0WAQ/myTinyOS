@@ -26,6 +26,9 @@ void init_memmgr()
 	
 	// 将各种结构转换成虚拟地址
 	init_memmgrob();
+
+	// 
+	init_kmsob();
 }
 
 void init_memmgrob()
@@ -130,7 +133,7 @@ bool_t copy_pages_data(machbstart_t *mbsp)
 
 	uint_t pdptepd = (uint_t)viradr_to_phyadr((adr_t)pdpte);
 	p[((KRNL_VIRTUAL_ADDRESS_START) >> KPML4_SHIFT) & 0x1ff] = (uint_t)(pdptepd | KPML4_RW | KPML4_P);
-	p[0] = (uint_t)(pdptepd | KPML4_RW | KPML4_P);
+	// p[0] = (uint_t)(pdptepd | KPML4_RW | KPML4_P);
 
 	mbsp->mb_pml4padr = topgadr;
 	mbsp->mb_subpageslen = (uint_t)(0x1000 * 16 + 0x2000);

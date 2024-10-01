@@ -53,6 +53,20 @@ KLINE sint_t retn_divoder(uint_t pages)
 	return pbits;
 }
 
+u64_t onfrmsa_retn_fpagenr(msadsc_t* freemsa)
+{
+	if(freemsa == NULL || freemsa->md_odlink == NULL) {
+		return 0;
+	}
+
+	msadsc_t* fmend=(msadsc_t*)freemsa->md_odlink;
+	if(freemsa > fmend) {
+		return 0;
+	}
+
+	return ((u64_t)(fmend-freemsa)+1);
+}
+
 memarea_t *onfrmsa_retn_marea(memmgrob_t *mmobjp, msadsc_t *freemsa, uint_t freepgs)
 {
 	if (freemsa->md_indxflgs.mf_olkty != MF_OLKTY_ODER || freemsa->md_odlink == NULL) {
@@ -810,6 +824,88 @@ memarea_t *retn_procmarea(memmgrob_t *mmobjp)
 
 	return NULL;
 }
+
+/*
+bool_t remov_addpgs_onmarea(memarea_t* rmmar,msadsc_t* mstat,uint_t mnr)
+{
+	bool_t rets=FALSE;
+	if(NULL==rmmar||NULL==mstat||1>mnr)
+	{
+		return FALSE;
+	}
+	if(MA_TYPE_PROC!=rmmar->ma_type)
+	{
+		return FALSE;
+	}
+	bafhlst_t* bafh=NULL;
+	cpuflg_t cpuflg;
+	knl_spinlock_cli(&rmmar->ma_lock,&cpuflg);
+	bafh=&rmmar->ma_mdmdata.dm_onemsalst;
+	if(1!=bafh->af_oderpnr)
+	{
+		rets=FALSE;
+		goto ret_step;
+	}
+	for(uint_t tmr=0;tmr<mnr;tmr++)
+	{
+		if((~0UL)<=bafh->af_fobjnr||(~0UL)<=bafh->af_mobjnr)
+		{
+			system_error("remov_addpgs_onmarea (~0UL)<=bafh->af_fobjnr||(~0UL)<=bafh->af_mobjnr\n");
+		}
+		if((~0UL)<=rmmar->ma_freepages||(~0UL)<=rmmar->ma_maxpages||
+			(~0UL)<=rmmar->ma_allmsadscnr)
+		{
+			system_error("remov_addpgs_onmarea rmmar->ma_freepages\n");
+		}
+		mstat[tmr].md_indxflgs.mf_uindx=0;
+		mstat[tmr].md_indxflgs.mf_mocty=MF_MOCTY_FREE;
+		mstat[tmr].md_indxflgs.mf_marty=MF_MARTY_PRC;
+		mstat[tmr].md_indxflgs.mf_olkty=MF_OLKTY_BAFH;
+		mstat[tmr].md_odlink=bafh;
+		mstat[tmr].md_phyadrs.paf_alloc=PAF_NO_ALLOC;
+		list_add(&mstat[tmr].md_list,&bafh->af_frelst);
+		bafh->af_mobjnr++;
+		bafh->af_fobjnr++;
+		rmmar->ma_allmsadscnr++;
+		rmmar->ma_freepages++;
+		rmmar->ma_maxpages++;
+	}
+	rets=TRUE;
+ret_step:
+	knl_spinunlock_sti(&rmmar->ma_lock,&cpuflg);
+	return rets;
+}
+
+uint_t mm_pages_removal(memmgrob_t *mmobjp, uint_t rolpages,memarea_t* rmmar,uint_t mrty)
+{
+	if(NULL==mmobjp||2>rolpages||NULL==rmmar||0==mrty)
+	{
+		return 0;
+	}
+	if(MA_TYPE_PROC!=rmmar->ma_type||
+		MA_TYPE_PROC==mrty||MA_TYPE_SHAR==mrty||
+		MA_TYPE_INIT==mrty)
+	{
+		return 0;
+	}
+	msadsc_t* retmsa=NULL;
+	uint_t retpnr=0;
+	uint_t tmprolpnr=rolpages;
+	for(;tmprolpnr>0;tmprolpnr>>=1)
+	{
+		retmsa=mm_division_pages(mmobjp,tmprolpnr,&retpnr,MA_TYPE_KRNL,DMF_RELDIV);
+		if(NULL!=retmsa&&0!=retpnr)
+		{
+
+			if(remov_addpgs_onmarea(rmmar,retmsa,retpnr)==FALSE)
+			{
+				system_error("remov_addpgs_onmarea ret fail\n");
+			}
+			return retpnr;
+		}
+	}
+	return 0;
+}*/
 
 msadsc_t *divpages_procmarea_core(memmgrob_t *mmobjp, uint_t pages, uint_t *retrealpnr)
 {
@@ -1590,6 +1686,20 @@ void test_maxdiv_all()
 	}
 }
 
+/*
+adr_t krlnew_pages(uint_t pgs)
+{
+	msadsc_t* retmsa=NULL;
+	//u64_t stsc=0,etsc=0;
+	uint_t retpnr=0
+	retmsa=mm_division_pages(&memmgrob, pages,&retpnr, MA_TYPE_KRNL,DMF_RELDIV);
+	if(NULL==retmsa)
+	{
+		return NULL;
+	}
+
+}
+*/
 
 void test_divsion_pages()
 {
