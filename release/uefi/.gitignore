@@ -1,0 +1,5 @@
+*.bin
+*.debug
+*.eki
+*.elf
+*.app
