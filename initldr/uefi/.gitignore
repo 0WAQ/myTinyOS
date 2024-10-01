@@ -1,0 +1,7 @@
+!build/lmkfbuild
+!build/lmoskrlimg
+!build/pretreatment.mkf
+
+!build/*.mk
+!build/*.mh
+!build/*.lds
