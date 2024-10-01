@@ -25,6 +25,8 @@ void init_meme820(machbstart_t* mbsp);
 /// @param mbsp 机器信息结构
 void init_chkcpu(machbstart_t* mbsp);
 
+int chk_cpuid();
+int chk_cpu_longmode();
 
 /// @brief 获取内存布局信息
 /// @param retemp e820map_t结构体数组的首地址

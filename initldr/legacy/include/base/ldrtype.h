@@ -44,7 +44,7 @@
 #define MLOSDSC_OFF (0x1000)
 
 // 映像文件头描述符的物理地址, 前0x1000个字节正好是4KB, 是GRUB头
-#define MRDDSC_ADR (mlosrddsc_t*)(LDRFILEADR+0x1000)
+#define MRDDSC_ADR (imgfhdsc_t*)(LDRFILEADR+0x1000)
 
 #define KRNL_VIRTUAL_ADDRESS_START 0xffff800000000000
 #define KPML4_P (1<<0)
