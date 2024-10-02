@@ -1,8 +1,21 @@
 ### 目录结构
 ```bash
+apps/
+| |--helloworld.c
+| |--love.c
+| |--oneuser.c
+|
 build/
+| |--lmkfbuild
+| |--pretreatment.mkf
+| |--vbox_win.mkf
+| |--vbox.mkf
 |
-|
+drivers/
+| |--net/
+| |--drvrfs.c
+| |--drvtick.c
+| |--drvuart.c
 |
 exckrnl/
 | |--.keep
@@ -17,20 +30,45 @@ hdisk/
 |
 include/
 | |--bastypeinc/
+| |--drvinc/
 | |--halinc/
+| |--knlinc/
+| |--libinc/
 | |--script/
 | |--config.h
 | |--cosmosmctrl.h
 | |--cosmostypes.h
 |
 initldr/    # 二级引导器，用于解析内核文件和收集机器环境信息
+| |--legacy/
+| |--script/
+| |--uefi/
+| |--Makefile
+| |--README.md
 |
+|
+kernel/
+|
+|
+lib/
+|
+|
+ovmf/
+| |--esp/
+| |--OVMF_CODE.fd
+| |--OVMF_VARS.fd
 |
 release/
+| |--legacy
+| |--uefi
+|
+|
 script/
 |
 |
 |--.gitignore
+|--codeline.sh
+|--gdbinit
 |--Makefile
 |--Makefile.x86
 |--README.md
