@@ -105,7 +105,7 @@ void skb_buff_backspace(shellkbbuff_t* skb)
 
 	skb->skb_tail--;
 	skb->skb_buff[skb->skb_tail] = 0;
-	printf("Cosmos@LMOS:>");
+	printf("Cosmos@bwb:>");
 	printf("%s", &skb->skb_buff[skb->skb_start]);
 }
 
@@ -118,7 +118,7 @@ void shell()
 	memset((void*)&shellkbuff, 0, sizeof(shellkbbuff_t));
 	
 	printf("Cosmos shell is init!\n");
-	printf("Cosmos@LMOS:>");
+	printf("Cosmos@bwb:>");
 
 	while(1)
 	{

@@ -131,10 +131,10 @@ void kmvarsdsc_t_init(kmvarsdsc_t *initp)
 
 void kvirmemadrs_t_init(kvirmemadrs_t *initp)
 {
-	if (NULL == initp)
-	{
+	if (initp == NULL) {
 		system_error("kvirmemadrs_t_init pram err\n");
 	}
+
 	krlspinlock_init(&initp->kvs_lock);
 	initp->kvs_flgs = 0;
 	initp->kvs_kmvdscnr = 0;
@@ -153,7 +153,6 @@ void kvirmemadrs_t_init(kvirmemadrs_t *initp)
 	pgtabpage_t_init(&initp->kvs_ptabpgcs);
 	kvmcobjmgr_t_init(&initp->kvs_kvmcomgr);
 	kvmemcboxmgr_t_init(&initp->kvs_kvmemcboxmgr);
-	return;
 }
 
 kmvarsdsc_t *new_kmvarsdsc()
@@ -201,48 +200,53 @@ bool_t del_virmemadrs(virmemadrs_t *vmdsc)
 void kvma_seting_kvirmemadrs(kvirmemadrs_t *kvma)
 {
 	kmvarsdsc_t *kmvdc = NULL;
-	if (NULL == kvma)
-	{
+	if (kvma == NULL) {
 		system_error("kvma_seting_kvirmemadrs parm err\n");
 	}
+
 	kmvdc = new_kmvarsdsc();
-	if (NULL == kmvdc)
-	{
+	if (kmvdc == NULL) {
 		system_error("kvma_seting_kvirmemadrs nomem err\n");
 	}
+
 	kvma->kvs_isalcstart = KRNL_VIRTUAL_ADDRESS_START + KRNL_MAP_VIRTADDRESS_SIZE;
 	kvma->kvs_isalcend = KRNL_VIRTUAL_ADDRESS_END;
+	
 	kmvdc->kva_start = KRNL_VIRTUAL_ADDRESS_START;
 	kmvdc->kva_end = KRNL_VIRTUAL_ADDRESS_START + KRNL_MAP_VIRTADDRESS_SIZE;
 	kmvdc->kva_mcstruct = kvma;
+	
 	kvma->kvs_startkmvdsc = kmvdc;
 	kvma->kvs_endkmvdsc = kmvdc;
 	kvma->kvs_krlmapdsc = kmvdc;
 	kvma->kvs_kmvdscnr++;
-	return;
 }
 
+// 初始化虚拟地址空间，进程将mmadrsdcs_t(是对virmemadrs_t的封装)下的虚拟地址空间结构传进来
 bool_t kvma_inituserspace_virmemadrs(virmemadrs_t *vma)
 {
 	kmvarsdsc_t *kmvdc = NULL, *stackkmvdc = NULL, *heapkmvdc = NULL;
-	if (NULL == vma)
-	{
+	if (vma == NULL) {
 		return FALSE;
 	}
+
+	// 分配一个kmvarsdsc_t(虚拟地址区间)
 	kmvdc = new_kmvarsdsc();
-	if (NULL == kmvdc)
-	{
+	if (kmvdc == NULL) {
 		return FALSE;
 	}
+
+	// 分配一个虚拟地址区间，表示进程的堆区
 	heapkmvdc = new_kmvarsdsc();
-	if(NULL == heapkmvdc)
+	if(heapkmvdc == NULL)
 	{
 		del_kmvarsdsc(kmvdc);
 		return FALSE;
 	}
 
+	// 分配一个虚拟地址区间，表示进程的栈区
 	stackkmvdc = new_kmvarsdsc();
-	if (NULL == stackkmvdc)
+	if (stackkmvdc == NULL)
 	{
 		del_kmvarsdsc(kmvdc);
 		del_kmvarsdsc(heapkmvdc);
@@ -263,18 +267,25 @@ bool_t kvma_inituserspace_virmemadrs(virmemadrs_t *vma)
 	stackkmvdc->kva_mcstruct = vma;
 	stackkmvdc->kva_maptype = KMV_STACK_TYPE;
 
+	// 上锁
 	krlspinlock_lock(&vma->vs_lock);
-	vma->vs_isalcstart = USER_VIRTUAL_ADDRESS_START;
-	vma->vs_isalcend = USER_VIRTUAL_ADDRESS_END;
-	vma->vs_startkmvdsc = kmvdc;
-	vma->vs_endkmvdsc = stackkmvdc;
-	vma->vs_heapkmvdsc = heapkmvdc;
-	vma->vs_stackkmvdsc = stackkmvdc;
-	list_add_tail(&kmvdc->kva_list, &vma->vs_list);
-	list_add_tail(&heapkmvdc->kva_list, &vma->vs_list);
-	list_add_tail(&stackkmvdc->kva_list, &vma->vs_list);
-	vma->vs_kmvdscnr += 3;
+	{
+		vma->vs_isalcstart = USER_VIRTUAL_ADDRESS_START;
+		vma->vs_isalcend = USER_VIRTUAL_ADDRESS_END;
+		vma->vs_startkmvdsc = kmvdc;
+		vma->vs_endkmvdsc = stackkmvdc;
+		vma->vs_heapkmvdsc = heapkmvdc;
+		vma->vs_stackkmvdsc = stackkmvdc;
+		
+		// 将这三个虚拟地址区间挂载到虚拟地址空间上
+		list_add_tail(&kmvdc->kva_list, &vma->vs_list);
+		list_add_tail(&heapkmvdc->kva_list, &vma->vs_list);
+		list_add_tail(&stackkmvdc->kva_list, &vma->vs_list);
+		vma->vs_kmvdscnr += 3;
+	}
 	krlspinlock_unlock(&vma->vs_lock);
+	// 解锁
+
 	return TRUE;
 }
 
@@ -286,12 +297,13 @@ adr_t kvma_initdefault_virmemadrs(mmadrsdsc_t* mm, adr_t start, size_t size, u32
 	}
 	return vma_new_vadrs(mm, start, size, 0, type);
 }
+
 void mmadrsdsc_t_init(mmadrsdsc_t* initp)
 {
-	if(NULL == initp)
-	{
+	if(initp == NULL) {
 		return;
 	}
+
 	krlspinlock_init(&initp->msd_lock);
 	list_init(&initp->msd_list);
 	initp->msd_flag = 0;
@@ -310,7 +322,6 @@ void mmadrsdsc_t_init(mmadrsdsc_t* initp)
 	initp->msd_ebss = 0;
 	initp->msd_sbrk = 0;
 	initp->msd_ebrk = 0;
-	return; 
 }
 
 mmadrsdsc_t* new_mmadrsdsc()
@@ -354,18 +365,27 @@ void test_vadr()
 	return;
 }
 
+// 初始化进程使用的虚拟地址空间
 void init_kvirmemadrs()
 {
+	// 初始化mmadrsdsc_t
 	mmadrsdsc_t_init(&initmmadrsdsc);
+
+	// 初始化kvirmemadrs_t
 	kvirmemadrs_t_init(&krlvirmemadrs);
+	
+	// 设置kvirmemadrs_t
 	kvma_seting_kvirmemadrs(&krlvirmemadrs);
+	
+	// 初始化进程的用户空间
 	kvma_inituserspace_virmemadrs(&initmmadrsdsc.msd_virmemadrs);
+	
 	hal_mmu_init(&initmmadrsdsc.msd_mmu);
 	hal_mmu_load(&initmmadrsdsc.msd_mmu);
+	
 	//test_vadr();
 	kprint("虚拟内存初始化成功\n");
     // die(0x400);
-	return;
 }
 
 

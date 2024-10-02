@@ -7,8 +7,9 @@
 void init_krlmm()
 {
     init_krlpagempol();
+
+    // 初始化进程使用的虚拟地址空间
     init_kvirmemadrs();
-    return;
 }
 
 adr_t krlnew(size_t mmsize)
